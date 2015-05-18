@@ -44,6 +44,7 @@ import sys
 import os
 import shutil
 import file_system_utils
+import traceback
 
 #----------------------------------------------------------------------
 # Extracts the headers.
@@ -69,7 +70,12 @@ def extract(input_directory_path, output_directory_path):
         print("Copying header '" + input_header_file_path + "' to " + output_header_file_path + "'")
         if os.path.exists(os.path.dirname(output_header_file_path)) == False:
             os.makedirs(os.path.dirname(output_header_file_path))
-        shutil.copy2(input_header_file_path, output_header_file_path)
+        try:
+            shutil.copy2(input_header_file_path, output_header_file_path)
+        except OSError as e:
+            print("OSError copying headers - May still work if error was in metadata and not content. See Bellow:")
+            print(traceback.format_exc())
+            
 
 #----------------------------------------------------------------------
 # The entry point into the script.
