@@ -157,7 +157,7 @@ typedef struct
     ZPOS64_T totalUncompressedData;
 #ifndef NOCRYPT
     unsigned long keys[3];     /* keys defining the pseudo-random sequence */
-    const unsigned long* pcrc_32_tab;
+    const z_crc_t* pcrc_32_tab;
     int crypt_header_size;
 #endif
 } curfile64_info;
@@ -283,7 +283,7 @@ local int add_data_in_datablock(linkedlist_data* ll, const void* buf, uLong len)
    nbByte == 1, 2 ,4 or 8 (byte, short or long, ZPOS64_T)
 */
 
-local int zip64local_putValue POINTLESS_OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, ZPOS64_T x, int nbByte));
+local int zip64local_putValue OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, ZPOS64_T x, int nbByte));
 local int zip64local_putValue (const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, ZPOS64_T x, int nbByte)
 {
     unsigned char buf[8];
@@ -307,7 +307,7 @@ local int zip64local_putValue (const zlib_filefunc64_32_def* pzlib_filefunc_def,
         return ZIP_OK;
 }
 
-local void zip64local_putValue_inmemory POINTLESS_OF((void* dest, ZPOS64_T x, int nbByte));
+local void zip64local_putValue_inmemory OF((void* dest, ZPOS64_T x, int nbByte));
 local void zip64local_putValue_inmemory (void* dest, ZPOS64_T x, int nbByte)
 {
     unsigned char* buf=(unsigned char*)dest;
@@ -344,7 +344,7 @@ local uLong zip64local_TmzDateToDosDate(const tm_zip* ptm)
 
 /****************************************************************************/
 
-local int zip64local_getByte POINTLESS_OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, int *pi));
+local int zip64local_getByte OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, int *pi));
 
 local int zip64local_getByte(const zlib_filefunc64_32_def* pzlib_filefunc_def,voidpf filestream,int* pi)
 {
@@ -368,7 +368,7 @@ local int zip64local_getByte(const zlib_filefunc64_32_def* pzlib_filefunc_def,vo
 /* ===========================================================================
    Reads a long in LSB order from the given gz_stream. Sets
 */
-local int zip64local_getShort POINTLESS_OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, uLong *pX));
+local int zip64local_getShort OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, uLong *pX));
 
 local int zip64local_getShort (const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, uLong* pX)
 {
@@ -390,7 +390,7 @@ local int zip64local_getShort (const zlib_filefunc64_32_def* pzlib_filefunc_def,
     return err;
 }
 
-local int zip64local_getLong POINTLESS_OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, uLong *pX));
+local int zip64local_getLong OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, uLong *pX));
 
 local int zip64local_getLong (const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, uLong* pX)
 {
@@ -420,7 +420,7 @@ local int zip64local_getLong (const zlib_filefunc64_32_def* pzlib_filefunc_def, 
     return err;
 }
 
-local int zip64local_getLong64 POINTLESS_OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, ZPOS64_T *pX));
+local int zip64local_getLong64 OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, ZPOS64_T *pX));
 
 
 local int zip64local_getLong64 (const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream, ZPOS64_T *pX)
@@ -475,7 +475,7 @@ local int zip64local_getLong64 (const zlib_filefunc64_32_def* pzlib_filefunc_def
   Locate the Central directory of a zipfile (at the end, just before
     the global comment)
 */
-local ZPOS64_T zip64local_SearchCentralDir POINTLESS_OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream));
+local ZPOS64_T zip64local_SearchCentralDir OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream));
 
 local ZPOS64_T zip64local_SearchCentralDir(const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream)
 {
@@ -537,7 +537,7 @@ local ZPOS64_T zip64local_SearchCentralDir(const zlib_filefunc64_32_def* pzlib_f
 Locate the End of Zip64 Central directory locator and from there find the CD of a zipfile (at the end, just before
 the global comment)
 */
-local ZPOS64_T zip64local_SearchCentralDir64 POINTLESS_OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream));
+local ZPOS64_T zip64local_SearchCentralDir64 OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream));
 
 local ZPOS64_T zip64local_SearchCentralDir64(const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream)
 {
@@ -1067,6 +1067,7 @@ extern int ZEXPORT zipOpenNewFileInZip4_64 (zipFile file, const char* filename, 
     int err = ZIP_OK;
 
 #    ifdef NOCRYPT
+    (crcForCrypting);
     if (password != NULL)
         return ZIP_PARAMERROR;
 #    endif
@@ -1710,7 +1711,7 @@ extern int ZEXPORT zipCloseFileInZipRaw64 (zipFile file, ZPOS64_T uncompressed_s
         if (err==ZIP_OK)
             err = zip64local_putValue(&zi->z_filefunc,zi->filestream,crc32,4); /* crc 32, unknown */
 
-        if(uncompressed_size >= 0xffffffff)
+        if(uncompressed_size >= 0xffffffff || compressed_size >= 0xffffffff )
         {
           if(zi->ci.pos_zip64extrainfo > 0)
           {
@@ -1724,6 +1725,8 @@ extern int ZEXPORT zipCloseFileInZipRaw64 (zipFile file, ZPOS64_T uncompressed_s
             if (err==ZIP_OK) /* uncompressed size, unknown */
               err = zip64local_putValue(&zi->z_filefunc, zi->filestream, compressed_size, 8);
           }
+          else
+              err = ZIP_BADZIPFILE; // Caller passed zip64 = 0, so no room for zip64 info -> fatal
         }
         else
         {
@@ -1852,7 +1855,7 @@ int Write_EndOfCentralDirectoryRecord(zip64_internal* zi, uLong size_centraldir,
       err = zip64local_putValue(&zi->z_filefunc,zi->filestream, (uLong)0xffffffff,4);
     }
     else
-                  err = zip64local_putValue(&zi->z_filefunc,zi->filestream, (uLong)(centraldir_pos_inzip - zi->add_position_when_writting_offset),4);
+      err = zip64local_putValue(&zi->z_filefunc,zi->filestream, (uLong)(centraldir_pos_inzip - zi->add_position_when_writting_offset),4);
   }
 
    return err;
@@ -1919,7 +1922,7 @@ extern int ZEXPORT zipClose (zipFile file, const char* global_comment)
     free_linkedlist(&(zi->central_dir));
 
     pos = centraldir_pos_inzip - zi->add_position_when_writting_offset;
-    if(pos >= 0xffffffff)
+    if(pos >= 0xffffffff || zi->number_entry > 0xFFFF)
     {
       ZPOS64_T Zip64EOCDpos = ZTELL64(zi->z_filefunc,zi->filestream);
       Write_Zip64EndOfCentralDirectoryRecord(zi, size_centraldir, centraldir_pos_inzip);

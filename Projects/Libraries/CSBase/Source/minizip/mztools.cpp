@@ -37,7 +37,7 @@ extern int ZEXPORT unzRepair(const char* file, const char* fileOut, const char* 
     int entries = 0;
     uLong totalBytes = 0;
     char header[30];
-    char filename[256];
+    char filename[1024];
     char extra[1024];
     int offset = 0;
     int offsetCD = 0;
@@ -68,9 +68,14 @@ extern int ZEXPORT unzRepair(const char* file, const char* fileOut, const char* 
 
         /* Filename */
         if (fnsize > 0) {
-          if (fread(filename, 1, fnsize, fpZip) == fnsize) {
-            if (fwrite(filename, 1, fnsize, fpOut) == fnsize) {
-              offset += fnsize;
+          if (fnsize < sizeof(filename)) {
+            if (fread(filename, 1, fnsize, fpZip) == fnsize) {
+                if (fwrite(filename, 1, fnsize, fpOut) == fnsize) {
+                offset += fnsize;
+              } else {
+                err = Z_ERRNO;
+                break;
+              }
             } else {
               err = Z_ERRNO;
               break;
@@ -86,9 +91,14 @@ extern int ZEXPORT unzRepair(const char* file, const char* fileOut, const char* 
 
         /* Extra field */
         if (extsize > 0) {
-          if (fread(extra, 1, extsize, fpZip) == extsize) {
-            if (fwrite(extra, 1, extsize, fpOut) == extsize) {
-              offset += extsize;
+          if (extsize < sizeof(extra)) {
+            if (fread(extra, 1, extsize, fpZip) == extsize) {
+              if (fwrite(extra, 1, extsize, fpOut) == extsize) {
+                offset += extsize;
+                } else {
+                err = Z_ERRNO;
+                break;
+              }
             } else {
               err = Z_ERRNO;
               break;
