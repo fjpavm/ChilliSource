@@ -188,7 +188,7 @@ typedef struct
 
 #    ifndef NOUNCRYPT
     unsigned long keys[3];     /* keys defining the pseudo-random sequence */
-    const z_crc_t* pcrc_32_tab;
+    const unsigned long* pcrc_32_tab;
 #    endif
 } unz64_s;
 
@@ -204,7 +204,7 @@ typedef struct
 */
 
 
-local int unz64local_getByte OF((
+local int unz64local_getByte POINTLESS_OF((
     const zlib_filefunc64_32_def* pzlib_filefunc_def,
     voidpf filestream,
     int *pi));
@@ -231,7 +231,7 @@ local int unz64local_getByte(const zlib_filefunc64_32_def* pzlib_filefunc_def, v
 /* ===========================================================================
    Reads a long in LSB order from the given gz_stream. Sets
 */
-local int unz64local_getShort OF((
+local int unz64local_getShort POINTLESS_OF((
     const zlib_filefunc64_32_def* pzlib_filefunc_def,
     voidpf filestream,
     uLong *pX));
@@ -258,7 +258,7 @@ local int unz64local_getShort (const zlib_filefunc64_32_def* pzlib_filefunc_def,
     return err;
 }
 
-local int unz64local_getLong OF((
+local int unz64local_getLong POINTLESS_OF((
     const zlib_filefunc64_32_def* pzlib_filefunc_def,
     voidpf filestream,
     uLong *pX));
@@ -293,7 +293,7 @@ local int unz64local_getLong (const zlib_filefunc64_32_def* pzlib_filefunc_def,
     return err;
 }
 
-local int unz64local_getLong64 OF((
+local int unz64local_getLong64 POINTLESS_OF((
     const zlib_filefunc64_32_def* pzlib_filefunc_def,
     voidpf filestream,
     ZPOS64_T *pX));
@@ -409,7 +409,7 @@ extern int ZEXPORT unzStringFileNameCompare (const char*  fileName1,
   Locate the Central directory of a zipfile (at the end, just before
     the global comment)
 */
-local ZPOS64_T unz64local_SearchCentralDir OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream));
+local ZPOS64_T unz64local_SearchCentralDir POINTLESS_OF((const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream));
 local ZPOS64_T unz64local_SearchCentralDir(const zlib_filefunc64_32_def* pzlib_filefunc_def, voidpf filestream)
 {
     unsigned char* buf;
@@ -471,7 +471,7 @@ local ZPOS64_T unz64local_SearchCentralDir(const zlib_filefunc64_32_def* pzlib_f
   Locate the Central directory 64 of a zipfile (at the end, just before
     the global comment)
 */
-local ZPOS64_T unz64local_SearchCentralDir64 OF((
+local ZPOS64_T unz64local_SearchCentralDir64 POINTLESS_OF((
     const zlib_filefunc64_32_def* pzlib_filefunc_def,
     voidpf filestream));
 
@@ -801,9 +801,9 @@ extern unzFile ZEXPORT unzOpen64 (const void *path)
 }
 
 /*
-  Close a ZipFile opened with unzOpen.
-  If there is files inside the .Zip opened with unzOpenCurrentFile (see later),
-    these files MUST be closed with unzCloseCurrentFile before call unzClose.
+  Close a ZipFile opened with unzipOpen.
+  If there is files inside the .Zip opened with unzipOpenCurrentFile (see later),
+    these files MUST be closed with unzipCloseCurrentFile before call unzipClose.
   return UNZ_OK if there is no problem. */
 extern int ZEXPORT unzClose (unzFile file)
 {
@@ -865,7 +865,7 @@ local void unz64local_DosDateToTmuDate (ZPOS64_T ulDosDate, tm_unz* ptm)
 /*
   Get Info about the current file in the zipfile, with internal only info
 */
-local int unz64local_GetCurrentFileInfoInternal OF((unzFile file,
+local int unz64local_GetCurrentFileInfoInternal POINTLESS_OF((unzFile file,
                                                   unz_file_info64 *pfile_info,
                                                   unz_file_info64_internal
                                                   *pfile_info_internal,
@@ -1040,26 +1040,26 @@ local int unz64local_GetCurrentFileInfoInternal (unzFile file,
             {
                                                         uLong uL;
 
-                                                                if(file_info.uncompressed_size == MAXU32)
+                                                                if(file_info.uncompressed_size == (ZPOS64_T)(unsigned long)-1)
                                                                 {
                                                                         if (unz64local_getLong64(&s->z_filefunc, s->filestream,&file_info.uncompressed_size) != UNZ_OK)
                                                                                         err=UNZ_ERRNO;
                                                                 }
 
-                                                                if(file_info.compressed_size == MAXU32)
+                                                                if(file_info.compressed_size == (ZPOS64_T)(unsigned long)-1)
                                                                 {
                                                                         if (unz64local_getLong64(&s->z_filefunc, s->filestream,&file_info.compressed_size) != UNZ_OK)
                                                                                   err=UNZ_ERRNO;
                                                                 }
 
-                                                                if(file_info_internal.offset_curfile == MAXU32)
+                                                                if(file_info_internal.offset_curfile == (ZPOS64_T)(unsigned long)-1)
                                                                 {
                                                                         /* Relative Header offset */
                                                                         if (unz64local_getLong64(&s->z_filefunc, s->filestream,&file_info_internal.offset_curfile) != UNZ_OK)
                                                                                 err=UNZ_ERRNO;
                                                                 }
 
-                                                                if(file_info.disk_num_start == MAXU32)
+                                                                if(file_info.disk_num_start == (unsigned long)-1)
                                                                 {
                                                                         /* Disk Start Number */
                                                                         if (unz64local_getLong(&s->z_filefunc, s->filestream,&uL) != UNZ_OK)
@@ -1145,7 +1145,7 @@ extern int ZEXPORT unzGetCurrentFileInfo (unzFile file,
                                                 szFileName,fileNameBufferSize,
                                                 extraField,extraFieldBufferSize,
                                                 szComment,commentBufferSize);
-    if ((err==UNZ_OK) && (pfile_info != NULL))
+    if (err==UNZ_OK)
     {
         pfile_info->version = file_info64.version;
         pfile_info->version_needed = file_info64.version_needed;
@@ -1223,7 +1223,7 @@ extern int ZEXPORT unzGoToNextFile (unzFile  file)
 
 /*
   Try locate the file szFileName in the zipfile.
-  For the iCaseSensitivity signification, see unzStringFileNameCompare
+  For the iCaseSensitivity signification, see unzipStringFileNameCompare
 
   return value :
   UNZ_OK if the file is found. It becomes the current file.
@@ -1998,7 +1998,7 @@ extern int ZEXPORT unzGetLocalExtrafield (unzFile file, voidp buf, unsigned len)
 }
 
 /*
-  Close the file in zip opened with unzOpenCurrentFile
+  Close the file in zip opened with unzipOpenCurrentFile
   Return UNZ_CRCERROR if all the file was read but the CRC is not good
 */
 extern int ZEXPORT unzCloseCurrentFile (unzFile file)
