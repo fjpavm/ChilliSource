@@ -47,6 +47,7 @@ clean :
 $(OUT_PREFIX_DIR)/libCSBase.a : $(addprefix $(OBJ_PREFIX_DIR)/,$(addsuffix .phony,$(SUB_DIRS))) $(addprefix $(OBJ_PREFIX_DIR)/,$(addsuffix .phony,$(PLATFORM_SUB_DIRS)))
 	$(MKDIR) $(OUT_PREFIX_DIR)
 	$(AR) $(ARFLAGS) $@ $(shell find $(OBJ_PREFIX_DIR)/ -name *.o)
+	strip -Nmain $@
 
 .PHONY : headers
 headers :
