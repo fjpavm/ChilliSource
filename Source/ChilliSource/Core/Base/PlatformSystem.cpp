@@ -40,6 +40,11 @@
 #include <CSBackend/Platform/Windows/Core/Base/PlatformSystem.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Core/Base/PlatformSystem.h>
+#endif
+
+
 namespace ChilliSource
 {
     namespace Core
@@ -55,6 +60,8 @@ namespace ChilliSource
             return PlatformSystemUPtr(new CSBackend::Android::PlatformSystem());
 #elif defined CS_TARGETPLATFORM_WINDOWS
 			return PlatformSystemUPtr(new CSBackend::Windows::PlatformSystem());
+#elif defined CS_TARGETPLATFORM_LINUX
+			return PlatformSystemUPtr(new CSBackend::Linux::PlatformSystem());
 #else
             return nullptr;
 #endif

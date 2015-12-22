@@ -46,6 +46,10 @@
 #include <CSBackend/Platform/Windows/Input/Pointer/PointerSystem.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Input/Pointer/PointerSystem.h>
+#endif
+
 namespace ChilliSource
 {
     namespace Input
@@ -61,6 +65,8 @@ namespace ChilliSource
             return PointerSystemUPtr(new CSBackend::iOS::PointerSystem());
 #elif defined CS_TARGETPLATFORM_WINDOWS
             return PointerSystemUPtr(new CSBackend::Windows::PointerSystem());
+#elif defined CS_TARGETPLATFORM_LINUX
+			return PointerSystemUPtr(new CSBackend::Linux::PointerSystem());
 #else
             return nullptr;
 #endif

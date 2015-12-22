@@ -31,7 +31,7 @@
 
 #include <ChilliSource/Core/Base/Application.h>
 
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_WINDOWS
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_WINDOWS || defined CS_TARGETPLATFORM_LINUX
 #include <CSBackend/Rendering/OpenGL/Base/RenderSystem.h>
 #endif
 
@@ -45,7 +45,7 @@ namespace ChilliSource
         //-------------------------------------------------------
         RenderSystemUPtr RenderSystem::Create(RenderCapabilities* in_renderCapabilities)
         {
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_WINDOWS
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_WINDOWS || defined CS_TARGETPLATFORM_LINUX
             return RenderSystemUPtr(new CSBackend::OpenGL::RenderSystem(in_renderCapabilities));
 #else
             return nullptr;

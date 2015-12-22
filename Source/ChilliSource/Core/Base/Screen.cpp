@@ -40,6 +40,10 @@
 #include <CSBackend/Platform/Windows/Core/Base/Screen.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Core/Base/Screen.h>
+#endif
+
 namespace ChilliSource
 {
 	namespace Core
@@ -55,6 +59,8 @@ namespace ChilliSource
             return ScreenUPtr(new CSBackend::iOS::Screen());
 #elif defined CS_TARGETPLATFORM_WINDOWS
             return ScreenUPtr(new CSBackend::Windows::Screen());
+#elif defined CS_TARGETPLATFORM_LINUX
+			return ScreenUPtr(new CSBackend::Linux::Screen());
 #else
             return nullptr;
 #endif

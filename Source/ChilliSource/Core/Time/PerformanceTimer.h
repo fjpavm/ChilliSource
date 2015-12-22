@@ -51,7 +51,7 @@ namespace ChilliSource
         private:
 			f64 m_lastDurationMicroS;
 
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_LINUX  
 			timeval m_startTime;
 #elif defined CS_TARGETPLATFORM_WINDOWS
 			s64 m_frequency;

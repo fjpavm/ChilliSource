@@ -32,6 +32,10 @@
 #include <CSBackend/Platform/Windows/Input/Keyboard/Keyboard.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Input/Keyboard/Keyboard.h>
+#endif
+
 namespace ChilliSource
 {
     namespace Input
@@ -43,6 +47,8 @@ namespace ChilliSource
         {
 #if defined CS_TARGETPLATFORM_WINDOWS
             return KeyboardUPtr(new CSBackend::Windows::Keyboard());
+#if defined CS_TARGETPLATFORM_LINUX
+			return KeyboardUPtr(new CSBackend::Linux::Keyboard());
 #else
             return nullptr;
 #endif

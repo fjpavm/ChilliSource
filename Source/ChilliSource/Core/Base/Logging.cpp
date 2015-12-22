@@ -32,6 +32,7 @@
 #include <ChilliSource/Core/File/FileSystem.h>
 #include <ChilliSource/Core/File/FileStream.h>
 
+#include <cstdio>
 #include <iostream>
 
 #ifdef CS_TARGETPLATFORM_ANDROID
@@ -173,6 +174,8 @@ namespace ChilliSource
             [message release];
 #elif defined (CS_TARGETPLATFORM_WINDOWS)
 			OutputDebugString(CSBackend::Windows::WindowsStringUtils::UTF8ToUTF16("[Chilli Source] " + in_message + "\n").c_str());
+#else
+			fprintf(stderr,"[Chilli Source] %s\n", in_message.c_str()); // Default to printing to stderr
 #endif
             
 #ifdef CS_ENABLE_LOGTOFILE

@@ -40,6 +40,10 @@
 #include <CSBackend/Platform/Windows/Core/Base/Device.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Core/Base/Device.h>
+#endif
+
 namespace ChilliSource
 {
     namespace Core
@@ -55,6 +59,8 @@ namespace ChilliSource
             return DeviceUPtr(new CSBackend::iOS::Device());
 #elif defined CS_TARGETPLATFORM_WINDOWS
             return DeviceUPtr(new CSBackend::Windows::Device());
+#elif defined CS_TARGETPLATFORM_LINUX
+			return DeviceUPtr(new CSBackend::Linux::Device());
 #else
             return nullptr;
 #endif

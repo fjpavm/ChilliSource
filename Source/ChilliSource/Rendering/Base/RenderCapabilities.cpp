@@ -28,7 +28,7 @@
 
 #include <ChilliSource/Rendering/Base/RenderCapabilities.h>
 
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_WINDOWS
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_WINDOWS || defined CS_TARGETPLATFORM_LINUX
 #include <CSBackend/Rendering/OpenGL/Base/RenderCapabilities.h>
 #endif
 
@@ -42,7 +42,7 @@ namespace ChilliSource
         //-------------------------------------------------------
         RenderCapabilitiesUPtr RenderCapabilities::Create()
         {
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_WINDOWS
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_WINDOWS || defined CS_TARGETPLATFORM_LINUX
             return RenderCapabilitiesUPtr(new CSBackend::OpenGL::RenderCapabilities());
 #else
             return nullptr;

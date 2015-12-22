@@ -40,10 +40,14 @@ typedef char GLchar;
 #include <OpenGLES/ES2/glext.h>
 #include <OpenGLES/EAGL.h>
 #include <OpenGLES/EAGLDrawable.h>
-#elif defined CS_TARGETPLATFORM_WINDOWS
+#elif defined CS_TARGETPLATFORM_WINDOWS 
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include <CSBackend/Platform/Windows/SFML/Base/SFMLWindow.h>
+#elif defined CS_TARGETPLATFORM_LINUX
+#include <GL/glew.h>
+#include <SFML/OpenGL.hpp>
+#include <CSBackend/Platform/Linux/SFML/Base/SFMLWindow.h>
 #else
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -51,7 +55,7 @@ typedef char GLchar;
 
 #if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID
 #define CS_OPENGLVERSION_ES
-#elif defined CS_TARGETPLATFORM_WINDOWS
+#elif defined CS_TARGETPLATFORM_WINDOWS || defined CS_TARGETPLATFORM_LINUX
 #define CS_OPENGLVERSION_STANDARD
 #endif
 

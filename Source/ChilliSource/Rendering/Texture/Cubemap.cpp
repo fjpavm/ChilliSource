@@ -28,7 +28,7 @@
 
 #include <ChilliSource/Rendering/Texture/Cubemap.h>
 
-#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS)
+#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS) || defined(CS_TARGETPLATFORM_LINUX)
 #include <CSBackend/Rendering/OpenGL/Texture/Cubemap.h>
 #endif
 
@@ -42,7 +42,7 @@ namespace ChilliSource
         //--------------------------------------------------------------
         CubemapUPtr Cubemap::Create()
         {
-#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS)
+#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS) || defined(CS_TARGETPLATFORM_LINUX)
             return CubemapUPtr(new CSBackend::OpenGL::Cubemap());
 #else
             return nullptr;

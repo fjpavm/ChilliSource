@@ -28,7 +28,7 @@
 
 #include <ChilliSource/Rendering/Texture/Texture.h>
 
-#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS)
+#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS) || defined(CS_TARGETPLATFORM_LINUX)
 #include <CSBackend/Rendering/OpenGL/Texture/Texture.h>
 #endif
 
@@ -42,7 +42,7 @@ namespace ChilliSource
         //--------------------------------------------------------------
         TextureUPtr Texture::Create()
         {
-#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS)
+#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS) || defined(CS_TARGETPLATFORM_LINUX)
             return TextureUPtr(new CSBackend::OpenGL::Texture());
 #else
             return nullptr;

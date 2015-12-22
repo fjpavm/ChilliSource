@@ -250,13 +250,15 @@ namespace ChilliSource
             m_activeTags[(u32)TagGroup::k_language] = "." + device->GetLanguage();
             
             //---Platforms
-            m_groupTags[(u32)TagGroup::k_platform] = {".ios", ".android", ".windows"};
+			m_groupTags[(u32)TagGroup::k_platform] = { ".ios", ".android", ".windows", ".linux" };
 #if defined CS_TARGETPLATFORM_IOS
             m_activeTags[(u32)TagGroup::k_platform] = ".ios";
 #elif defined CS_TARGETPLATFORM_ANDROID
             m_activeTags[(u32)TagGroup::k_platform] = ".android";
 #elif defined CS_TARGETPLATFORM_WINDOWS
             m_activeTags[(u32)TagGroup::k_platform] = ".windows";
+#elif defined CS_TARGETPLATFORM_LINUX
+			m_activeTags[(u32)TagGroup::k_platform] = ".linux";
 #endif
             
             //---Resolution

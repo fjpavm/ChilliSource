@@ -588,6 +588,13 @@ namespace CSBackend
 				CSBackend::Windows::SFMLWindow::Get()->Display();
 			}
 #endif
+
+#ifdef CS_TARGETPLATFORM_LINUX
+			if (inpActiveRenderTarget == nullptr)
+			{
+				CSBackend::Linux::SFMLWindow::Get()->Display();
+			}
+#endif
             
 #ifdef CS_TARGETPLATFORM_ANDROID
             if (inpActiveRenderTarget != nullptr)

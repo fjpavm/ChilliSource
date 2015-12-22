@@ -40,6 +40,10 @@
 #include <CSBackend/Platform/Windows/Input/DeviceButtons/DeviceButtonSystem.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Input/DeviceButtons/DeviceButtonSystem.h>
+#endif
+
 namespace ChilliSource
 {
 	namespace Input
@@ -55,6 +59,8 @@ namespace ChilliSource
             return DeviceButtonSystemUPtr(new CSBackend::iOS::DeviceButtonSystem());
 #elif defined CS_TARGETPLATFORM_WINDOWS
             return DeviceButtonSystemUPtr(new CSBackend::Windows::DeviceButtonSystem());
+#elif defined CS_TARGETPLATFORM_LINUX
+			return DeviceButtonSystemUPtr(new CSBackend::Linux::DeviceButtonSystem());
 #else
             return nullptr;
 #endif
