@@ -26,7 +26,7 @@
 //  THE SOFTWARE.
 //
 
-#ifdef CS_TARGETPLATFORM_LIINUX
+#ifdef CS_TARGETPLATFORM_LINUX
 
 #include <CSBackend/Platform/Linux/Core/File/FileSystem.h>
 
@@ -36,7 +36,7 @@
 
 #include <cstdio>
 #include <dirent.h>
-#include <iostream>
+#include <fstream>
 #include <stack>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -83,7 +83,7 @@ namespace CSBackend
 			//--------------------------------------------------------------
 			bool DoesFileExist(const std::string& in_filePath)
 			{
-				ifstream f(in_filePath.c_str());
+				std::ifstream f(in_filePath.c_str());
 				if (f.good()) {
 					f.close();
 					return true;
@@ -119,7 +119,7 @@ namespace CSBackend
 			//--------------------------------------------------------------
 			bool CreateDirectory(const std::string& in_directoryPath)
 			{
-				return (mkdir(directoryPath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0);
+				return (mkdir(in_directoryPath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0);
 			}
 			//--------------------------------------------------------------
 			/// @author Francisco Mendonca
@@ -128,25 +128,25 @@ namespace CSBackend
 			///
 			/// @return Whether or not the directory path was successfully created.
 			//--------------------------------------------------------------
-			bool CreateDirectoryPath(const std::string& in_directoryPath)
+			bool CreateDirectoryPath(std::string in_directoryPath)
 			{
 				// remove last forward slash if it exists so forward slash indicates parent dir
-				if(EndsWith(directoryPath, "/"))
+				if(ChilliSource::Core::StringUtils::EndsWith(in_directoryPath, "/"))
 				{
-					directoryPath.pop_back();
+					in_directoryPath.pop_back();
 				}			
-				if (DoesDirectoryExist(directoryPath) == false)
+				if (DoesDirectoryExist(in_directoryPath) == false)
 				{
-					size_t forwardSlashPos = directoryPath.rfind("/");
+					size_t forwardSlashPos = in_directoryPath.rfind("/");
 					if(forwardSlashPos != std::string::npos)
 					{
-						std::string parentDir = directoryPath.substr(0, forwardSlashPos);
+						std::string parentDir = in_directoryPath.substr(0, forwardSlashPos);
 						if(parentDir != "/" && parentDir != "" &&  DoesDirectoryExist(parentDir) == false)
 						{
 							CreateDirectoryPath(parentDir);
 						}
 					}
-					if (CreateDirectory(directoryPath))
+					if (CreateDirectory(in_directoryPath))
 					{
 						CS_LOG_ERROR("File System: Failed to create directory '" + in_directoryPath + "'");
 						return false;
@@ -220,7 +220,7 @@ namespace CSBackend
 				}
 				char buffer[BUFSIZ];
 				size_t size;
-				while((size = fread(buffer, 1, BUFSIZ, fpSource) != 0)
+				while((size = fread(buffer, 1, BUFSIZ, fpSource)) != 0)
 				{
 					size_t sizeWritten;
 					if(fwrite(buffer , 1, size, fpDest) != size)
@@ -263,7 +263,7 @@ namespace CSBackend
 				{ 
 					if(std::string(entry->d_name) != "." && std::string(entry->d_name) != "..")
 					{
-						std::string subPath = CSCore::StringUtils::StandardiseDirectoryPat(in_directoryPath) + entry->d_name;
+						std::string subPath = CSCore::StringUtils::StandardiseDirectoryPath(in_directoryPath) + entry->d_name;
 						if(CSBackend::Linux::DoesDirectoryExist(subPath))
 						{
 							std::string directoryName = entry->d_name;
@@ -291,6 +291,7 @@ namespace CSBackend
 				return true;
 			}
 		}
+
 		CS_DEFINE_NAMEDTYPE(FileSystem);
 		//--------------------------------------------------------------
 		//--------------------------------------------------------------
@@ -364,7 +365,7 @@ namespace CSBackend
             
 			std::string destFilePath = GetAbsolutePathToFile(in_destinationStorageLocation, in_destinationFilePath);
             		//try and copy the files
-			if (CopyFile(sourceFilePath, destFilePath) == false)
+			if (CSBackend::Linux::CopyFile(sourceFilePath, destFilePath) == false)
 			{
 				CS_LOG_ERROR("File System: Failed to copy file '" + in_sourceFilePath + "'");
 				return false;

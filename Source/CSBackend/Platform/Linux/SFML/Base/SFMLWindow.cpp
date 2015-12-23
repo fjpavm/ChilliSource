@@ -36,6 +36,7 @@
 #include <ChilliSource/Core/String/StringParser.h>
 #include <ChilliSource/Rendering/Base/SurfaceFormat.h>
 
+#include <GL/glew.h>
 #include <json/json.h>
 
 #include <fstream>
@@ -414,10 +415,17 @@ namespace CSBackend
 
 			CSCore::Integer2 windowSize(s32(f32(sf::VideoMode::getDesktopMode().width) * 0.8f), s32(f32(sf::VideoMode::getDesktopMode().height) * 0.8f));
 			m_window.create(sf::VideoMode((u32)windowSize.x, (u32)windowSize.y, sf::VideoMode::getDesktopMode().bitsPerPixel), "", sf::Style::Default, m_contextSettings);
-
+		
 			if (m_window.isOpen() == false)
 			{
 				OutputDebugString("[Chilli Source] sfml sf::Window::create Error On Init: couldn't create window \n");
+				exit(1);
+			}
+
+			GLenum glewError = glewInit();
+			if (GLEW_OK != glewError)
+			{
+				OutputDebugString("[Chilli Source] Glew Error On Init : " + std::string((const char*)glewGetErrorString(glewError)));
 				exit(1);
 			}
 

@@ -47,7 +47,7 @@ namespace ChilliSource
         {
 #if defined CS_TARGETPLATFORM_WINDOWS
             return KeyboardUPtr(new CSBackend::Windows::Keyboard());
-#if defined CS_TARGETPLATFORM_LINUX
+#elif defined CS_TARGETPLATFORM_LINUX
 			return KeyboardUPtr(new CSBackend::Linux::Keyboard());
 #else
             return nullptr;
@@ -56,3 +56,4 @@ namespace ChilliSource
         }
     }
 }
+

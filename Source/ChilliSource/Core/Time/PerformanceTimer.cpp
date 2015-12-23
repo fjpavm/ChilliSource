@@ -32,6 +32,10 @@
 #include <windows.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <sys/time.h>
+#endif
+
 namespace ChilliSource
 {
     namespace Core
