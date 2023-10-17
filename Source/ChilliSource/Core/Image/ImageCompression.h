@@ -1,6 +1,6 @@
 //
 //  ImageCompression.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 15/04/2014.
 //
 //  The MIT License (MIT)
@@ -31,22 +31,19 @@
 
 namespace ChilliSource
 {
-	namespace Core
-	{
-        //-----------------------------------------------------
-        /// Holds the supported image compression that can be
-        /// converted to textures.
-        ///
-        /// @author S Downie
-        //-----------------------------------------------------
-		enum class ImageCompression
-		{
-            k_none,
-            k_PVR4Bpp,
-            k_PVR2Bpp,
-            k_ETC1
-		};
-	}
+    //-----------------------------------------------------
+    /// Holds the supported image compression that can be
+    /// converted to textures.
+    ///
+    /// @author S Downie
+    //-----------------------------------------------------
+    enum class ImageCompression
+    {
+        k_none,
+        k_PVR4Bpp,
+        k_PVR2Bpp,
+        k_ETC1
+    };
 }
 
 #endif

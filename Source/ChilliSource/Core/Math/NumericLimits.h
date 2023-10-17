@@ -1,6 +1,6 @@
 //
 //  NumericLimits.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 10/03/2015.
 //
 //  The MIT License (MIT)
@@ -35,45 +35,42 @@
 
 namespace ChilliSource
 {
-	namespace Core
-	{
-		//------------------------------------------------------------------------------
-		/// A series of functions for acquiring the highest and lowest values for a
-		/// specific type. Typically std::numeric_limits should be used for this purpose.
-		/// However, the Visual C++ compiler cannot handle the use of std::numeric_limits
-		/// in default function / method parameters. This can be used instead.
-		///
-		/// @author Ian Copland
-		//------------------------------------------------------------------------------
-		namespace NumericLimits
-		{
-			//------------------------------------------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @param The lowest possible value for the requested type.
-			//------------------------------------------------------------------------------
-			template <typename TType> TType Lowest();
-			//------------------------------------------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @param The highest possible value for the requested type.
-			//------------------------------------------------------------------------------
-			template <typename TType> TType Highest();
+    //------------------------------------------------------------------------------
+    /// A series of functions for acquiring the highest and lowest values for a
+    /// specific type. Typically std::numeric_limits should be used for this purpose.
+    /// However, the Visual C++ compiler cannot handle the use of std::numeric_limits
+    /// in default function / method parameters. This can be used instead.
+    ///
+    /// @author Ian Copland
+    //------------------------------------------------------------------------------
+    namespace NumericLimits
+    {
+        //------------------------------------------------------------------------------
+        /// @author Ian Copland
+        ///
+        /// @param The lowest possible value for the requested type.
+        //------------------------------------------------------------------------------
+        template <typename TType> TType Lowest();
+        //------------------------------------------------------------------------------
+        /// @author Ian Copland
+        ///
+        /// @param The highest possible value for the requested type.
+        //------------------------------------------------------------------------------
+        template <typename TType> TType Highest();
 
-			//------------------------------------------------------------------------------.
-			//------------------------------------------------------------------------------
-			template <typename TType> TType Lowest()
-			{
-				return std::numeric_limits<TType>::lowest();
-			}
-			//------------------------------------------------------------------------------
-			//------------------------------------------------------------------------------
-			template <typename TType> TType Highest()
-			{
-				return std::numeric_limits<TType>::max();
-			}
-		}
-	}
+        //------------------------------------------------------------------------------.
+        //------------------------------------------------------------------------------
+        template <typename TType> TType Lowest()
+        {
+            return std::numeric_limits<TType>::lowest();
+        }
+        //------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------
+        template <typename TType> TType Highest()
+        {
+            return std::numeric_limits<TType>::max();
+        }
+    }
 }
 
 #endif

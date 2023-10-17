@@ -1,6 +1,6 @@
 //
 //  PerspectiveCameraComponent.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 23/06/2014.
 //
 //  The MIT License (MIT)
@@ -33,96 +33,95 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
+    //----------------------------------------------------------
+    /// An perspective camera. Objects scale with
+    /// distance from the camera.
+    ///
+    /// @author S Downie
+    //----------------------------------------------------------
+    class PerspectiveCameraComponent final : public CameraComponent
+    {
+    public:
+        CS_DECLARE_NAMEDTYPE(PerspectiveCameraComponent);
+        
+        /// @param aspectRatio
+        ///     The aspect ratio of the camera viewport (usually screenWidth/screenHeight)
+        /// @param fov
+        ///     Full vertical field of view in radians
+        /// @param nearClip
+        ///     Distance to the near clip plane in view space
+        /// @param farClip
+        ///     Distance to the far clip plane in view space
+        /// @param resizePolicy
+        ///     How the viewport responds to the screen resizing (usually scaleWithScreen)
+        ///
+        PerspectiveCameraComponent(f32 aspectRatio, f32 fov, f32 nearClip, f32 farClip, ViewportResizePolicy resizePolicy = ViewportResizePolicy::k_scaleWithScreen);
+        
         //----------------------------------------------------------
-        /// An perspective camera. Objects scale with
-        /// distance from the camera.
+        /// Is A
+        ///
+        /// Returns if it is of the type given
+        /// @param Comparison Type
+        /// @return Whether the class matches the comparison type
+        //----------------------------------------------------------
+        bool IsA(InterfaceIDType in_interfaceId) const override;
+        //------------------------------------------------------
+        /// @author S Downie
+        ///
+        /// @param Full vertical viewing angle in radians
+        //------------------------------------------------------
+        void SetFieldOfView(f32 in_fov);
+        //------------------------------------------------------
+        /// @author S Downie
+        ///
+        /// @param Aspect Ratio (Viewport width/viewport height)
+        //------------------------------------------------------
+        void SetAspectRatio(f32 in_aspectRatio);
+        //------------------------------------------------------
+        /// @author Ian Copland
+        ///
+        /// @return The full vertical viewing angle in radians.
+        //------------------------------------------------------
+        f32 GetFieldOfView() const;
+        //------------------------------------------------------
+        /// @author Ian Copland
+        ///
+        /// @return Aspect Ratio (Viewport width/viewport height)
+        //------------------------------------------------------
+        f32 GetAspectRatio() const;
+        
+    private:
+        //------------------------------------------------------
+        /// Calculate the perspective projection matrix
+        /// based on the current FOV, aspect ratio and near and
+        /// far planes.
         ///
         /// @author S Downie
-        //----------------------------------------------------------
-		class PerspectiveCameraComponent final : public CameraComponent
-		{
-		public:
-			CS_DECLARE_NAMEDTYPE(PerspectiveCameraComponent);
-            //----------------------------------------------------------
-            /// Constructor
-            ///
-            /// @author S Downie
-            ///
-            /// @param Aspect ratio
-            /// @param Full vertical field of view in radians
-            /// @param Resize policy
-            /// @param Near plane
-            /// @param Far plane
-            //----------------------------------------------------------
-			PerspectiveCameraComponent(f32 in_aspectRatio, f32 in_fov, ViewportResizePolicy in_resizePolicy, f32 in_nearClip, f32 in_farClip);
-			//----------------------------------------------------------
-			/// Is A
-			///
-			/// Returns if it is of the type given
-			/// @param Comparison Type
-			/// @return Whether the class matches the comparison type
-			//----------------------------------------------------------
-			bool IsA(Core::InterfaceIDType in_interfaceId) const override;
-			//------------------------------------------------------
-			/// @author S Downie
-			///
-			/// @param Full vertical viewing angle in radians
-			//------------------------------------------------------
-			void SetFieldOfView(f32 in_fov);
-			//------------------------------------------------------
-			/// @author S Downie
-			///
-			/// @param Aspect Ratio (Viewport width/viewport height)
-			//------------------------------------------------------
-			void SetAspectRatio(f32 in_aspectRatio);
-			//------------------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @return The full vertical viewing angle in radians.
-			//------------------------------------------------------
-			f32 GetFieldOfView() const;
-			//------------------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @return Aspect Ratio (Viewport width/viewport height)
-			//------------------------------------------------------
-			f32 GetAspectRatio() const;
-            
-		private:
-			//------------------------------------------------------
-			/// Calculate the perspective projection matrix
-            /// based on the current FOV, aspect ratio and near and
-            /// far planes.
-			///
-			/// @author S Downie
-            ///
-            /// @return Projection matrix
-			//------------------------------------------------------
-            Core::Matrix4 CalculateProjectionMatrix() override;
-            //------------------------------------------------------
-            /// @author S Downie
-            ///
-            /// Recalculate frustum planes
-            //------------------------------------------------------
-            void UpdateFrustum() override;
-            //------------------------------------------------------
-			/// Called when the resolution changes and resize with
-			/// screen is enabled.
-            ///
-			/// @author I Copland
-			//------------------------------------------------------
-			void OnResolutionChanged(const Core::Vector2& in_resolution);
+        ///
+        /// @return Projection matrix
+        //------------------------------------------------------
+        Matrix4 CalculateProjectionMatrix() override;
+        //------------------------------------------------------
+        /// @author S Downie
+        ///
+        /// Recalculate frustum planes
+        //------------------------------------------------------
+        void UpdateFrustum() override;
+        //------------------------------------------------------
+        /// Called when the resolution changes and resize with
+        /// screen is enabled.
+        ///
+        /// @author I Copland
+        //------------------------------------------------------
+        void OnResolutionChanged(const Vector2& in_resolution);
 
-		private:
-			
-			f32 m_fov;
-            f32 m_aspectRatio;
-            ViewportResizePolicy m_resizePolicy;
-            Core::EventConnectionUPtr m_screenResizedConnection;
-		};
-	}
+    private:
+        
+        f32 m_fov;
+        f32 m_aspectRatio;
+        ViewportResizePolicy m_resizePolicy;
+        EventConnectionUPtr m_screenResizedConnection;
+    };
 }
 
 #endif

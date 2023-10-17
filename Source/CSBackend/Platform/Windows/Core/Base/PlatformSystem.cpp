@@ -1,6 +1,6 @@
 //
 //  PlatformSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 24/11/2010.
 //
 //  The MIT License (MIT)
@@ -30,20 +30,20 @@
 
 #include <CSBackend/Platform/Windows/Core/Base/PlatformSystem.h>
 #include <CSBackend/Platform/Windows/SFML/Base/SFMLWindow.h>
-#include <CSBackend/Rendering/OpenGL/Shader/GLSLShaderProvider.h>
-#include <CSBackend/Rendering/OpenGL/Texture/TextureUnitSystem.h>
 #include <ChilliSource/Core/Base/Application.h>
+#include <ChilliSource/Core/Threading/TaskScheduler.h>
+#include <ChilliSource/UI/Base/CursorSystem.h>
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-namespace CSBackend 
+namespace CSBackend
 {
 	namespace Windows
 	{
 		namespace
 		{
-			//This is global as LARGE_INTEGER is defined in windows.h. Including windows.h in 
+			//This is global as LARGE_INTEGER is defined in windows.h. Including windows.h in
 			//PlatformSystem.h will cause compiler errors in FileSystem.h
 			LARGE_INTEGER g_frequency;
 		}
@@ -51,54 +51,48 @@ namespace CSBackend
 		CS_DEFINE_NAMEDTYPE(PlatformSystem);
 		//-----------------------------------------
 		//-----------------------------------------
-		PlatformSystem::PlatformSystem() 
+		PlatformSystem::PlatformSystem()
 		{
 			QueryPerformanceFrequency(&g_frequency);
 		}
 		//--------------------------------------------------
 		//--------------------------------------------------
-		bool PlatformSystem::IsA(CSCore::InterfaceIDType in_interfaceId) const
+		bool PlatformSystem::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
 		{
-			return (CSCore::PlatformSystem::InterfaceID == in_interfaceId || PlatformSystem::InterfaceID == in_interfaceId);
+			return (ChilliSource::PlatformSystem::InterfaceID == in_interfaceId || PlatformSystem::InterfaceID == in_interfaceId);
 		}
 		//-------------------------------------------------
 		//-------------------------------------------------
-		void PlatformSystem::CreateDefaultSystems(CSCore::Application* in_application)
+		void PlatformSystem::CreateDefaultSystems(ChilliSource::Application* in_application)
 		{
-			in_application->CreateSystem<CSBackend::OpenGL::GLSLShaderProvider>();
-			in_application->CreateSystem<CSBackend::OpenGL::TextureUnitSystem>();
+			in_application->CreateSystem<ChilliSource::CursorSystem>();
 		}
 		//-------------------------------------------------
 		//-------------------------------------------------
 		void PlatformSystem::SetPreferredFPS(u32 in_fps)
 		{
-			SFMLWindow::Get()->SetPreferredFPS(in_fps);
+			ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& in_taskContext)
+			{
+				SFMLWindow::Get()->SetPreferredFPS(in_fps);
+			});
 		}
 		//---------------------------------------------------
 		//---------------------------------------------------
 		void PlatformSystem::SetVSyncEnabled(bool in_enabled)
 		{
-			SFMLWindow::Get()->SetVSyncEnabled(in_enabled);
+			ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& in_taskContext)
+			{
+				SFMLWindow::Get()->SetVSyncEnabled(in_enabled);
+			});
 		}
 		//--------------------------------------------
 		//--------------------------------------------
 		void PlatformSystem::Quit()
 		{
-			SFMLWindow::Get()->Quit();
-		}
-		//-------------------------------------------------
-		//-------------------------------------------------
-		std::string PlatformSystem::GetAppVersion() const
-		{
-			return ""; 
-		}
-		//--------------------------------------------------
-		//--------------------------------------------------
-		u64 PlatformSystem::GetSystemTimeMS() const
-		{
-			LARGE_INTEGER currentTime;
-            QueryPerformanceCounter(&currentTime);
-			return (u64)((currentTime.QuadPart) * 1000.0 / g_frequency.QuadPart);
+			ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& in_taskContext)
+			{
+				SFMLWindow::Get()->ScheduleQuit();
+			});
 		}
 	}
 }

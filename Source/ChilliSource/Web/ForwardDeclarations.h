@@ -1,6 +1,6 @@
 //
 //  ForwardDeclarations.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland 25/02/2014.
 //
 //  The MIT License (MIT)
@@ -35,13 +35,10 @@
 
 namespace ChilliSource
 {
-    namespace Web
-    {
-        //---------------------------------------------------
-        /// Base
-        //---------------------------------------------------
-        CS_FORWARDDECLARE_CLASS(WebView);
-    }
+    //---------------------------------------------------
+    /// Base
+    //---------------------------------------------------
+    CS_FORWARDDECLARE_CLASS(WebView);
 }
 
 #endif

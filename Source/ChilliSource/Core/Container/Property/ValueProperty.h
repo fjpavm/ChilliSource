@@ -1,6 +1,6 @@
 //
 //  ValueProperty.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 03/12/2014.
 //
 //  The MIT License (MIT)
@@ -34,44 +34,41 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    //------------------------------------------------------------------------
+    /// A property that contains an instance of the given type. This is exposed
+    /// via the Get() and Set() methods.
+    ///
+    /// @author Ian Copland
+    //------------------------------------------------------------------------
+    template <typename TType> class ValueProperty final : public Property<TType>
     {
-        //------------------------------------------------------------------------
-        /// A property that contains an instance of the given type. This is exposed
-        /// via the Get() and Set() methods.
+    public:
+        //-----------------------------------------------------------------
+        /// Constructor.
         ///
         /// @author Ian Copland
-        //------------------------------------------------------------------------
-        template <typename TType> class ValueProperty final : public Property<TType>
-        {
-        public:
-            //-----------------------------------------------------------------
-            /// Constructor.
-            ///
-            /// @author Ian Copland
-            ///
-            /// @param The type of the property.
-            //-----------------------------------------------------------------
-            ValueProperty(const PropertyType<TType>* in_type);
-            //-----------------------------------------------------------------
-            /// Directly sets the underlying property value.
-            ///
-            /// @author Ian Copland
-            ///
-            /// @param The new value for the property.
-            //-----------------------------------------------------------------
-            void Set(const TType& in_value) override;
-            //-----------------------------------------------------------------
-            /// @author Ian Copland
-            ///
-            /// @param The value of the underlying property.
-            //-----------------------------------------------------------------
-            TType Get() const override;
-            
-        private:
-            TType m_value;
-        };
-    }
+        ///
+        /// @param The type of the property.
+        //-----------------------------------------------------------------
+        ValueProperty(const PropertyType<TType>* in_type);
+        //-----------------------------------------------------------------
+        /// Directly sets the underlying property value.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The new value for the property.
+        //-----------------------------------------------------------------
+        void Set(const TType& in_value) override;
+        //-----------------------------------------------------------------
+        /// @author Ian Copland
+        ///
+        /// @param The value of the underlying property.
+        //-----------------------------------------------------------------
+        TType Get() const override;
+        
+    private:
+        TType m_value;
+    };
 }
 
 //------------------------------------------------------------------------
@@ -83,26 +80,23 @@ namespace ChilliSource
 
 namespace ChilliSource
 {
-    namespace Core
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    template <typename TType> ValueProperty<TType>::ValueProperty(const PropertyType<TType>* in_type)
+        : Property<TType>(in_type), m_value(in_type->GetDefaultValue())
     {
-        //-----------------------------------------------------------------
-        //-----------------------------------------------------------------
-        template <typename TType> ValueProperty<TType>::ValueProperty(const PropertyType<TType>* in_type)
-            : Property<TType>(in_type), m_value(in_type->GetDefaultValue())
-        {
-        }
-        //-----------------------------------------------------------------
-        //-----------------------------------------------------------------
-        template <typename TType> void ValueProperty<TType>::Set(const TType& in_value)
-        {
-            m_value = in_value;
-        }
-        //-----------------------------------------------------------------
-        //-----------------------------------------------------------------
-        template <typename TType> TType ValueProperty<TType>::Get() const
-        {
-            return m_value;
-        }
+    }
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    template <typename TType> void ValueProperty<TType>::Set(const TType& in_value)
+    {
+        m_value = in_value;
+    }
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    template <typename TType> TType ValueProperty<TType>::Get() const
+    {
+        return m_value;
     }
 }
 

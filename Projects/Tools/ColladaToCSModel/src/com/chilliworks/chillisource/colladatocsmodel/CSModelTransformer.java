@@ -1,6 +1,6 @@
 /**
  * CSModelTransformer.java
- * Chilli Source
+ * ChilliSource
  * Created by Ian Copland on 15/01/2013.
  * 
  * The MIT License (MIT)
@@ -89,6 +89,8 @@ public final class CSModelTransformer
 			{
 				vert.mvPosition = new Vector3(vert.mvPosition.getX(), -vert.mvPosition.getY(), vert.mvPosition.getZ());
 				vert.mvNormal = new Vector3(vert.mvNormal.getX(), -vert.mvNormal.getY(), vert.mvNormal.getZ());
+				vert.mvTangent = new Vector3(vert.mvTangent.getX(), -vert.mvTangent.getY(), vert.mvTangent.getZ());
+				vert.mvBitangent = new Vector3(vert.mvBitangent.getX(), -vert.mvBitangent.getY(), vert.mvBitangent.getZ());
 			}
 			
 			//Mirror inverse bind matrices
@@ -122,7 +124,7 @@ public final class CSModelTransformer
 	}
 	/**
 	 * Swaps y and z for all data in the model. This is needed to convert 
-	 * from 3DS Max space to chilli source space.
+	 * from 3DS Max space to ChilliSource space.
 	 * 
 	 * @author Ian Copland
 	 * 
@@ -146,6 +148,8 @@ public final class CSModelTransformer
 			{
 				vert.mvPosition = new Vector3(vert.mvPosition.getX(), vert.mvPosition.getZ(), vert.mvPosition.getY());
 				vert.mvNormal = new Vector3(vert.mvNormal.getX(), vert.mvNormal.getZ(), vert.mvNormal.getY());
+				vert.mvTangent = new Vector3(vert.mvTangent.getX(), vert.mvTangent.getZ(), vert.mvTangent.getY());
+				vert.mvBitangent = new Vector3(vert.mvBitangent.getX(), vert.mvBitangent.getZ(), vert.mvBitangent.getY());
 			}
 			
 			//convert inverse bind matrices
@@ -160,7 +164,7 @@ public final class CSModelTransformer
 	}
 	/**
 	 * Inverts the y component of the texture coordinates. This is because 3DS Max 
-	 * uses the opposite coordinate system to what chilli source uses.
+	 * uses the opposite coordinate system to what ChilliSource uses.
 	 * 
 	 * @author Ian Copland
 	 * 

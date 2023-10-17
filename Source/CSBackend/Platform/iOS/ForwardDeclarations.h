@@ -1,6 +1,6 @@
 //
 //  ForwardDeclarations.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 04/03/2014.
 //
 //  The MIT License (MIT)
@@ -48,13 +48,13 @@ namespace CSBackend
         CS_FORWARDDECLARE_CLASS(PNGImageProvider);
         CS_FORWARDDECLARE_CLASS(LocalNotificationSystem);
         CS_FORWARDDECLARE_CLASS(RemoteNotificationSystem);
-        CS_FORWARDDECLARE_CLASS(Device);
         CS_FORWARDDECLARE_CLASS(Screen);
         //------------------------------------------------------
 		/// Input
 		//------------------------------------------------------
         CS_FORWARDDECLARE_CLASS(Accelerometer);
         CS_FORWARDDECLARE_CLASS(DeviceButtonSystem);
+        CS_FORWARDDECLARE_CLASS(Gyroscope);
         CS_FORWARDDECLARE_CLASS(PointerSystem);
         CS_FORWARDDECLARE_CLASS(TextEntry);
         //------------------------------------------------------
@@ -68,8 +68,6 @@ namespace CSBackend
 		/// Social
 		//------------------------------------------------------
         CS_FORWARDDECLARE_CLASS(EmailComposer);
-        CS_FORWARDDECLARE_CLASS(FacebookAuthenticationSystem);
-        CS_FORWARDDECLARE_CLASS(FacebookPostSystem);
         //------------------------------------------------------
 		/// Video
 		//------------------------------------------------------

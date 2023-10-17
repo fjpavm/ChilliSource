@@ -1,6 +1,6 @@
 //
 //  CSAppDelegate.mm
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 08/02/2011.
 //
 //  The MIT License (MIT)
@@ -31,9 +31,12 @@
 #import <CSBackend/Platform/iOS/Core/Base/CSAppDelegate.h>
 
 #import <CSBackend/Platform/iOS/Core/Base/CSGLViewController.h>
+#import <CSBackend/Platform/iOS/Core/Base/SystemInfoFactory.h>
 #import <CSBackend/Platform/iOS/Core/Notification/LocalNotificationSystem.h>
 #import <CSBackend/Platform/iOS/Core/Notification/RemoteNotificationSystem.h>
 #import <ChilliSource/Core/Base/Application.h>
+#import <ChilliSource/Core/Base/LifecycleManager.h>
+#import <ChilliSource/Core/Threading/TaskScheduler.h>
 
 CSAppDelegate* singletonInstance = nil;
 
@@ -51,13 +54,13 @@ CSAppDelegate* singletonInstance = nil;
 //--------------------------------------------------------------------
 - (void) addAppDelegateListener:(id<UIApplicationDelegate>)in_delegate
 {
-    [subdelegates addObject:in_delegate];
+    [m_subDelegates addObject:in_delegate];
 }
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 - (void) removeAppDelegateListener:(id<UIApplicationDelegate>)in_delegate
 {
-    [subdelegates removeObject:in_delegate];
+    [m_subDelegates removeObject:in_delegate];
 }
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
@@ -83,20 +86,20 @@ CSAppDelegate* singletonInstance = nil;
 {
     singletonInstance = self;
     
-    subdelegates = [[NSMutableArray alloc] init];
+    m_subDelegates = [[NSMutableArray alloc] init];
     
-    csApplication = CreateApplication();
-    
-    window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    m_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	viewControllerInternal = [[CSGLViewController alloc] initWithDelegate:self];
-    [window setRootViewController: viewControllerInternal];
-    [window makeKeyAndVisible];
+    [m_window setRootViewController: viewControllerInternal];
+    [m_window makeKeyAndVisible];
     
-    csApplication->Init();
+    m_application = ChilliSource::ApplicationUPtr(CreateApplication(CSBackend::iOS::SystemInfoFactory::CreateSystemInfo()));
     
-    isFirstActive = YES;
+    m_lifecycleManager = ChilliSource::LifecycleManagerUPtr(new ChilliSource::LifecycleManager(m_application.get()));
     
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    m_isFirstActive = YES;
+    
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(application:didFinishLaunchingWithOptions:)])
         {
@@ -120,7 +123,7 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (BOOL) application:(UIApplication*)in_application openURL:(NSURL*)in_url sourceApplication:(NSString*)in_sourceApplication annotation:(id)in_annotation
 {
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(application:openURL:sourceApplication:annotation:)])
         {
@@ -146,7 +149,7 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (void)applicationWillResignActive:(UIApplication*)in_application
 {
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(applicationWillResignActive:)])
         {
@@ -158,7 +161,7 @@ CSAppDelegate* singletonInstance = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^
     {
-        csApplication->Background();
+        m_lifecycleManager->Background();
         [[UIApplication sharedApplication] endBackgroundTask:bgTask];
     });
 }
@@ -172,7 +175,7 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (void)applicationDidEnterBackground:(UIApplication*)in_application
 {
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(applicationDidEnterBackground:)])
         {
@@ -184,8 +187,8 @@ CSAppDelegate* singletonInstance = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^
     {
-        isActive = NO;
-        csApplication->Suspend();
+        m_isActive = NO;
+        m_lifecycleManager->Suspend();
         [[UIApplication sharedApplication] endBackgroundTask:bgTask];
     });
 }
@@ -206,10 +209,10 @@ CSAppDelegate* singletonInstance = nil;
         [EAGLContext setCurrentContext:view.context];
     }
     
-    csApplication->Resume();
-    isActive = YES;
+    m_lifecycleManager->Resume();
+    m_isActive = YES;
     
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(applicationWillEnterForeground:)])
         {
@@ -227,9 +230,9 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (void)applicationDidBecomeActive:(UIApplication*)in_application
 {
-    if(isFirstActive == YES)
+    if(m_isFirstActive == YES)
     {
-        isFirstActive = NO;
+        m_isFirstActive = NO;
         
         //Sometimes iOS steals the context and doesn't return it.
         GLKView* view = (GLKView*)viewControllerInternal.view;
@@ -238,13 +241,13 @@ CSAppDelegate* singletonInstance = nil;
             [EAGLContext setCurrentContext:view.context];
         }
         
-        csApplication->Resume();
-        isActive = YES;
+        m_lifecycleManager->Resume();
+        m_isActive = YES;
     }
     
-    csApplication->Foreground();
+    m_lifecycleManager->Foreground();
     
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(applicationDidBecomeActive:)])
         {
@@ -264,7 +267,7 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (void)applicationWillTerminate:(UIApplication*)in_application
 {
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(applicationWillTerminate:)])
         {
@@ -276,28 +279,26 @@ CSAppDelegate* singletonInstance = nil;
         
     dispatch_async(dispatch_get_main_queue(), ^
     {
-        isActive = NO;
-        csApplication->Suspend();
+        m_isActive = NO;
+        m_lifecycleManager->Suspend();
         [[UIApplication sharedApplication] endBackgroundTask:bgTask];
     });
 }
 
 #pragma mark -
 #pragma mark GL Lifecycle
-//-------------------------------------------------------------
-/// The main update loop for the application
+
+/// Update the main game lopp
 ///
-/// @author S Downie
-///
-/// @param GL view controller
-//-------------------------------------------------------------
-- (void)glkViewControllerUpdate:(GLKViewController*)controller;
+- (void)glkViewControllerUpdate:(GLKViewController*)controller
 {
-    if (isActive == YES)
+    if (m_isActive == YES)
     {
-        CSCore::Application::Get()->Update(controller.timeSinceLastUpdate, controller.timeSinceFirstResume);
+        m_lifecycleManager->SystemUpdate();
     }
 }
+
+
 //-------------------------------------------------------------
 /// The main render loop for the application
 ///
@@ -308,15 +309,9 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (void)glkView:(GLKView*)view drawInRect:(CGRect)rect
 {
-    if (isActive == YES)
+    if (m_isActive == YES)
     {
-        //Sometimes iOS steals the context and doesn't return it.
-        if([EAGLContext currentContext] != view.context)
-        {
-            [EAGLContext setCurrentContext:view.context];
-        }
-        
-        CSCore::Application::Get()->Render();
+        m_lifecycleManager->Render();
     }
 }
 
@@ -333,15 +328,15 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (void)applicationDidReceiveMemoryWarning:(UIApplication*)in_application
 {
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(applicationDidReceiveMemoryWarning:)])
         {
             [delegate applicationDidReceiveMemoryWarning:in_application];
         }
     }
-    
-    csApplication->ApplicationMemoryWarning();
+
+    m_lifecycleManager->MemoryWarning();
 }
 
 #pragma mark -
@@ -358,7 +353,7 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (void)application:(UIApplication*)in_application didReceiveLocalNotification:(UILocalNotification*)in_notification
 {
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(application:didReceiveLocalNotification:)])
         {
@@ -383,7 +378,7 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (void)application:(UIApplication*)in_application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)in_deviceToken
 {
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(application:didRegisterForRemoteNotificationsWithDeviceToken:)])
         {
@@ -391,7 +386,7 @@ CSAppDelegate* singletonInstance = nil;
         }
     }
     
-	CSBackend::iOS::RemoteNotificationSystem* remoteNotificationSystem = CSCore::Application::Get()->GetSystem<CSBackend::iOS::RemoteNotificationSystem>();
+	CSBackend::iOS::RemoteNotificationSystem* remoteNotificationSystem = ChilliSource::Application::Get()->GetSystem<CSBackend::iOS::RemoteNotificationSystem>();
     if(nullptr != remoteNotificationSystem)
     {
         CS_LOG_WARNING("Received new remote notification token");
@@ -415,7 +410,7 @@ CSAppDelegate* singletonInstance = nil;
 {
 	NSLog(@"Failed to receive remote notification token %@", [in_error localizedDescription]);
     
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(application:didFailToRegisterForRemoteNotificationsWithError:)])
         {
@@ -435,7 +430,7 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (void)application:(UIApplication*)in_application didReceiveRemoteNotification:(NSDictionary*)in_userInfo
 {
-	CSBackend::iOS::RemoteNotificationSystem* remoteNotificationSystem = CSCore::Application::Get()->GetSystem<CSBackend::iOS::RemoteNotificationSystem>();
+	CSBackend::iOS::RemoteNotificationSystem* remoteNotificationSystem = ChilliSource::Application::Get()->GetSystem<CSBackend::iOS::RemoteNotificationSystem>();
     if(nullptr != remoteNotificationSystem)
     {
         CS_LOG_VERBOSE("Received remote notification");
@@ -446,7 +441,7 @@ CSAppDelegate* singletonInstance = nil;
         CS_LOG_ERROR("Error: Unable to get remote notification system. Has the system been created?");
     }
     
-    for(id<UIApplicationDelegate> delegate in subdelegates)
+    for(id<UIApplicationDelegate> delegate in m_subDelegates)
     {
         if([delegate respondsToSelector:@selector(application:didReceiveRemoteNotification:)])
         {
@@ -461,12 +456,12 @@ CSAppDelegate* singletonInstance = nil;
 //-------------------------------------------------------------
 - (void)dealloc
 {
-    csApplication->Destroy();
-	CS_SAFEDELETE(csApplication);
+    m_lifecycleManager.reset();
+    m_application.reset();
     
-	[viewControllerInternal release];
-    [window release];
-    [subdelegates release];
+	[m_viewControllerInternal release];
+    [m_window release];
+    [m_subDelegates release];
     
     singletonInstance = nil;
     

@@ -1,6 +1,6 @@
 //
 //  PlatformSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 24/02/2014.
 //
 //  The MIT License (MIT)
@@ -40,6 +40,10 @@
 #include <CSBackend/Platform/Windows/Core/Base/PlatformSystem.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_RPI
+#include <CSBackend/Platform/RPi/Core/Base/PlatformSystem.h>
+#endif
+
 #ifdef CS_TARGETPLATFORM_LINUX
 #include <CSBackend/Platform/Linux/Core/Base/PlatformSystem.h>
 #endif
@@ -47,24 +51,23 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    CS_DEFINE_NAMEDTYPE(PlatformSystem);
+    //-----------------------------------------
+    //-----------------------------------------
+    PlatformSystemUPtr PlatformSystem::Create()
     {
-        CS_DEFINE_NAMEDTYPE(PlatformSystem);
-        //-----------------------------------------
-        //-----------------------------------------
-        PlatformSystemUPtr PlatformSystem::Create()
-        {
 #ifdef CS_TARGETPLATFORM_IOS
-            return PlatformSystemUPtr(new CSBackend::iOS::PlatformSystem());
+        return PlatformSystemUPtr(new CSBackend::iOS::PlatformSystem());
 #elif defined CS_TARGETPLATFORM_ANDROID
-            return PlatformSystemUPtr(new CSBackend::Android::PlatformSystem());
+        return PlatformSystemUPtr(new CSBackend::Android::PlatformSystem());
 #elif defined CS_TARGETPLATFORM_WINDOWS
-			return PlatformSystemUPtr(new CSBackend::Windows::PlatformSystem());
+        return PlatformSystemUPtr(new CSBackend::Windows::PlatformSystem());
+#elif defined CS_TARGETPLATFORM_RPI
+        return PlatformSystemUPtr(new CSBackend::RPi::PlatformSystem());
 #elif defined CS_TARGETPLATFORM_LINUX
 			return PlatformSystemUPtr(new CSBackend::Linux::PlatformSystem());
 #else
-            return nullptr;
+        return nullptr;
 #endif
-        }
     }
 }

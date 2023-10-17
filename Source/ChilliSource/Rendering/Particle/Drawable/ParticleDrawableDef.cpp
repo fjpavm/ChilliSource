@@ -1,6 +1,6 @@
 //
 //  ParticleDrawableDef.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 13/10/2014.
 //
 //  The MIT License (MIT)
@@ -30,20 +30,17 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		CS_DEFINE_NAMEDTYPE(ParticleDrawableDef);
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		const ParticleEffect* ParticleDrawableDef::GetParticleEffect() const
-		{
-			return m_particleEffect;
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		void ParticleDrawableDef::SetParticleEffect(const ParticleEffect* in_particleEffect)
-		{
-			m_particleEffect = in_particleEffect;
-		}
-	}
+    CS_DEFINE_NAMEDTYPE(ParticleDrawableDef);
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    const ParticleEffect* ParticleDrawableDef::GetParticleEffect() const
+    {
+        return m_particleEffect;
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    void ParticleDrawableDef::SetParticleEffect(const ParticleEffect* in_particleEffect)
+    {
+        m_particleEffect = in_particleEffect;
+    }
 }

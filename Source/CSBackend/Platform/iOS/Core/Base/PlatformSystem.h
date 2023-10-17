@@ -1,6 +1,6 @@
 //
 //  PlatformSystem.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 24/11/2010.
 //
 //  The MIT License (MIT)
@@ -42,7 +42,7 @@ namespace CSBackend
         ///
         /// @author S Downie
 		//-------------------------------------------------------------
-		class PlatformSystem final : public CSCore::PlatformSystem
+		class PlatformSystem final : public ChilliSource::PlatformSystem
 		{
 		public:
             CS_DECLARE_NAMEDTYPE(PlatformSystem);
@@ -55,7 +55,7 @@ namespace CSBackend
 			/// @param The interface Id.
 			/// @param Whether system is of given type.
 			//-------------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+			bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
 			//------------------------------------------------------
 			/// Adds default systems to the applications system
 			/// list.
@@ -65,7 +65,7 @@ namespace CSBackend
 			/// @param Application instance to add the default
             /// platform systems to.
 			//------------------------------------------------------
-			void CreateDefaultSystems(CSCore::Application* in_application) override;
+			void CreateDefaultSystems(ChilliSource::Application* in_application) override;
             //------------------------------------------------------
             /// @author S Downie
             ///
@@ -87,21 +87,9 @@ namespace CSBackend
             /// @author S Downie
             //------------------------------------------------------
             void Quit() override {}
-            //------------------------------------------------------
-            /// @author S Downie
-            ///
-            /// @return The bundle version as found in the plist
-            //------------------------------------------------------
-            std::string GetAppVersion() const override;
-			//------------------------------------------------------
-			/// @author S Downie
-            ///
-			/// @return The current time in milliseconds
-			//------------------------------------------------------
-			TimeIntervalMs GetSystemTimeMS() const override;
 		private:
             
-            friend CSCore::PlatformSystemUPtr CSCore::PlatformSystem::Create();
+            friend ChilliSource::PlatformSystemUPtr ChilliSource::PlatformSystem::Create();
             //------------------------------------------------------
             /// Private constructor to force use of
             /// factory method

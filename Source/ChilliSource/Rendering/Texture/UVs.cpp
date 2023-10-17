@@ -1,6 +1,6 @@
 //
 //  UVs.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 13/06/2014.
 //
 //  The MIT License (MIT)
@@ -30,50 +30,47 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-        //----------------------------------------------------------
-        //----------------------------------------------------------
-        UVs::UVs(f32 in_u, f32 in_v, f32 in_s, f32 in_t)
-        : m_u(in_u), m_v(in_v), m_s(in_s), m_t(in_t)
-        {
-            
-        }
-        //----------------------------------------------------------
-        //----------------------------------------------------------
-        UVs UVs::FlipVertically(const UVs& in_uvs)
-        {
-            UVs result = in_uvs;
-            
-            result.m_v += result.m_t;
-            result.m_t *= -1;
-            
-            return result;
-        }
-        //----------------------------------------------------------
-        //----------------------------------------------------------
-        UVs UVs::FlipHorizontally(const UVs& in_uvs)
-        {
-            UVs result = in_uvs;
-            
-            result.m_u += result.m_s;
-            result.m_s *= -1;
-            
-            return result;
-        }
-        //----------------------------------------------------------
-        //----------------------------------------------------------
-        UVs UVs::FlipDiagonally(const UVs& in_uvs)
-        {
-            UVs result = in_uvs;
-            
-            result.m_u += result.m_s;
-            result.m_s *= -1;
-            
-            result.m_v += result.m_t;
-            result.m_t *= -1;
-            
-            return result;
-        }
-	}
+    //----------------------------------------------------------
+    //----------------------------------------------------------
+    UVs::UVs(f32 in_u, f32 in_v, f32 in_s, f32 in_t)
+    : m_u(in_u), m_v(in_v), m_s(in_s), m_t(in_t)
+    {
+        
+    }
+    //----------------------------------------------------------
+    //----------------------------------------------------------
+    UVs UVs::FlipVertically(const UVs& in_uvs)
+    {
+        UVs result = in_uvs;
+        
+        result.m_v += result.m_t;
+        result.m_t *= -1;
+        
+        return result;
+    }
+    //----------------------------------------------------------
+    //----------------------------------------------------------
+    UVs UVs::FlipHorizontally(const UVs& in_uvs)
+    {
+        UVs result = in_uvs;
+        
+        result.m_u += result.m_s;
+        result.m_s *= -1;
+        
+        return result;
+    }
+    //----------------------------------------------------------
+    //----------------------------------------------------------
+    UVs UVs::FlipDiagonally(const UVs& in_uvs)
+    {
+        UVs result = in_uvs;
+        
+        result.m_u += result.m_s;
+        result.m_s *= -1;
+        
+        result.m_v += result.m_t;
+        result.m_t *= -1;
+        
+        return result;
+    }
 }

@@ -1,6 +1,6 @@
 //
 //  EmailComposer.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Steven Hendrie on 20/01/2012.
 //
 //  The MIT License (MIT)
@@ -45,7 +45,7 @@ namespace CSBackend
 		///
 		/// @author S Hendrie
 		//---------------------------------------------------------------
-		class EmailComposer final : public CSSocial::EmailComposer
+		class EmailComposer final : public ChilliSource::EmailComposer
 		{
 		public:
 			CS_DECLARE_NAMEDTYPE(EmailComposer);
@@ -58,11 +58,11 @@ namespace CSBackend
 			/// @param The interface Id.
 			/// @param Whether system is of given type.
 			//-------------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+			bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
             //-------------------------------------------------------
             /// Displays the email activity with the given recipients,
             /// subject and contents.
-			///
+            ///
 			/// @author S Hendrie
             ///
             /// @param A list of recipients (UTF-8).
@@ -76,7 +76,7 @@ namespace CSBackend
 			/// Displays the email activity with the given recipients,
 			/// subject and contents, and adds a list of attachments
 			/// to the email.
-			///
+            ///
 			/// @author Ian Copland
 			///
 			/// @param A list of recipients (UTF-8).
@@ -89,13 +89,12 @@ namespace CSBackend
 			void PresentWithAttachment(const std::vector<std::string>& in_recipientAddresses, const std::string& in_subject, const std::string& in_contents, ContentFormat in_contentFormat,
 					const Attachment& in_attachment, const SendResultDelegate& in_callback) override;
             //-------------------------------------------------------
-            /// Dismisses the activity if it is currently displayed.
-			///
-			/// @author S Hendrie
+            /// Determines whether or not the composer is presented.
+            /// @author Jordan Brown
             //-------------------------------------------------------
-			void Dismiss() override;
+            bool IsPresented() override;
 		private:
-			friend CSSocial::EmailComposerUPtr CSSocial::EmailComposer::Create();
+			friend ChilliSource::EmailComposerUPtr ChilliSource::EmailComposer::Create();
             //----------------------------------------------------
             /// Private constructor to force the use of the
             /// factory method.

@@ -1,6 +1,6 @@
 //
 //  ParticleAffectorDef.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 02/11/2014.
 //
 //  The MIT License (MIT)
@@ -30,20 +30,17 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		CS_DEFINE_NAMEDTYPE(ParticleAffectorDef);
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		const ParticleEffect* ParticleAffectorDef::GetParticleEffect() const
-		{
-			return m_particleEffect;
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		void ParticleAffectorDef::SetParticleEffect(const ParticleEffect* in_particleEffect)
-		{
-			m_particleEffect = in_particleEffect;
-		}
-	}
+    CS_DEFINE_NAMEDTYPE(ParticleAffectorDef);
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    const ParticleEffect* ParticleAffectorDef::GetParticleEffect() const
+    {
+        return m_particleEffect;
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    void ParticleAffectorDef::SetParticleEffect(const ParticleEffect* in_particleEffect)
+    {
+        m_particleEffect = in_particleEffect;
+    }
 }

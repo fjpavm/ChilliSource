@@ -1,6 +1,6 @@
 //
 //  RemoteNotificationSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Robert Henning on 22/01/2014.
 //
 //  The MIT License (MIT)
@@ -34,6 +34,7 @@
 #include <ChilliSource/Core/Base/Application.h>
 #include <ChilliSource/Core/Cryptographic/BaseEncoding.h>
 #include <ChilliSource/Core/Notification/Notification.h>
+#include <ChilliSource/Core/Threading/TaskScheduler.h>
 
 #include <UIKit/UIKit.h>
 
@@ -55,21 +56,24 @@ namespace CSBackend
         }
         //--------------------------------------------------
         //--------------------------------------------------
-        bool RemoteNotificationSystem::IsA(CSCore::InterfaceIDType in_interfaceId) const
+        bool RemoteNotificationSystem::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
         {
-            return (RemoteNotificationSystem::InterfaceID == in_interfaceId || CSCore::RemoteNotificationSystem::InterfaceID == in_interfaceId);
+            return (RemoteNotificationSystem::InterfaceID == in_interfaceId || ChilliSource::RemoteNotificationSystem::InterfaceID == in_interfaceId);
         }
         //--------------------------------------------------
         //--------------------------------------------------
         void RemoteNotificationSystem::OnInit()
         {
 #ifdef __IPHONE_8_0
-            if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)])
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& taskContext)
             {
-                //From iOS 8 we need to request permissions to display notifications, to badge the app icon and to play a sound
-                UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
-                [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
-            }
+                if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)])
+                {
+                    //From iOS 8 we need to request permissions to display notifications, to badge the app icon and to play a sound
+                    UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+                    [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
+                }
+            });
 #endif
         }
         //--------------------------------------------------
@@ -84,17 +88,20 @@ namespace CSBackend
         {
             m_delegate = in_delegate;
 
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& taskContext)
+            {
 #ifdef __IPHONE_8_0
-            if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForRemoteNotifications)])
-            {
-                [[UIApplication sharedApplication] registerForRemoteNotifications];
-            }
-            else
+                if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForRemoteNotifications)])
+                {
+                    [[UIApplication sharedApplication] registerForRemoteNotifications];
+                }
+                else
 #endif
-            {
-                UIRemoteNotificationType Types = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert;
-                [[UIApplication sharedApplication] registerForRemoteNotificationTypes:Types];
-            }
+                {
+                    UIRemoteNotificationType Types = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert;
+                    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:Types];
+                }
+            });
         }
         //--------------------------------------------------
         //--------------------------------------------------
@@ -112,13 +119,16 @@ namespace CSBackend
         //--------------------------------------------------
         void RemoteNotificationSystem::OnRemoteTokenReceived(NSData* in_token)
         {
-            m_token = CSCore::BaseEncoding::Base64Encode((const s8*)[in_token bytes], static_cast<u32>(in_token.length));
+            m_token = ChilliSource::BaseEncoding::Base64Encode((const s8*)[in_token bytes], static_cast<u32>(in_token.length));
             
-            if(m_delegate != nullptr)
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_mainThread, [=](const ChilliSource::TaskContext& taskContext)
             {
-                m_delegate(m_token);
-                m_delegate = nullptr;
-            }
+                if(m_delegate != nullptr)
+                {
+                    m_delegate(m_token);
+                    m_delegate = nullptr;
+                }
+            });
         }
         //--------------------------------------------------
         //--------------------------------------------------
@@ -130,9 +140,9 @@ namespace CSBackend
                 {
                     in_application.applicationIconBadgeNumber = 0;
                     
-                    CSCore::NotificationSPtr notification = std::make_shared<CSCore::Notification>();
+                    ChilliSource::NotificationSPtr notification = std::make_shared<ChilliSource::Notification>();
                     notification->m_id = 0;
-                    notification->m_priority = CSCore::Notification::Priority::k_standard;
+                    notification->m_priority = ChilliSource::Notification::Priority::k_standard;
                     
                     // Add the message
                     NSObject* apsObject = [in_payload objectForKey:@"aps"];
@@ -166,14 +176,16 @@ namespace CSBackend
                         }
                     }
                     
-                    
-                    m_receivedEvent.NotifyConnections(notification);
+                    ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_mainThread, [=](const ChilliSource::TaskContext& taskContext)
+                    {
+                        m_receivedEvent.NotifyConnections(notification);
+                    });
                 }
             }
         }
         //--------------------------------------------------
         //---------------------------------------------------
-        CSCore::IConnectableEvent<CSCore::RemoteNotificationSystem::NotificationReceivedDelegate>& RemoteNotificationSystem::GetReceivedEvent()
+        ChilliSource::IConnectableEvent<ChilliSource::RemoteNotificationSystem::NotificationReceivedDelegate>& RemoteNotificationSystem::GetReceivedEvent()
         {
             return m_receivedEvent;
         }

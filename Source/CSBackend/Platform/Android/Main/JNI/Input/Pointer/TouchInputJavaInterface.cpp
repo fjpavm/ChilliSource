@@ -1,6 +1,6 @@
 //
 //  TouchInputJavaInterface.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 05/05/2011.
 //
 //  The MIT License (MIT)
@@ -81,7 +81,7 @@ void Java_com_chilliworks_chillisource_input_TouchInputNativeInterface_TouchDown
 {
 	CSBackend::Android::PointerSystem* pointerSystem = CSBackend::Android::TouchInputJavaInterface::GetPointerSystem();
 	CS_ASSERT(pointerSystem, "Touch Input Java Interface: No pointer system!");
-	pointerSystem->OnTouchDown(in_systemId, CSCore::Vector2(in_x, in_y));
+	pointerSystem->OnTouchDown(in_systemId, ChilliSource::Vector2(in_x, in_y));
 }
 //-------------------------------------------------------
 //-------------------------------------------------------
@@ -89,7 +89,7 @@ void Java_com_chilliworks_chillisource_input_TouchInputNativeInterface_TouchMove
 {
 	CSBackend::Android::PointerSystem* pointerSystem = CSBackend::Android::TouchInputJavaInterface::GetPointerSystem();
 	CS_ASSERT(pointerSystem, "Touch Input Java Interface: No pointer system!");
-	pointerSystem->OnTouchMoved(in_systemId, CSCore::Vector2(in_x, in_y));
+	pointerSystem->OnTouchMoved(in_systemId, ChilliSource::Vector2(in_x, in_y));
 }
 //-------------------------------------------------------
 //-------------------------------------------------------

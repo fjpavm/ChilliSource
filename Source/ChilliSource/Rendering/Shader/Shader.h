@@ -1,8 +1,4 @@
 //
-//  Shader.h
-//  Chilli Source
-//  Created by Scott Downie on 22/11/2010.
-//
 //  The MIT License (MIT)
 //
 //  Copyright (c) 2010 Tag Games Limited
@@ -31,52 +27,64 @@
 
 #include <ChilliSource/ChilliSource.h>
 #include <ChilliSource/Core/Resource/Resource.h>
+#include <ChilliSource/Core/Memory/UniquePtr.h>
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-        //------------------------------------------------
-        /// Interface into a shader resource. Shaders
-        /// are rendering platform dependent and are used
-        /// by the renderer to decide how to pass data
-        /// to the currently executing shader program
+    /// A resource which represents a shader in the underlying render system.
+    ///
+    /// This is not thread safe and should only be accessed from one thread at a time.
+    ///
+    class Shader final : public Resource
+    {
+    public:
+        CS_DECLARE_NAMEDTYPE(Shader);
+        
+        /// Allows querying of whether or not this system implements the interface described by the
+        /// given interface Id. Typically this is not called directly as the templated equivalent
+        /// IsA<Interface>() is preferred.
         ///
-        /// @author S Downie
-        //------------------------------------------------
-		class Shader : public Core::Resource
-		{
-		public:
-            
-            CS_DECLARE_NAMEDTYPE(Shader);
-            
-            //------------------------------------------------
-            /// Virtual destructor
-            ///
-            /// @author S Downie
-            //------------------------------------------------
-			virtual ~Shader(){}
-			
-		protected:
-            friend class Core::ResourcePool;
-            //----------------------------------------------------------
-            /// Factory method that creates a new empty shader resource.
-            /// Only called by resource pool
-            ///
-            /// @author S Downie
-            ///
-            /// @return Shader resource
-            //----------------------------------------------------------
-			static ShaderUPtr Create();
-            //------------------------------------------------
-            /// Private constructor to ensure that
-            /// "abstract" shader cannot be created
-            ///
-            /// @author S Downie
-            //------------------------------------------------
-			Shader() = default;
-		};
-	}
+        /// @param interfaceId
+        ///     The Id of the interface.
+        ///
+        /// @return Whether or not the interface is implemented.
+        ///
+        bool IsA(InterfaceIDType interfaceId) const noexcept override;
+        
+        /// Builds the shader with the given shader data. The shader must not already be
+        /// in the loaded state.
+        ///
+        /// @param vertexShader
+        ///     The vertex shader string.
+        /// @param fragmentShaderData
+        ///     The fragment shader string.
+        ///
+        void Build(const std::string& vertexShader, const std::string& fragmentShader) noexcept;
+        
+        /// @return The underlying RenderShader used by the render system.
+        ///
+        const RenderShader* GetRenderShader() const noexcept;
+        
+        ~Shader() noexcept;
+        
+    protected:
+        friend class ResourcePool;
+        
+        /// A factory method for creating new, empty instances of the resource. This must only be
+        /// called by ResourcePool.
+        ///
+        /// @return The new instance of the resource.
+        ///
+        static ShaderUPtr Create() noexcept;
+        
+        /// Destroys the render shader if there is currently one available.
+        ///
+        void DestroyRenderShader() noexcept;
+        
+        Shader() = default;
+        
+        UniquePtr<RenderShader> m_renderShader;
+    };
 }
 
 #endif

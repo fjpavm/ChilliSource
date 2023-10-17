@@ -1,6 +1,6 @@
 /**
  * Renderer.java
- * Chilli Source
+ * ChilliSource
  * Created by Ian Copland on 14/08/2012.
  * 
  * The MIT License (MIT)
@@ -74,7 +74,7 @@ public class Renderer implements GLSurfaceView.Renderer
 			//The surface must issue at least one draw command per draw frame call. Even if 
 			//the application isn't active
 			in_GlContext.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			in_GlContext.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+			in_GlContext.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
 			
 			//Hacky state to allow the loading image to actually appear. Android seems to require that you draw
 			//a few frames in order for this to appear
@@ -95,7 +95,7 @@ public class Renderer implements GLSurfaceView.Renderer
 	 */
     @Override public void onSurfaceChanged(GL10 in_GlContext, int in_width, int in_height) 
     {
-    	CoreNativeInterface coreNI = (CoreNativeInterface)CSApplication.get().getSystem(CoreNativeInterface.InterfaceID);
+    	CoreNativeInterface coreNI = (CoreNativeInterface)CSApplication.get().getSystem(CoreNativeInterface.INTERFACE_ID);
     	if (coreNI != null)
     	{
     		coreNI.onResolutionChanged(in_width, in_height);

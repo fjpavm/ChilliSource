@@ -1,6 +1,6 @@
 //
 //  ModifierKeyCode.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 09/07/2014
 //
 //  The MIT License (MIT)
@@ -31,25 +31,22 @@
 
 namespace ChilliSource
 {
-	namespace Input
-	{
-        //---------------------------------------------------------------
-        /// List of all the modifier key-codes supported for keyboard events.
-        /// This makes no distinction between left and right keys and therefore
-        /// is independent of standard key codes
-        ///
-        /// @author S Downie
-        //---------------------------------------------------------------
-		enum class ModifierKeyCode
-		{
-            k_ctrl,
-            k_alt,
-            k_shift,
-            k_system, //Windows, Command, etc.
-            
-            k_total
-        };
-	}
+    //---------------------------------------------------------------
+    /// List of all the modifier key-codes supported for keyboard events.
+    /// This makes no distinction between left and right keys and therefore
+    /// is independent of standard key codes
+    ///
+    /// @author S Downie
+    //---------------------------------------------------------------
+    enum class ModifierKeyCode
+    {
+        k_ctrl,
+        k_alt,
+        k_shift,
+        k_system, //Windows, Command, etc.
+        
+        k_total
+    };
 }
 
 #endif

@@ -1,6 +1,6 @@
 //
 //  EmailCompositionJavaInterface.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Steven Hendrie on 20/01/2012.
 //
 //  The MIT License (MIT)
@@ -31,7 +31,7 @@
 #ifndef _CHILLISOURCE_PLATFORM_ANDROID_JAVAINTERFACE_EMAILCOMPOSITION_H
 #define _CHILLISOURCE_PLATFORM_ANDROID_JAVAINTERFACE_EMAILCOMPOSITION_H
 
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterface.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterface.h>
 
 #include <CSBackend/Platform/Android/Main/JNI/ForwardDeclarations.h>
 
@@ -69,7 +69,7 @@ namespace CSBackend
 			///
 			/// @return whether or not this object implements the given interface.
 			//--------------------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType inInterfaceID) const;
+			bool IsA(ChilliSource::InterfaceIDType inInterfaceID) const;
 			//--------------------------------------------------------------
 			/// Present
 			///

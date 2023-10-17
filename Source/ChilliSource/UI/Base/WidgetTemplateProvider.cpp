@@ -1,6 +1,6 @@
 //
 //  WidgetTemplateProvider.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 30/07/2014.
 //
 //  The MIT License (MIT)
@@ -41,92 +41,95 @@
 
 namespace ChilliSource
 {
-    namespace UI
+    namespace
     {
-        namespace
+        const std::string k_extension("csui");
+        
+        //-------------------------------------------------------
+        /// Performs the heavy lifting for loading a UI
+        /// widget description from file
+        ///
+        /// @author S Downie
+        ///
+        /// @param Storage location
+        /// @param File path
+        /// @param Async load delegate
+        /// @param [Out] Resource
+        //-------------------------------------------------------
+        void LoadDesc(StorageLocation in_storageLocation, const std::string& in_filepath, const ResourceProvider::AsyncLoadDelegate& in_delegate, const ResourceSPtr& out_resource)
         {
-            const std::string k_extension("csui");
-            
-            //-------------------------------------------------------
-            /// Performs the heavy lifting for loading a UI
-            /// widget description from file
-            ///
-            /// @author S Downie
-            ///
-            /// @param Storage location
-            /// @param File path
-            /// @param Async load delegate
-            /// @param [Out] Resource
-            //-------------------------------------------------------
-            void LoadDesc(Core::StorageLocation in_storageLocation, const std::string& in_filepath, const Core::ResourceProvider::AsyncLoadDelegate& in_delegate, const Core::ResourceSPtr& out_resource)
+            Json::Value root;
+            if (JsonUtils::ReadJson(in_storageLocation, in_filepath, root) == false)
             {
-                Json::Value root;
-                if (Core::JsonUtils::ReadJson(in_storageLocation, in_filepath, root) == false)
-                {
-                    CS_LOG_ERROR("Cannot read widget file: " + in_filepath);
-                    out_resource->SetLoadState(Core::Resource::LoadState::k_failed);
-                    if(in_delegate != nullptr)
-                    {
-                        Core::Application::Get()->GetTaskScheduler()->ScheduleMainThreadTask(std::bind(in_delegate, out_resource));
-                    }
-                    return;
-                }
-                
-                WidgetTemplate* widgetTemplate = (WidgetTemplate*)out_resource.get();
-                
-                std::string definitionFileName;
-                std::string pathToDefinition;
-                Core::StringUtils::SplitFilename(in_filepath, definitionFileName, pathToDefinition);
-                
-                WidgetDesc desc = WidgetParserUtils::ParseWidget(root, in_storageLocation, pathToDefinition);
-                
-                widgetTemplate->Build(desc);
-                
-                out_resource->SetLoadState(CSCore::Resource::LoadState::k_loaded);
+                CS_LOG_ERROR("Cannot read widget file: " + in_filepath);
+                out_resource->SetLoadState(Resource::LoadState::k_failed);
                 if(in_delegate != nullptr)
                 {
-                    CSCore::Application::Get()->GetTaskScheduler()->ScheduleMainThreadTask(std::bind(in_delegate, out_resource));
+                    Application::Get()->GetTaskScheduler()->ScheduleTask(TaskType::k_mainThread, [=](const TaskContext&) noexcept
+                    {
+                        in_delegate(out_resource);
+                    });
                 }
+                return;
+            }
+            
+            WidgetTemplate* widgetTemplate = (WidgetTemplate*)out_resource.get();
+            
+            std::string definitionFileName;
+            std::string pathToDefinition;
+            StringUtils::SplitFilename(in_filepath, definitionFileName, pathToDefinition);
+            
+            WidgetDesc desc = WidgetParserUtils::ParseWidget(root, in_storageLocation, pathToDefinition);
+            
+            widgetTemplate->Build(desc);
+            
+            out_resource->SetLoadState(Resource::LoadState::k_loaded);
+            if(in_delegate != nullptr)
+            {
+                Application::Get()->GetTaskScheduler()->ScheduleTask(TaskType::k_mainThread, [=](const TaskContext&) noexcept
+                {
+                    in_delegate(out_resource);
+                });
             }
         }
-        
-        CS_DEFINE_NAMEDTYPE(WidgetTemplateProvider);
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        WidgetTemplateProviderUPtr WidgetTemplateProvider::Create()
-        {
-            return WidgetTemplateProviderUPtr(new WidgetTemplateProvider());
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        bool WidgetTemplateProvider::IsA(Core::InterfaceIDType in_interfaceId) const
-        {
-            return (in_interfaceId == Core::ResourceProvider::InterfaceID || in_interfaceId == WidgetTemplateProvider::InterfaceID);
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        Core::InterfaceIDType WidgetTemplateProvider::GetResourceType() const
-        {
-            return WidgetTemplate::InterfaceID;
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        bool WidgetTemplateProvider::CanCreateResourceWithFileExtension(const std::string& in_extension) const
-        {
-            return (in_extension == k_extension);
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-		void WidgetTemplateProvider::CreateResourceFromFile(Core::StorageLocation in_storageLocation, const std::string& in_filepath, const Core::IResourceOptionsBaseCSPtr& in_options, const Core::ResourceSPtr& out_resource)
-        {
-            LoadDesc(in_storageLocation, in_filepath, nullptr, out_resource);
-        }
-        //----------------------------------------------------
-        //----------------------------------------------------
-		void WidgetTemplateProvider::CreateResourceFromFileAsync(Core::StorageLocation in_storageLocation, const std::string& in_filepath, const Core::IResourceOptionsBaseCSPtr& in_options, const AsyncLoadDelegate& in_delegate, const Core::ResourceSPtr& out_resource)
-        {
-            //TODO: Async support.
-			CS_LOG_FATAL("Asynchronous loading of Widget Templates is currently not supported. Feature coming soon!");
-        }
+    }
+    
+    CS_DEFINE_NAMEDTYPE(WidgetTemplateProvider);
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    WidgetTemplateProviderUPtr WidgetTemplateProvider::Create()
+    {
+        return WidgetTemplateProviderUPtr(new WidgetTemplateProvider());
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    bool WidgetTemplateProvider::IsA(InterfaceIDType in_interfaceId) const
+    {
+        return (in_interfaceId == ResourceProvider::InterfaceID || in_interfaceId == WidgetTemplateProvider::InterfaceID);
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    InterfaceIDType WidgetTemplateProvider::GetResourceType() const
+    {
+        return WidgetTemplate::InterfaceID;
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    bool WidgetTemplateProvider::CanCreateResourceWithFileExtension(const std::string& in_extension) const
+    {
+        return (in_extension == k_extension);
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    void WidgetTemplateProvider::CreateResourceFromFile(StorageLocation in_storageLocation, const std::string& in_filepath, const IResourceOptionsBaseCSPtr& in_options, const ResourceSPtr& out_resource)
+    {
+        LoadDesc(in_storageLocation, in_filepath, nullptr, out_resource);
+    }
+    //----------------------------------------------------
+    //----------------------------------------------------
+    void WidgetTemplateProvider::CreateResourceFromFileAsync(StorageLocation in_storageLocation, const std::string& in_filepath, const IResourceOptionsBaseCSPtr& in_options, const AsyncLoadDelegate& in_delegate, const ResourceSPtr& out_resource)
+    {
+        //TODO: Async support.
+        CS_LOG_FATAL("Asynchronous loading of Widget Templates is currently not supported. Feature coming soon!");
     }
 }

@@ -1,6 +1,6 @@
 //
 //  AccelerometerJavaInterface.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 10/06/2013.
 //
 //  The MIT License (MIT)
@@ -32,7 +32,7 @@
 #define _CHILLISOURCE_PLATFORM_ANDROID_JAVAINTERFACE_ACCELEROMETERJAVAINTERFACE_H
 
 #include <CSBackend/Platform/Android/Main/JNI/ForwardDeclarations.h>
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterface.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterface.h>
 
 namespace CSBackend
 {
@@ -51,7 +51,7 @@ namespace CSBackend
 			//------------------------------------------------
 			/// Delegates
 			//------------------------------------------------
-			typedef std::function<void(const CSCore::Vector3&)> AccelerationChangedDelegate;
+			typedef std::function<void(const ChilliSource::Vector3&)> AccelerationChangedDelegate;
 			//------------------------------------------------
 			/// Constructor
 			//------------------------------------------------
@@ -62,7 +62,7 @@ namespace CSBackend
 			/// @return whether or not this object implements
 			/// the given interface.
 			//------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType inInterfaceID) const;
+			bool IsA(ChilliSource::InterfaceIDType inInterfaceID) const;
 			//------------------------------------------------
 			/// Is Available
 			///

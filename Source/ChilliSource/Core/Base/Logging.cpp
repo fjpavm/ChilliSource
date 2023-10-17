@@ -1,6 +1,6 @@
 //
 //  Logging.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 18/10/2010.
 //
 //  The MIT License (MIT)
@@ -30,7 +30,6 @@
 
 #include <ChilliSource/Core/Base/Application.h>
 #include <ChilliSource/Core/File/FileSystem.h>
-#include <ChilliSource/Core/File/FileStream.h>
 
 #include <cstdio>
 #include <iostream>
@@ -40,9 +39,9 @@
 #include <cstdlib>
 extern "C"
 {
-#define CS_ANDROID_LOG_VERBOSE(...) __android_log_print(ANDROID_LOG_DEBUG, "Chilli Source", "%s", __VA_ARGS__)
-#define CS_ANDROID_LOG_WARNING(...) __android_log_print(ANDROID_LOG_WARN, "Chilli Source", "%s", __VA_ARGS__)
-#define CS_ANDROID_LOG_ERROR(...) __android_log_print(ANDROID_LOG_ERROR, "Chilli Source", "%s", __VA_ARGS__)
+#define CS_ANDROID_LOG_VERBOSE(...) __android_log_print(ANDROID_LOG_DEBUG, "ChilliSource", "%s", __VA_ARGS__)
+#define CS_ANDROID_LOG_WARNING(...) __android_log_print(ANDROID_LOG_WARN, "ChilliSource", "%s", __VA_ARGS__)
+#define CS_ANDROID_LOG_ERROR(...) __android_log_print(ANDROID_LOG_ERROR, "ChilliSource", "%s", __VA_ARGS__)
 }
 #endif
 
@@ -66,160 +65,158 @@ extern "C"
 
 namespace ChilliSource
 {
-    namespace Core
+    namespace
     {
-        namespace
-        {
 #ifdef CS_ENABLE_LOGTOFILE
-            const u32 k_maxLogBufferSize = 2048;
-            const std::string k_logFileName = "ChilliSourceLog.txt";
+        const u32 k_maxLogBufferSize = 2048;
+        const std::string k_logFileName = "ChilliSourceLog.txt";
 #endif
-        }
-        
-        Logging* Logging::s_logging = nullptr;
-        //-----------------------------------------------
-        //-----------------------------------------------
-        void Logging::Create()
-        {
+    }
+    
+    Logging* Logging::s_logging = nullptr;
+    //-----------------------------------------------
+    //-----------------------------------------------
+    void Logging::Create()
+    {
 #ifdef CS_ENABLE_DEBUG
-            assert(s_logging == nullptr);
+        assert(s_logging == nullptr);
 #endif
-            s_logging = new Logging();
-        }
-        //-----------------------------------------------
-        //-----------------------------------------------
-        Logging* Logging::Get()
-        {
+        s_logging = new Logging();
+    }
+    //-----------------------------------------------
+    //-----------------------------------------------
+    Logging* Logging::Get()
+    {
 #ifdef CS_ENABLE_DEBUG
-            assert(s_logging != nullptr);
+        assert(s_logging != nullptr);
 #endif
-            return s_logging;
-        }
-        //----------------------------------------------
-        //----------------------------------------------
-        Logging::Logging()
+        return s_logging;
+    }
+    //----------------------------------------------
+    //----------------------------------------------
+    Logging::Logging()
 #ifdef CS_ENABLE_LOGTOFILE
-            : m_isFirstLog(true)
+        : m_isFirstLog(true)
 #endif
-        {
-        }
-        //----------------------------------------------
-        //----------------------------------------------
-        void Logging::LogVerbose(const std::string &in_message)
-        {
+    {
+    }
+    //----------------------------------------------
+    //----------------------------------------------
+    void Logging::LogVerbose(const std::string &in_message)
+    {
 #if defined CS_LOGLEVEL_VERBOSE
-            LogMessage(LogLevel::k_verbose, in_message);
+        LogMessage(LogLevel::k_verbose, in_message);
 #endif
-        }
-        //----------------------------------------------
-        //----------------------------------------------
-        void Logging::LogWarning(const std::string &in_message)
-        {
+    }
+    //----------------------------------------------
+    //----------------------------------------------
+    void Logging::LogWarning(const std::string &in_message)
+    {
 #if defined CS_LOGLEVEL_VERBOSE || defined CS_LOGLEVEL_WARNING
-            LogMessage(LogLevel::k_warning, "WARNING: " + in_message);
+        LogMessage(LogLevel::k_warning, "WARNING: " + in_message);
 #endif
-        }
-        //----------------------------------------------
-        //----------------------------------------------
-        void Logging::LogError(const std::string &in_message)
-        {
+    }
+    //----------------------------------------------
+    //----------------------------------------------
+    void Logging::LogError(const std::string &in_message)
+    {
 #if defined CS_LOGLEVEL_VERBOSE || defined CS_LOGLEVEL_WARNING || defined CS_LOGLEVEL_ERROR
-            LogMessage(LogLevel::k_error, "ERROR: " + in_message);
+        LogMessage(LogLevel::k_error, "ERROR: " + in_message);
 #endif
-        }
-        //----------------------------------------------
-        //----------------------------------------------
-        void Logging::LogFatal(const std::string &in_message)
-        {
+    }
+    //----------------------------------------------
+    //----------------------------------------------
+    void Logging::LogFatal(const std::string &in_message)
+    {
 #if defined CS_LOGLEVEL_VERBOSE || defined CS_LOGLEVEL_WARNING || defined CS_LOGLEVEL_ERROR || defined CS_LOGLEVEL_FATAL
-            LogMessage(LogLevel::k_error, "FATAL: " + in_message);
-            LogMessage(LogLevel::k_error, "Chilli Source is exiting...");
+        LogMessage(LogLevel::k_error, "FATAL: " + in_message);
+        LogMessage(LogLevel::k_error, "ChilliSource is exiting...");
 #endif
 
 #ifdef CS_TARGETPLATFORM_ANDROID
-            exit(1);
+        exit(1);
 #else
 #ifdef CS_ENABLE_DEBUG
-            assert(false);
+        assert(false);
+#else
+        abort();
 #endif
 #endif
-        }
-        //-----------------------------------------------------
-        //-----------------------------------------------------
-        void Logging::Destroy()
-        {
-            CS_SAFEDELETE(s_logging);
-        }
-        //-----------------------------------------------------
-        //-----------------------------------------------------
-        void Logging::LogMessage(LogLevel in_logLevel, const std::string& in_message)
-        {
+    }
+    //-----------------------------------------------------
+    //-----------------------------------------------------
+    void Logging::Destroy()
+    {
+        CS_SAFEDELETE(s_logging);
+    }
+    //-----------------------------------------------------
+    //-----------------------------------------------------
+    void Logging::LogMessage(LogLevel in_logLevel, const std::string& in_message)
+    {
 #ifdef CS_TARGETPLATFORM_ANDROID
-            switch (in_logLevel)
-            {
-                case LogLevel::k_verbose:
-                	CS_ANDROID_LOG_VERBOSE(in_message.c_str());
-                    break;
-                case LogLevel::k_warning:
-                    CS_ANDROID_LOG_WARNING(in_message.c_str());
-                    break;
-                case LogLevel::k_error:
-                    CS_ANDROID_LOG_ERROR(in_message.c_str());
-                    break;
-                
-            }
+        switch (in_logLevel)
+        {
+            case LogLevel::k_verbose:
+                CS_ANDROID_LOG_VERBOSE(in_message.c_str());
+                break;
+            case LogLevel::k_warning:
+                CS_ANDROID_LOG_WARNING(in_message.c_str());
+                break;
+            case LogLevel::k_error:
+                CS_ANDROID_LOG_ERROR(in_message.c_str());
+                break;
+            
+        }
 #elif defined (CS_TARGETPLATFORM_IOS)
-            NSString* message = [NSStringUtils newNSStringWithUTF8String:in_message];
-            NSLog(@"[Chilli Source] %@", message);
-            [message release];
+        NSString* message = [NSStringUtils newNSStringWithUTF8String:in_message];
+        NSLog(@"[ChilliSource] %@", message);
+        [message release];
 #elif defined (CS_TARGETPLATFORM_WINDOWS)
-			OutputDebugString(CSBackend::Windows::WindowsStringUtils::UTF8ToUTF16("[Chilli Source] " + in_message + "\n").c_str());
+        OutputDebugString(CSBackend::Windows::WindowsStringUtils::UTF8ToUTF16("[ChilliSource] " + in_message + "\n").c_str());
+#elif defined (CS_TARGETPLATFORM_RPI)
+        std::cout << "[ChilliSource] " << in_message << std::endl;
 #else
 			fprintf(stderr,"[Chilli Source] %s\n", in_message.c_str()); // Default to printing to stderr
 #endif
-            
-#ifdef CS_ENABLE_LOGTOFILE
-            LogToFile(in_message);
-#endif
-        }
         
 #ifdef CS_ENABLE_LOGTOFILE
-        //-----------------------------------------------
-        //-----------------------------------------------
-        void Logging::CreateLogFile()
-        {
-            FileStreamUPtr stream = Application::Get()->GetFileSystem()->CreateFileStream(StorageLocation::k_cache, k_logFileName, Core::FileMode::k_write);
-            stream->Write("Chilli Source Log");
-            stream->Close();
-        }
-        //-----------------------------------------------
-        //-----------------------------------------------
-        void Logging::LogToFile(const std::string& in_message)
-        {
-            std::unique_lock<std::mutex> lock(m_mutex);
-            m_logBuffer += "\n" + in_message;
-            
-            FileSystem* fileSystem = Application::Get()->GetFileSystem();
-            if(fileSystem != nullptr && m_logBuffer.length() > k_maxLogBufferSize)
-            {
-                if (m_isFirstLog == true)
-                {
-                    FileStreamUPtr stream = Application::Get()->GetFileSystem()->CreateFileStream(StorageLocation::k_cache, k_logFileName, Core::FileMode::k_write);
-                    stream->Write("Chilli Source Log");
-                    stream->Write(m_logBuffer);
-                    stream->Close();
-                    m_logBuffer.clear();
-                    m_isFirstLog = false;
-                }
-                else
-                {
-                    FileStreamUPtr stream = Application::Get()->GetFileSystem()->CreateFileStream(StorageLocation::k_cache, k_logFileName, Core::FileMode::k_writeAppend);
-                    stream->Write(m_logBuffer);
-                    stream->Close();
-                    m_logBuffer.clear();
-                }
-            }
-        }
+        LogToFile(in_message);
 #endif
     }
+    
+#ifdef CS_ENABLE_LOGTOFILE
+    //-----------------------------------------------
+    //-----------------------------------------------
+    void Logging::CreateLogFile()
+    {
+        FileStreamUPtr stream = Application::Get()->GetFileSystem()->CreateFileStream(StorageLocation::k_cache, k_logFileName, FileMode::k_write);
+        stream->Write("ChilliSource Log");
+    }
+    //-----------------------------------------------
+    //-----------------------------------------------
+    void Logging::LogToFile(const std::string& in_message)
+    {
+        std::unique_lock<std::mutex> lock(m_mutex);
+        m_logBuffer += "\n" + in_message;
+        
+        FileSystem* fileSystem = Application::Get()->GetFileSystem();
+        if(fileSystem != nullptr && m_logBuffer.length() > k_maxLogBufferSize)
+        {
+            if (m_isFirstLog == true)
+            {
+                FileStreamUPtr stream = Application::Get()->GetFileSystem()->CreateFileStream(StorageLocation::k_cache, k_logFileName, FileMode::k_write);
+                stream->Write("ChilliSource Log");
+                stream->Write(m_logBuffer);
+                m_logBuffer.clear();
+                m_isFirstLog = false;
+            }
+            else
+            {
+                FileStreamUPtr stream = Application::Get()->GetFileSystem()->CreateFileStream(StorageLocation::k_cache, k_logFileName, FileMode::k_writeAppend);
+                stream->Write(m_logBuffer);
+                m_logBuffer.clear();
+            }
+        }
+    }
+#endif
 }

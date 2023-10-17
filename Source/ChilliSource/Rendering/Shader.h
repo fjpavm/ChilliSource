@@ -1,6 +1,6 @@
 //
 //  Shader.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 07/07/2014.
 //
 //  The MIT License (MIT)
@@ -31,6 +31,10 @@
 #define _CHILLISOURCE_RENDERING_SHADER_H_
 
 #include <ChilliSource/ChilliSource.h>
+#include <ChilliSource/Rendering/Shader/CSShaderProvider.h>
+#include <ChilliSource/Rendering/Shader/RenderShader.h>
+#include <ChilliSource/Rendering/Shader/RenderShaderManager.h>
+#include <ChilliSource/Rendering/Shader/RenderShaderVariables.h>
 #include <ChilliSource/Rendering/Shader/Shader.h>
 
 #endif

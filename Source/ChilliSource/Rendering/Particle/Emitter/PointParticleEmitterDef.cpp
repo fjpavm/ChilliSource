@@ -1,6 +1,6 @@
 //
 //  PointParticleEmitterDef.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 02/11/2014.
 //
 //  The MIT License (MIT)
@@ -32,38 +32,35 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		CS_DEFINE_NAMEDTYPE(PointParticleEmitterDef);
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		PointParticleEmitterDef::PointParticleEmitterDef(EmissionMode in_emissionMode, ParticlePropertyUPtr<f32> in_emissionRateProperty, ParticlePropertyUPtr<u32> in_particlesPerEmissionProperty,
-			ParticlePropertyUPtr<f32> in_emissionChanceProperty)
-			: ParticleEmitterDef(in_emissionMode, std::move(in_emissionRateProperty), std::move(in_particlesPerEmissionProperty), std::move(in_emissionChanceProperty))
-		{
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		PointParticleEmitterDef::PointParticleEmitterDef(const Json::Value& in_paramsJson, const LoadedDelegate& in_loadedDelegate)
-			: ParticleEmitterDef(in_paramsJson)
-		{
-			//call the loaded delegate if required.
-			if (in_loadedDelegate != nullptr)
-			{
-				in_loadedDelegate(this);
-			}
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		bool PointParticleEmitterDef::IsA(Core::InterfaceIDType in_interfaceId) const
-		{
-			return (ParticleEmitterDef::InterfaceID == in_interfaceId || PointParticleEmitterDef::InterfaceID == in_interfaceId);
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		ParticleEmitterUPtr PointParticleEmitterDef::CreateInstance(Core::dynamic_array<Particle>* in_particleArray) const
-		{
-			return ParticleEmitterUPtr(new PointParticleEmitter(this, in_particleArray));
-		}
-	}
+    CS_DEFINE_NAMEDTYPE(PointParticleEmitterDef);
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    PointParticleEmitterDef::PointParticleEmitterDef(EmissionMode in_emissionMode, ParticlePropertyUPtr<f32> in_emissionRateProperty, ParticlePropertyUPtr<u32> in_particlesPerEmissionProperty,
+        ParticlePropertyUPtr<f32> in_emissionChanceProperty)
+        : ParticleEmitterDef(in_emissionMode, std::move(in_emissionRateProperty), std::move(in_particlesPerEmissionProperty), std::move(in_emissionChanceProperty))
+    {
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    PointParticleEmitterDef::PointParticleEmitterDef(const Json::Value& in_paramsJson, const LoadedDelegate& in_loadedDelegate)
+        : ParticleEmitterDef(in_paramsJson)
+    {
+        //call the loaded delegate if required.
+        if (in_loadedDelegate != nullptr)
+        {
+            in_loadedDelegate(this);
+        }
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    bool PointParticleEmitterDef::IsA(InterfaceIDType in_interfaceId) const
+    {
+        return (ParticleEmitterDef::InterfaceID == in_interfaceId || PointParticleEmitterDef::InterfaceID == in_interfaceId);
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    ParticleEmitterUPtr PointParticleEmitterDef::CreateInstance(dynamic_array<Particle>* in_particleArray) const
+    {
+        return ParticleEmitterUPtr(new PointParticleEmitter(this, in_particleArray));
+    }
 }

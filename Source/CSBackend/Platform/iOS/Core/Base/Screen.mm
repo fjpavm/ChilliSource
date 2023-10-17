@@ -1,6 +1,6 @@
 //
 //  Screen.mm
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 25/04/2014.
 //
 //  The MIT License (MIT)
@@ -28,6 +28,9 @@
 
 #ifdef CS_TARGETPLATFORM_IOS
 
+#import <ChilliSource/Core/Base/Application.h>
+#import <ChilliSource/Core/Threading/TaskScheduler.h>
+
 #import <CSBackend/Platform/iOS/Core/Base/CSAppDelegate.h>
 #import <CSBackend/Platform/iOS/Core/Base/Screen.h>
 
@@ -51,13 +54,13 @@ namespace CSBackend
             ///
             /// @return The iOS device resolution.
             //----------------------------------------------------
-            CSCore::Vector2 CalculateResolution(UIInterfaceOrientation in_orientation, CGSize in_dipsSize, f32 in_pixelScaleFactor)
+            ChilliSource::Vector2 CalculateResolution(UIInterfaceOrientation in_orientation, CGSize in_dipsSize, f32 in_pixelScaleFactor)
             {
-                CSCore::Vector2 resolution(in_dipsSize.width * in_pixelScaleFactor, in_dipsSize.height * in_pixelScaleFactor);
+                ChilliSource::Vector2 resolution(in_dipsSize.width * in_pixelScaleFactor, in_dipsSize.height * in_pixelScaleFactor);
                 
                 if (in_orientation == UIInterfaceOrientationLandscapeLeft || in_orientation == UIInterfaceOrientationLandscapeRight)
                 {
-                    resolution = CSCore::Vector2(resolution.y, resolution.x);
+                    resolution = ChilliSource::Vector2(resolution.y, resolution.x);
                 }
                 
                 return resolution;
@@ -73,9 +76,9 @@ namespace CSBackend
             ///
             /// @return The iOS device resolution.
             //----------------------------------------------------
-            CSCore::Vector2 CalculateResolution(CGSize in_dipsSize, f32 in_pixelScaleFactor)
+            ChilliSource::Vector2 CalculateResolution(CGSize in_dipsSize, f32 in_pixelScaleFactor)
             {
-                CSCore::Vector2 resolution(std::round(in_dipsSize.width * in_pixelScaleFactor), std::round(in_dipsSize.height * in_pixelScaleFactor));
+                ChilliSource::Vector2 resolution(std::round(in_dipsSize.width * in_pixelScaleFactor), std::round(in_dipsSize.height * in_pixelScaleFactor));
                 return resolution;
             }
             //----------------------------------------------------
@@ -86,6 +89,7 @@ namespace CSBackend
             /// is only the case below iOS 8, and this is
             /// effectively a check for pre-iOS 8.
             //----------------------------------------------------
+#if CS_ENABLE_DEBUG
             bool ShouldCalculateBasedOnOrientation()
             {
 #ifdef NSFoundationVersionNumber_iOS_7_1
@@ -94,43 +98,26 @@ namespace CSBackend
                 return true;
 #endif
             }
+#endif
         }
         
         CS_DEFINE_NAMEDTYPE(Screen);
         //-------------------------------------------------------
         //-------------------------------------------------------
-        Screen::Screen()
+        Screen::Screen(const ChilliSource::ScreenInfo& screenInfo)
+            : m_screenInfo(screenInfo)
         {
-            @autoreleasepool
-            {
-                if (ShouldCalculateBasedOnOrientation() == false)
-                {
-                    //get resolution for iOS 8 and higher.
-                    m_densityScale = [UIScreen mainScreen].nativeScale;
-                    m_resolution = CalculateResolution([[UIScreen mainScreen] bounds].size, m_densityScale);
-                }
-                else
-                {
-                    //get resolution for pre-iOS 8 devices.
-                    m_densityScale = [UIScreen mainScreen].scale;
-                    m_resolution = CalculateResolution([[CSAppDelegate sharedInstance] viewController].interfaceOrientation, [[UIScreen mainScreen] bounds].size, m_densityScale);
-                }
-                
-                m_invDensityScale = 1.0f / m_densityScale;
-            }
-            
-            m_supportedResolutions.push_back(CSCore::Integer2((s32)m_resolution.x, (s32)m_resolution.y));
-            m_supportedResolutions.push_back(CSCore::Integer2((s32)m_resolution.y, (s32)m_resolution.x));
+            m_resolution = m_screenInfo.GetInitialResolution();
         }
         //-------------------------------------------------------
         //-------------------------------------------------------
-        bool Screen::IsA(CSCore::InterfaceIDType in_interfaceId) const
+        bool Screen::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
         {
-            return (CSCore::Screen::InterfaceID == in_interfaceId || Screen::InterfaceID == in_interfaceId);
+            return (ChilliSource::Screen::InterfaceID == in_interfaceId || Screen::InterfaceID == in_interfaceId);
         }
         //-----------------------------------------------------------
         //-----------------------------------------------------------
-        const CSCore::Vector2& Screen::GetResolution() const
+        const ChilliSource::Vector2& Screen::GetResolution() const
         {
             return m_resolution;
         }
@@ -138,35 +125,35 @@ namespace CSBackend
         //-----------------------------------------------------------
         f32 Screen::GetDensityScale() const
         {
-            return m_densityScale;
+            return m_screenInfo.GetDensityScale();
         }
         //----------------------------------------------------------
         //-----------------------------------------------------------
         f32 Screen::GetInverseDensityScale() const
         {
-            return m_invDensityScale;
+            return m_screenInfo.GetInverseDensityScale();
         }
         //-----------------------------------------------------------
         //-----------------------------------------------------------
-        CSCore::IConnectableEvent<Screen::ResolutionChangedDelegate>& Screen::GetResolutionChangedEvent()
+        ChilliSource::IConnectableEvent<Screen::ResolutionChangedDelegate>& Screen::GetResolutionChangedEvent()
         {
             return m_resolutionChangedEvent;
         }
         //-----------------------------------------------------------
         //-----------------------------------------------------------
-        CSCore::IConnectableEvent<Screen::DisplayModeChangedDelegate>& Screen::GetDisplayModeChangedEvent()
+        ChilliSource::IConnectableEvent<Screen::DisplayModeChangedDelegate>& Screen::GetDisplayModeChangedEvent()
         {
             return m_displayModeChangedEvent;
         }
         //----------------------------------------------------------
         //----------------------------------------------------------
-        std::vector<CSCore::Integer2> Screen::GetSupportedResolutions() const
+        std::vector<ChilliSource::Integer2> Screen::GetSupportedFullscreenResolutions() const
         {
-            return m_supportedResolutions;
+            return m_screenInfo.GetSupportedFullscreenResolutions();
         }
         //----------------------------------------------------------
 		//----------------------------------------------------------
-		void Screen::SetResolution(const CSCore::Integer2& in_size)
+		void Screen::SetResolution(const ChilliSource::Integer2& in_size)
 		{
 			CS_LOG_WARNING("Screen::SetResolution has no effect on iOS");
 		}
@@ -182,8 +169,11 @@ namespace CSBackend
         {
             CS_ASSERT(ShouldCalculateBasedOnOrientation() == true, "OnOrientationChanged() should not get called on devices that do not require orientation based calculations.");
             
-            m_resolution = CalculateResolution(in_orientation, [[UIScreen mainScreen] bounds].size, [UIScreen mainScreen].scale);
-            m_resolutionChangedEvent.NotifyConnections(m_resolution);
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_mainThread, [=](const ChilliSource::TaskContext& taskContext)
+            {
+                m_resolution = CalculateResolution(in_orientation, [[UIScreen mainScreen] bounds].size, [UIScreen mainScreen].scale);
+                m_resolutionChangedEvent.NotifyConnections(m_resolution);
+            });
         }
         //-----------------------------------------------------------
         //-----------------------------------------------------------
@@ -191,8 +181,11 @@ namespace CSBackend
         {
             CS_ASSERT(ShouldCalculateBasedOnOrientation() == false, "OnResolutionChanged() should not get called on devices that require orientation based calculations.");
             
-            m_resolution = CalculateResolution(in_dipsSize, m_densityScale);
-            m_resolutionChangedEvent.NotifyConnections(m_resolution);
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_mainThread, [=](const ChilliSource::TaskContext& taskContext)
+            {
+                m_resolution = CalculateResolution(in_dipsSize, m_screenInfo.GetDensityScale());
+                m_resolutionChangedEvent.NotifyConnections(m_resolution);
+            });
         }
     }
 }

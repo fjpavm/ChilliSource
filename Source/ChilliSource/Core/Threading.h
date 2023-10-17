@@ -1,6 +1,6 @@
 //
 //  Threading.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 07/07/2014.
 //
 //  The MIT License (MIT)
@@ -30,7 +30,11 @@
 #define _CHILLISOURCE_CORE_THREADING_H_
 
 #include <ChilliSource/ChilliSource.h>
+#include <ChilliSource/Core/Threading/SingleThreadTaskPool.h>
+#include <ChilliSource/Core/Threading/Task.h>
+#include <ChilliSource/Core/Threading/TaskContext.h>
+#include <ChilliSource/Core/Threading/TaskPool.h>
 #include <ChilliSource/Core/Threading/TaskScheduler.h>
-#include <ChilliSource/Core/Threading/ThreadPool.h>
+#include <ChilliSource/Core/Threading/TaskType.h>
 
 #endif

@@ -1,6 +1,6 @@
 //
 //  RandomConstantParticleProperty.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 26/10/2014.
 //
 //  The MIT License (MIT)
@@ -35,55 +35,52 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		//------------------------------------------------------------------------------
-		/// A particle property for getting a random value between the given lower and
-        /// upper value.
-		///
-		/// @author Ian Copland
-		//------------------------------------------------------------------------------
-		template <typename TPropertyType> class RandomConstantParticleProperty final : public ParticleProperty<TPropertyType>
-		{
-		public:
-			//------------------------------------------------------------------------------
-			/// Constructor.
-			///
-			/// @author Ian Copland
-			///
-			/// @param The lower value.
-			/// @param The upper value.
-			//------------------------------------------------------------------------------
-			RandomConstantParticleProperty(TPropertyType in_lowerValue, TPropertyType in_upperValue);
-			//------------------------------------------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @param The normalised (0.0 - 1.0) particle effect playback progress. This is
-            /// ignored for a random property.
-			///
-			/// @return a random value between the lower and upper values the property was
-            /// created with.
-			//------------------------------------------------------------------------------
-			TPropertyType GenerateValue(f32 in_playbackProgress) const override;
-            
-		private:
-			TPropertyType m_lowerValue;
-			TPropertyType m_upperValue;
-		};
+    //------------------------------------------------------------------------------
+    /// A particle property for getting a random value between the given lower and
+    /// upper value.
+    ///
+    /// @author Ian Copland
+    //------------------------------------------------------------------------------
+    template <typename TPropertyType> class RandomConstantParticleProperty final : public ParticleProperty<TPropertyType>
+    {
+    public:
+        //------------------------------------------------------------------------------
+        /// Constructor.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The lower value.
+        /// @param The upper value.
+        //------------------------------------------------------------------------------
+        RandomConstantParticleProperty(TPropertyType in_lowerValue, TPropertyType in_upperValue);
+        //------------------------------------------------------------------------------
+        /// @author Ian Copland
+        ///
+        /// @param The normalised (0.0 - 1.0) particle effect playback progress. This is
+        /// ignored for a random property.
+        ///
+        /// @return a random value between the lower and upper values the property was
+        /// created with.
+        //------------------------------------------------------------------------------
+        TPropertyType GenerateValue(f32 in_playbackProgress) const override;
         
-        //------------------------------------------------------------------------------
-        //------------------------------------------------------------------------------
-        template <typename TPropertyType> RandomConstantParticleProperty<TPropertyType>::RandomConstantParticleProperty(TPropertyType in_lowerValue, TPropertyType in_upperValue)
-            : m_lowerValue(in_lowerValue), m_upperValue(in_upperValue)
-        {
-        }
-        //------------------------------------------------------------------------------
-        //------------------------------------------------------------------------------
-        template <typename TPropertyType> TPropertyType RandomConstantParticleProperty<TPropertyType>::GenerateValue(f32 in_playbackProgress) const
-        {
-            return Core::Random::Generate(m_lowerValue, m_upperValue);
-        }
-	}
+    private:
+        TPropertyType m_lowerValue;
+        TPropertyType m_upperValue;
+    };
+    
+    //------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    template <typename TPropertyType> RandomConstantParticleProperty<TPropertyType>::RandomConstantParticleProperty(TPropertyType in_lowerValue, TPropertyType in_upperValue)
+        : m_lowerValue(in_lowerValue), m_upperValue(in_upperValue)
+    {
+    }
+    //------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    template <typename TPropertyType> TPropertyType RandomConstantParticleProperty<TPropertyType>::GenerateValue(f32 in_playbackProgress) const
+    {
+        return Random::Generate(m_lowerValue, m_upperValue);
+    }
 }
 
 #endif

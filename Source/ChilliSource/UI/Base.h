@@ -1,6 +1,6 @@
 //
 //  Base.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 25/07/2014.
 //
 //  The MIT License (MIT)
@@ -32,11 +32,11 @@
 
 #include <ChilliSource/ChilliSource.h>
 #include <ChilliSource/UI/Base/Canvas.h>
-#include <ChilliSource/UI/Base/Component.h>
-#include <ChilliSource/UI/Base/ComponentDesc.h>
-#include <ChilliSource/UI/Base/ComponentFactory.h>
+#include <ChilliSource/UI/Base/CursorSystem.h>
+#include <ChilliSource/UI/Base/UIComponent.h>
+#include <ChilliSource/UI/Base/UIComponentDesc.h>
+#include <ChilliSource/UI/Base/UIComponentFactory.h>
 #include <ChilliSource/UI/Base/PropertyLink.h>
-#include <ChilliSource/UI/Base/SizePolicy.h>
 #include <ChilliSource/UI/Base/Widget.h>
 #include <ChilliSource/UI/Base/WidgetDef.h>
 #include <ChilliSource/UI/Base/WidgetDefProvider.h>

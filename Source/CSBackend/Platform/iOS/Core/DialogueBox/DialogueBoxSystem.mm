@@ -1,6 +1,6 @@
 //
 //  DialogueBoxSystem.mm
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 04/03/2014
 //
 //  The MIT License (MIT)
@@ -35,6 +35,7 @@
 
 #import <ChilliSource/Core/Base/Application.h>
 #import <ChilliSource/Core/Base/PlatformSystem.h>
+#import <ChilliSource/Core/Threading/TaskScheduler.h>
 
 #import <UIKit/UIKit.h>
 
@@ -42,60 +43,118 @@ namespace CSBackend
 {
 	namespace iOS
 	{
+        //TODO: Remove UIAlertView once we reach iOS 11 or 12
+        
         CS_DEFINE_NAMEDTYPE(DialogueBoxSystem);
         //----------------------------------------------------
         //----------------------------------------------------
         DialogueBoxSystem::DialogueBoxSystem()
         {
-            m_listener = [[DialogueBoxListener alloc] initWithDialogueBoxSystem:this];
+            if ([UIAlertController class] == nil)
+            {
+                m_listener = [[DialogueBoxListener alloc] initWithDialogueBoxSystem:this];
+            }
+            else
+            {
+                m_listener = nil;
+            }
         }
         //----------------------------------------------------
         //----------------------------------------------------
-        bool DialogueBoxSystem::IsA(CSCore::InterfaceIDType in_interfaceID) const
+        bool DialogueBoxSystem::IsA(ChilliSource::InterfaceIDType in_interfaceID) const
         {
-            return (DialogueBoxSystem::InterfaceID == in_interfaceID || CSCore::DialogueBoxSystem::InterfaceID == in_interfaceID);
+            return (DialogueBoxSystem::InterfaceID == in_interfaceID || ChilliSource::DialogueBoxSystem::InterfaceID == in_interfaceID);
         }
         //-----------------------------------------------------
         //-----------------------------------------------------
-        void DialogueBoxSystem::ShowSystemDialogue(u32 in_id, const CSCore::DialogueBoxSystem::DialogueDelegate& in_delegate, const std::string& in_title, const std::string& in_message, const std::string& in_confirm)
+        void DialogueBoxSystem::ShowSystemDialogue(u32 in_id, const ChilliSource::DialogueBoxSystem::DialogueDelegate& in_delegate, const std::string& in_title, const std::string& in_message, const std::string& in_confirm)
         {
-            NSString* title = [NSStringUtils newNSStringWithUTF8String:in_title];
-            NSString* message = [NSStringUtils newNSStringWithUTF8String:in_message];
-            NSString* confirm = [NSStringUtils newNSStringWithUTF8String:in_confirm];
-            
-            UIAlertView* pConfirm = [[UIAlertView alloc] initWithTitle:title message:message delegate:m_listener cancelButtonTitle:confirm otherButtonTitles:nil];
-            
-            pConfirm.tag = in_id;
-            [pConfirm show];
-            [pConfirm release];
-            
-            [title release];
-            [message release];
-            [confirm release];
+            CS_RELEASE_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread(), "System Dialogue requested outside of main thread.");
             
             m_activeSysConfirmDelegate = in_delegate;
+            
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& taskContext)
+            {
+                NSString* title = [NSStringUtils newNSStringWithUTF8String:in_title];
+                NSString* message = [NSStringUtils newNSStringWithUTF8String:in_message];
+                NSString* confirm = [NSStringUtils newNSStringWithUTF8String:in_confirm];
+                
+                //UIAlertController was only introduced in iOS 8
+                if ([UIAlertController class])
+                {
+                    //Create a new alert with a confirm action
+                    UIAlertController* alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:confirm style:UIAlertActionStyleDefault handler:^(UIAlertAction* action)
+                    {
+                        OnSystemConfirmDialogResult(in_id, ChilliSource::DialogueBoxSystem::DialogueResult::k_confirm);
+                    }];
+                    [alertController addAction:confirmAction];
+                    
+                    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+                }
+                else
+                {
+                    UIAlertView* pConfirm = [[UIAlertView alloc] initWithTitle:title message:message delegate:m_listener cancelButtonTitle:confirm otherButtonTitles:nil];
+                    pConfirm.tag = in_id;
+                    [pConfirm show];
+                    [pConfirm release];
+                }
+                
+                [title release];
+                [message release];
+                [confirm release];
+            });
         }
         //-----------------------------------------------------
         //-----------------------------------------------------
-        void DialogueBoxSystem::ShowSystemConfirmDialogue(u32 in_id, const CSCore::DialogueBoxSystem::DialogueDelegate& in_delegate, const std::string& in_title, const std::string& in_message, const std::string& in_confirm, const std::string& in_cancel)
+        void DialogueBoxSystem::ShowSystemConfirmDialogue(u32 in_id, const ChilliSource::DialogueBoxSystem::DialogueDelegate& in_delegate, const std::string& in_title, const std::string& in_message, const std::string& in_confirm, const std::string& in_cancel)
         {
-            NSString* title = [NSStringUtils newNSStringWithUTF8String:in_title];
-            NSString* message = [NSStringUtils newNSStringWithUTF8String:in_message];
-            NSString* confirm = [NSStringUtils newNSStringWithUTF8String:in_confirm];
-            NSString* cancel = [NSStringUtils newNSStringWithUTF8String:in_cancel];
+            CS_RELEASE_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread(), "System Confirm Dialogue requested outside of main thread.");
             
-            UIAlertView* pConfirm = [[UIAlertView alloc] initWithTitle:title message:message delegate:m_listener cancelButtonTitle:cancel otherButtonTitles:confirm, nil];
+            m_activeSysConfirmDelegate = in_delegate;
             
-            pConfirm.tag = in_id;
-            [pConfirm show];
-            [pConfirm release];
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& taskContext)
+            {
+                NSString* title = [NSStringUtils newNSStringWithUTF8String:in_title];
+                NSString* message = [NSStringUtils newNSStringWithUTF8String:in_message];
+                NSString* confirm = [NSStringUtils newNSStringWithUTF8String:in_confirm];
+                NSString* cancel = [NSStringUtils newNSStringWithUTF8String:in_cancel];
+                
+                //UIAlertController was only introduced in iOS 8
+                if ([UIAlertController class])
+                {
+                    //Create a new alert with a confirm and cancel actions
+                    UIAlertController* alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+                    
+                    UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:confirm style:UIAlertActionStyleDefault handler:^(UIAlertAction* action)
+                    {
+                        OnSystemConfirmDialogResult(in_id, ChilliSource::DialogueBoxSystem::DialogueResult::k_confirm);
+                    }];
+                    
+                    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleDefault handler:^(UIAlertAction* action)
+                    {
+                        OnSystemConfirmDialogResult(in_id, ChilliSource::DialogueBoxSystem::DialogueResult::k_cancel);
+                    }];
+                    
+                    //The order they are added is the order they appear
+                    [alertController addAction:cancelAction];
+                    [alertController addAction:confirmAction];
+                    
+                    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+                }
+                else
+                {
+                    UIAlertView* pConfirm = [[UIAlertView alloc] initWithTitle:title message:message delegate:m_listener cancelButtonTitle:cancel otherButtonTitles:confirm, nil];
+                    pConfirm.tag = in_id;
+                    [pConfirm show];
+                    [pConfirm release];
+                }
         
-            [title release];
-            [message release];
-            [confirm release];
-            [cancel release];
-            
-            m_activeSysConfirmDelegate = in_delegate;
+                [title release];
+                [message release];
+                [confirm release];
+                [cancel release];
+            });
         }
         //-----------------------------------------------------
         //-----------------------------------------------------
@@ -105,22 +164,27 @@ namespace CSBackend
         }
         //------------------------------------------------------
         //------------------------------------------------------
-        void DialogueBoxSystem::OnSystemConfirmDialogResult(s64 in_id, CSCore::DialogueBoxSystem::DialogueResult in_result)
+        void DialogueBoxSystem::OnSystemConfirmDialogResult(u32 in_id, ChilliSource::DialogueBoxSystem::DialogueResult in_result)
         {
-            if(m_activeSysConfirmDelegate)
-        	{
-                //we know the Id is in the range of a u32 as we set it when the confirm dialogue was created meaning we can cast to that.
-                u32 dialogueId = static_cast<u32>(in_id);
-                
-        		m_activeSysConfirmDelegate(dialogueId, in_result);
-        		m_activeSysConfirmDelegate = nullptr;
-        	}
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_mainThread, [=](const ChilliSource::TaskContext& taskContext)
+            {
+                if(m_activeSysConfirmDelegate)
+                {
+                    u32 dialogueId = in_id;
+                    
+                    m_activeSysConfirmDelegate(dialogueId, in_result);
+                    m_activeSysConfirmDelegate = nullptr;
+                }
+            });
         }
         //-----------------------------------------------------
         //-----------------------------------------------------
         DialogueBoxSystem::~DialogueBoxSystem()
         {
-            [m_listener release];
+            if(m_listener)
+            {
+                [m_listener release];
+            }
         }
 	}
 }

@@ -1,6 +1,6 @@
 //
 //  AccelerometerJavaInterface.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 10/06/2013.
 //
 //  The MIT License (MIT)
@@ -31,8 +31,8 @@
 #include <CSBackend/Platform/Android/Main/JNI/Input/Accelerometer/AccelerometerJavaInterface.h>
 
 #include <CSBackend/Platform/Android/Main/JNI/ForwardDeclarations.h>
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceManager.h>
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceUtils.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterfaceManager.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaUtils.h>
 #include <ChilliSource/Core/Math/Vector3.h>
 
 #include <jni.h>
@@ -84,7 +84,7 @@ namespace CSBackend
 		//-----------------------------------------------
 		/// Is A
 		//-----------------------------------------------
-		bool AccelerometerJavaInterface::IsA(CSCore::InterfaceIDType inInterfaceID) const
+		bool AccelerometerJavaInterface::IsA(ChilliSource::InterfaceIDType inInterfaceID) const
 		{
 			return (inInterfaceID == AccelerometerJavaInterface::InterfaceID);
 		}
@@ -130,7 +130,7 @@ namespace CSBackend
 		{
 			if (true == mbListening && nullptr != mAccelerationChangedDelegate)
 			{
-				mAccelerationChangedDelegate(CSCore::Vector3(infAccelerationX, infAccelerationY, infAccelerationZ));
+				mAccelerationChangedDelegate(ChilliSource::Vector3(infAccelerationX, infAccelerationY, infAccelerationZ));
 			}
 		}
 	}

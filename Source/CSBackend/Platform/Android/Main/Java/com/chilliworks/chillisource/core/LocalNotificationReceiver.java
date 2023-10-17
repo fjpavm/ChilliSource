@@ -1,6 +1,6 @@
 /**
  * LocalNotificationReceiver.java
- * Chilli Source
+ * ChilliSource
  * Created by Steven Hendrie on 24/10/2012.
  * 
  * The MIT License (MIT)
@@ -30,7 +30,7 @@ package com.chilliworks.chillisource.core;
 
 import java.util.Iterator;
 
-import com.chilliworks.chillisource.core.ResourceHelper;
+import com.chilliworks.chillisource.core.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -99,7 +99,7 @@ public class LocalNotificationReceiver extends BroadcastReceiver
 	        	intent.putExtra(strKey, mapParams.get(strKey).toString());
 	        }
 	       
-	        LocalNotificationNativeInterface localNotificationNI = (LocalNotificationNativeInterface)CSApplication.get().getSystem(LocalNotificationNativeInterface.InterfaceID);
+	        LocalNotificationNativeInterface localNotificationNI = (LocalNotificationNativeInterface)CSApplication.get().getSystem(LocalNotificationNativeInterface.INTERFACE_ID);
 	        if (localNotificationNI != null)
 	        {
 	        	localNotificationNI.onNotificationReceived(intent);
@@ -112,15 +112,15 @@ public class LocalNotificationReceiver extends BroadcastReceiver
 			{
 				s_wakeLock.release();
 			}
-			
+
 			PowerManager pm = (PowerManager) in_context.getSystemService(Context.POWER_SERVICE);
 			s_wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "NotificationWakeLock");
 			s_wakeLock.acquire();
-			
+
 			//pull out the information from the intent
 			Bundle params = in_intent.getExtras();
 			CharSequence title = params.getString(k_paramNameTitle);
-			CharSequence text =  params.getString(k_paramNameBody);		
+			CharSequence text =  params.getString(k_paramNameBody);
 			int intentId = params.getInt(LocalNotification.k_paramNameNotificationId);
 
 			int paramSize = params.size();
@@ -130,11 +130,11 @@ public class LocalNotificationReceiver extends BroadcastReceiver
 			int paramNumber = 0;
 			while(iter.hasNext())
 			{
-				keys[paramNumber] = iter.next();			
+				keys[paramNumber] = iter.next();
 				values[paramNumber] = params.get(keys[paramNumber]).toString();
 				++paramNumber;
-			}	
-	
+			}
+
 			Intent openAppIntent = new Intent(in_context, CSActivity.class);
 			openAppIntent.setAction("android.intent.action.MAIN");
 			openAppIntent.addCategory("android.intent.category.LAUNCHER");
@@ -143,32 +143,37 @@ public class LocalNotificationReceiver extends BroadcastReceiver
 			openAppIntent.putExtra(k_arrayOfValuesName, values);
 			openAppIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			PendingIntent sContentIntent = PendingIntent.getActivity(in_context, intentId, openAppIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-			
+
+			int smallIconId = 0;
+			if (R.doesExist(in_context, R.Type.DRAWABLE, "ic_stat_notify") == true)
+			{
+				smallIconId = R.getId(in_context, R.Type.DRAWABLE, "ic_stat_notify");
+			}
+
+			int largeIconId = smallIconId;
+			if (R.doesExist(in_context, R.Type.DRAWABLE, "ic_stat_notify_large") == true)
+			{
+				largeIconId = R.getId(in_context, R.Type.DRAWABLE, "ic_stat_notify_large");
+			}
+
 			Bitmap largeIconBitmap = null;
-			int LargeIconID = ResourceHelper.GetDynamicResourceIDForField(in_context, ResourceHelper.RESOURCE_SUBCLASS.RESOURCE_DRAWABLE, "ic_stat_notify_large");
-			
-			//Use small icon if no large icon
-			if(LargeIconID == 0)
+			if(largeIconId > 0)
 			{
-				LargeIconID = ResourceHelper.GetDynamicResourceIDForField(in_context, ResourceHelper.RESOURCE_SUBCLASS.RESOURCE_DRAWABLE, "ic_stat_notify");
+				largeIconBitmap = BitmapFactory.decodeResource(in_context.getResources(), largeIconId);
 			}
-			
-			if(LargeIconID > 0)
-			{
-				largeIconBitmap = BitmapFactory.decodeResource(in_context.getResources(), LargeIconID);
-			}
-			
+
 			Notification notification = new NotificationCompat.Builder(in_context)
 				.setContentTitle(title)
 				.setContentText(text)
-				.setSmallIcon(ResourceHelper.GetDynamicResourceIDForField(in_context, ResourceHelper.RESOURCE_SUBCLASS.RESOURCE_DRAWABLE, "ic_stat_notify"))
+				.setSmallIcon(smallIconId)
 				.setLargeIcon(largeIconBitmap)
 				.setContentIntent(sContentIntent)
 				.build();
-			
+
+			notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 			NotificationManager notificationManager = (NotificationManager) in_context.getSystemService(Context.NOTIFICATION_SERVICE);
 			notificationManager.notify(intentId, notification);
-			Toast.makeText(in_context, text, Toast.LENGTH_LONG).show();	 
+			Toast.makeText(in_context, text, Toast.LENGTH_LONG).show();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 //
 //  VerticalTextJustification.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 10/11/2014.
 //
 //  The MIT License (MIT)
@@ -33,30 +33,27 @@
 
 namespace ChilliSource
 {
-    namespace Rendering
+    //-------------------------------------------------------------------
+    /// An enum describing the vertical justification of text.
+    ///
+    /// @author Ian Copland
+    //-------------------------------------------------------------------
+    enum class VerticalTextJustification
     {
-        //-------------------------------------------------------------------
-        /// An enum describing the vertical justification of text.
-        ///
-        /// @author Ian Copland
-        //-------------------------------------------------------------------
-        enum class VerticalTextJustification
-        {
-            k_bottom,
-            k_centre,
-            k_top
-        };
-        //-------------------------------------------------------------------
-        /// Parses a vertical text justification from a string.
-        ///
-        /// @author Ian Copland
-        ///
-        /// @param The string.
-        ///
-        /// @return The vertical text justification.
-        //-------------------------------------------------------------------
-        VerticalTextJustification ParseVerticalTextJustification(const std::string& in_string);
-    }
+        k_bottom,
+        k_centre,
+        k_top
+    };
+    //-------------------------------------------------------------------
+    /// Parses a vertical text justification from a string.
+    ///
+    /// @author Ian Copland
+    ///
+    /// @param The string.
+    ///
+    /// @return The vertical text justification.
+    //-------------------------------------------------------------------
+    VerticalTextJustification ParseVerticalTextJustification(const std::string& in_string);
 }
 
 #endif

@@ -1,6 +1,6 @@
 //
 //  CoreTimer.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 09/11/2010.
 //
 //  The MIT License (MIT)
@@ -30,28 +30,25 @@
 
 namespace ChilliSource
 {
-	namespace Core
-	{
-        Event<TimeEventDelegate> CoreTimer::mOnTimerUpdateEvent;
-        
-		//----------------------------------------------------
-		/// Get Timer Update Event
-		///
-		/// @return The event
-		//----------------------------------------------------
-		IConnectableEvent<TimeEventDelegate>& CoreTimer::GetTimerUpdateEvent()
-		{
-			return mOnTimerUpdateEvent;
-		}
-        //----------------------------------------------------
-        /// Update
-        ///
-        /// @param Time since last frame
-        //----------------------------------------------------
-		void CoreTimer::Update(f32 infDT)
-		{
-			mOnTimerUpdateEvent.NotifyConnections(infDT);
-		}
-	}
+    Event<TimeEventDelegate> CoreTimer::mOnTimerUpdateEvent;
+    
+    //----------------------------------------------------
+    /// Get Timer Update Event
+    ///
+    /// @return The event
+    //----------------------------------------------------
+    IConnectableEvent<TimeEventDelegate>& CoreTimer::GetTimerUpdateEvent()
+    {
+        return mOnTimerUpdateEvent;
+    }
+    //----------------------------------------------------
+    /// Update
+    ///
+    /// @param Time since last frame
+    //----------------------------------------------------
+    void CoreTimer::Update(f32 infDT)
+    {
+        mOnTimerUpdateEvent.NotifyConnections(infDT);
+    }
 }
 

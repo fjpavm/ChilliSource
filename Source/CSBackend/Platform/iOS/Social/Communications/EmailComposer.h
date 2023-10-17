@@ -1,6 +1,6 @@
 //
 //  EmailComposer.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Stuart McGaw on 09/06/2011.
 //
 //  The MIT License (MIT)
@@ -34,6 +34,8 @@
 
 #import <MessageUI/MessageUI.h>
 
+#import <mutex>
+
 @class EmailComposerDelegate;
 
 namespace CSBackend
@@ -45,7 +47,7 @@ namespace CSBackend
         ///
         /// @author S McGaw
         //-------------------------------------------------------------
-        class EmailComposer final : public CSSocial::EmailComposer
+        class EmailComposer final : public ChilliSource::EmailComposer
 		{
 		public:
             CS_DECLARE_NAMEDTYPE(EmailComposer);
@@ -58,7 +60,7 @@ namespace CSBackend
 			/// @param The interface Id.
 			/// @return Whether system is of given type.
 			//-------------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+			bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
             //-------------------------------------------------------
             /// Displays the email activity with the given recipients,
             /// subject and contents.
@@ -90,11 +92,10 @@ namespace CSBackend
             void PresentWithAttachment(const std::vector<std::string>& in_recipientAddresses, const std::string& in_subject, const std::string& in_contents, ContentFormat in_contentFormat,
                                        const Attachment& in_attachment, const SendResultDelegate & in_callback) override;
             //-------------------------------------------------------
-            /// Dismisses the activity if it is currently displayed.
-            ///
-            /// @author S Downie
+            /// Determines whether or not the composer is presented.
+            /// @author Jordan Brown
             //-------------------------------------------------------
-			void Dismiss() override;
+            bool IsPresented() override;
             //-------------------------------------------------------
             /// Called when the result is received from the email
             /// composition view controller. This is for internal
@@ -104,7 +105,7 @@ namespace CSBackend
             //-------------------------------------------------------
 			void OnResult(MFMailComposeViewController* in_viewController, MFMailComposeResult in_result);
 		private:
-            friend CSSocial::EmailComposerUPtr CSSocial::EmailComposer::Create();
+            friend ChilliSource::EmailComposerUPtr ChilliSource::EmailComposer::Create();
             
             //-------------------------------------------------------
             /// This checks whether or not the current iOS device
@@ -141,11 +142,11 @@ namespace CSBackend
             //------------------------------------------------------
             void OnDestroy() override;
             
-            bool m_isPresented;
             SendResultDelegate m_resultDelegate;
 			EmailComposerDelegate* m_emailComposerDelegate;
 			MFMailComposeViewController* m_viewController;
             UIViewController* m_rootViewController;
+            bool m_isPresented = false;
 		};
 		 
 	}

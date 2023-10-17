@@ -1,6 +1,6 @@
 //
 //  Model.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 07/07/2014.
 //
 //  The MIT License (MIT)
@@ -31,15 +31,26 @@
 #define _CHILLISOURCE_RENDERING_MODEL_H_
 
 #include <ChilliSource/ChilliSource.h>
-#include <ChilliSource/Rendering/Model/AnimatedMeshComponent.h>
+#include <ChilliSource/Rendering/Model/AnimatedModelComponent.h>
 #include <ChilliSource/Rendering/Model/CSAnimProvider.h>
 #include <ChilliSource/Rendering/Model/CSModelProvider.h>
-#include <ChilliSource/Rendering/Model/Mesh.h>
-#include <ChilliSource/Rendering/Model/MeshDescriptor.h>
+#include <ChilliSource/Rendering/Model/IndexFormat.h>
+#include <ChilliSource/Rendering/Model/MeshDesc.h>
+#include <ChilliSource/Rendering/Model/Model.h>
+#include <ChilliSource/Rendering/Model/ModelDesc.h>
+#include <ChilliSource/Rendering/Model/PolygonType.h>
+#include <ChilliSource/Rendering/Model/PrimitiveModelFactory.h>
+#include <ChilliSource/Rendering/Model/RenderDynamicMesh.h>
+#include <ChilliSource/Rendering/Model/RenderMesh.h>
+#include <ChilliSource/Rendering/Model/RenderMeshBatch.h>
+#include <ChilliSource/Rendering/Model/RenderMeshManager.h>
+#include <ChilliSource/Rendering/Model/RenderSkinnedAnimation.h>
 #include <ChilliSource/Rendering/Model/Skeleton.h>
+#include <ChilliSource/Rendering/Model/SkeletonDesc.h>
 #include <ChilliSource/Rendering/Model/SkinnedAnimation.h>
 #include <ChilliSource/Rendering/Model/SkinnedAnimationGroup.h>
-#include <ChilliSource/Rendering/Model/StaticMeshComponent.h>
-#include <ChilliSource/Rendering/Model/SubMesh.h>
+#include <ChilliSource/Rendering/Model/SmallMeshBatcher.h>
+#include <ChilliSource/Rendering/Model/StaticModelComponent.h>
+#include <ChilliSource/Rendering/Model/VertexFormat.h>
 
 #endif

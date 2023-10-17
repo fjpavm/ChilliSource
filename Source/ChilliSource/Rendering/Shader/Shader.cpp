@@ -1,8 +1,4 @@
 //
-//  Shader.cpp
-//  Chilli Source
-//  Created by Scott Downie on 22/11/2010.
-//
 //  The MIT License (MIT)
 //
 //  Copyright (c) 2010 Tag Games Limited
@@ -28,24 +24,60 @@
 
 #include <ChilliSource/Rendering/Shader/Shader.h>
 
-#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS) || defined(CS_TARGETPLATFORM_LINUX)
-#include <CSBackend/Rendering/OpenGL/Shader/Shader.h>
-#endif
+#include <ChilliSource/Core/Base/Application.h>
+#include <ChilliSource/Rendering/Shader/RenderShaderManager.h>
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-        CS_DEFINE_NAMEDTYPE(Shader);
-        //----------------------------------------------------------
-        //----------------------------------------------------------
-        ShaderUPtr Shader::Create()
+    CS_DEFINE_NAMEDTYPE(Shader);
+
+    //------------------------------------------------------------------------------
+    ShaderUPtr Shader::Create() noexcept
+    {
+        return ShaderUPtr(new Shader());
+    }
+
+    //------------------------------------------------------------------------------
+    bool Shader::IsA(InterfaceIDType interfaceId) const noexcept
+    {
+        return Shader::InterfaceID == interfaceId;
+    }
+
+    //------------------------------------------------------------------------------
+    void Shader::Build(const std::string& vertexShader, const std::string& fragmentShader) noexcept
+    {
+        DestroyRenderShader();
+        
+        auto renderShaderManager = Application::Get()->GetSystem<RenderShaderManager>();
+        CS_ASSERT(renderShaderManager, "RenderShaderManager must exist.");
+        
+        m_renderShader = renderShaderManager->CreateRenderShader(vertexShader, fragmentShader);
+    }
+
+    //------------------------------------------------------------------------------
+    const RenderShader* Shader::GetRenderShader() const noexcept
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loaded, "Cannot access shader before it is loaded.");
+        CS_ASSERT(m_renderShader, "Cannot access shader which has not been built.");
+        
+        return m_renderShader.get();
+    }
+    
+    //------------------------------------------------------------------------------
+    void Shader::DestroyRenderShader() noexcept
+    {
+        if (m_renderShader)
         {
-#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS) || defined(CS_TARGETPLATFORM_LINUX)
-            return ShaderUPtr(new CSBackend::OpenGL::Shader());
-#else
-            return nullptr;
-#endif
+            auto renderShaderManager = Application::Get()->GetSystem<RenderShaderManager>();
+            CS_ASSERT(renderShaderManager, "RenderShaderManager must exist.");
+            
+            renderShaderManager->DestroyRenderShader(std::move(m_renderShader));
         }
+    }
+
+    //------------------------------------------------------------------------------
+    Shader::~Shader() noexcept
+    {
+        DestroyRenderShader();
     }
 }

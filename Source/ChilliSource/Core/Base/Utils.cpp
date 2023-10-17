@@ -1,6 +1,6 @@
 //
 //  Utils.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Andrew Glass on 09/08/2012.
 //
 //  The MIT License (MIT)
@@ -34,106 +34,103 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    namespace Utils
     {
-        namespace Utils
+        bool FileToString(StorageLocation ineStorageLocation, const std::string& instrPath, std::string& outstrFileContent)
         {
-            bool FileToString(StorageLocation ineStorageLocation, const std::string & instrPath, std::string & outstrFileContent)
+            auto pFile = Application::Get()->GetFileSystem()->CreateTextInputStream(ineStorageLocation, instrPath);
+            
+            if(pFile == nullptr)
             {
-                FileStreamSPtr pFile = Application::Get()->GetFileSystem()->CreateFileStream(ineStorageLocation, instrPath, FileMode::k_read);
-                
-                if(!pFile || pFile->IsOpen() == false)
-                {
-                    CS_LOG_WARNING("Utils::FileToString: Could not open file: " + instrPath);
-                    return false;
-                }
-
-                pFile->GetAll(outstrFileContent);
-                
+                CS_LOG_WARNING("Utils::FileToString: Could not open file: " + instrPath);
+                return false;
+            }
+            
+            outstrFileContent = pFile->ReadAll();
+            
+            return true;
+        }
+        
+        TextOutputStreamUPtr StringToFile(StorageLocation ineStorageLocation, const std::string& instrPath, const std::string& instrFileOut)
+        {
+            auto pFile = Application::Get()->GetFileSystem()->CreateTextOutputStream(ineStorageLocation, instrPath, FileWriteMode::k_overwrite);
+            
+            if(pFile == nullptr)
+            {
+                CS_LOG_WARNING("Utils::StringToFile: Could not open file: " + instrPath);
+                return nullptr;
+            }
+            
+            pFile->Write(instrFileOut);
+            
+            return pFile;
+        }
+        
+        bool ZlibCompressString(const std::string &instrUncompressed, std::string &outstrCompressed)
+        {
+            uLongf maxCompSize = (uLongf)(instrUncompressed.size() * 1.1f + 12);
+            
+            outstrCompressed.clear();
+            outstrCompressed.resize(maxCompSize);
+            
+            s32 zlibResult = compress2(
+                                      (Bytef*)(outstrCompressed.data()),
+                                      &maxCompSize,
+                                      (Bytef*)instrUncompressed.data(),
+                                      uLong(instrUncompressed.size()),
+                                       Z_BEST_COMPRESSION);
+            
+            
+            if(zlibResult == Z_OK)
+            {
+                outstrCompressed.resize(maxCompSize);
                 return true;
             }
+            
+            outstrCompressed.clear();
+            return false;
+        }
 
-            FileStreamSPtr StringToFile(StorageLocation ineStorageLocation, const std::string & instrPath, const std::string& instrFileOut)
+        bool ZlibDecompressString(const std::string &instrCompressed, std::string& outstrUncompress,  u32 inOutputSizeGuess)
+        {
+            outstrUncompress.clear();
+            outstrUncompress.resize(inOutputSizeGuess);
+            
+            uLongf outBufferSize = inOutputSizeGuess;
+            s32 zlibResult = uncompress(
+                                        (Bytef*)(outstrUncompress.data()) ,
+                                        &outBufferSize,
+                                        (const Bytef*)instrCompressed.data(),
+                                        uLong(instrCompressed.size()));
+            
+            if(zlibResult == Z_OK)
             {
-                FileStreamSPtr pFile = Application::Get()->GetFileSystem()->CreateFileStream(ineStorageLocation, instrPath, FileMode::k_write);
-                
-                if(!pFile || pFile->IsOpen() == false)
-                {
-                    CS_LOG_WARNING("Utils::StringToFile: Could not open file: " + instrPath);
-                    return FileStreamSPtr();
-                }
-                
-                pFile->Write(instrFileOut);
-                
-                return pFile;    
+                outstrUncompress.resize(outBufferSize);
+                return true;
             }
-
-            bool ZlibCompressString(const std::string &instrUncompressed, std::string &outstrCompressed)
+            
+            outstrUncompress.clear();
+            return false;
+        }
+        //---------------------------------------------------------
+        //---------------------------------------------------------
+        u8 HexToDec(const u8* inpHex)
+        {
+            if(*inpHex >= '0' && *inpHex <= '9')
             {
-				uLongf maxCompSize = (uLongf)(instrUncompressed.size() * 1.1f + 12);
-                
-                outstrCompressed.clear();
-                outstrCompressed.resize(maxCompSize);
-                
-                s32 zlibResult = compress2(
-                                          (Bytef*)(outstrCompressed.data()),
-                                          &maxCompSize,
-                                          (Bytef*)instrUncompressed.data(),
-                                          instrUncompressed.size(),
-                                           Z_BEST_COMPRESSION);
-                
-                
-                if(zlibResult == Z_OK)
-                {
-                    outstrCompressed.resize(maxCompSize);
-                    return true;
-                }
-                
-                outstrCompressed.clear();
-                return false;
+                return *inpHex - '0';
             }
-
-            bool ZlibDecompressString(const std::string &instrCompressed, std::string& outstrUncompress,  u32 inOutputSizeGuess)
-            {
-                outstrUncompress.clear();
-                outstrUncompress.resize(inOutputSizeGuess);
-                
-                uLongf outBufferSize = inOutputSizeGuess;
-                s32 zlibResult = uncompress(
-                                            (Bytef*)(outstrUncompress.data()) ,
-                                            &outBufferSize,
-                                            (const Bytef*)instrCompressed.data(),
-                                            instrCompressed.size());
-                
-                if(zlibResult == Z_OK)
+            else
+                if(*inpHex >= 'A' && *inpHex <= 'F')
                 {
-                    outstrUncompress.resize(outBufferSize);
-                    return true;
-                }
-                
-                outstrUncompress.clear();
-                return false;
-            }
-            //---------------------------------------------------------
-            //---------------------------------------------------------
-            u8 HexToDec(const u8* inpHex)
-            {
-                if(*inpHex >= '0' && *inpHex <= '9')
-                {
-                    return *inpHex - '0';
+                    return 10 + (*inpHex - 'A');
                 }
                 else
-                    if(*inpHex >= 'A' && *inpHex <= 'F')
-                    {
-                        return 10 + (*inpHex - 'A');
-                    }
-                    else
-                    {
-                        CS_LOG_ERROR("Invalid hex value of \""+ToString(*inpHex)+"\"");
-                    }
-                
-                return -1;
-            }
+                {
+                    CS_LOG_ERROR("Invalid hex value of \""+ToString(*inpHex)+"\"");
+                }
+            
+            return -1;
         }
     }
 }

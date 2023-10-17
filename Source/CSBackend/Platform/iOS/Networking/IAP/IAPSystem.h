@@ -1,6 +1,6 @@
 //
 //  IAPSystem.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 12/06/2013.
 //
 //  The MIT License (MIT)
@@ -50,11 +50,24 @@ namespace CSBackend
         ///
         /// @author S Downie
         //----------------------------------------------------------------------------------
-        class IAPSystem final : public CSNetworking::IAPSystem
+        class IAPSystem final : public ChilliSource::IAPSystem
         {
         public:
 
             CS_DECLARE_NAMEDTYPE(IAPSystem);
+            
+            //---------------------------------------------------------------
+            /// This defines platform-specific extra product information.
+            ///
+            /// @author T Kane
+            //---------------------------------------------------------------
+            struct ExtraProductInfo final
+            {
+                std::string m_productId;            // Platform-specific product ID
+                std::string m_unformattedPrice;     // Unformatted price e.g. 1.00
+                std::string m_currencyCode;         // ISO 4217 currency code, e.g. GBP, USD
+            };
+            
             //---------------------------------------------------------------
             /// @author S Downie
             ///
@@ -62,7 +75,7 @@ namespace CSBackend
             ///
             /// @return Whether the class is of the given type
             //---------------------------------------------------------------
-            bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+            bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
             //---------------------------------------------------------------
             /// Inform the system of which products are available for
             /// purchase and whether they are managed or unmanaged
@@ -80,10 +93,10 @@ namespace CSBackend
 			std::string GetProviderID() const override;
             //---------------------------------------------------------------
 			/// @author S Downie
-			///
-			/// @return Whether the purchasing is allowed by the device/OS
+            ///
+            /// @param Purchasing enabled delegate
             //---------------------------------------------------------------
-            bool IsPurchasingEnabled() override;
+            void IsPurchasingEnabled(const PurchasingEnabledDelegate& in_delegate) override;
             //---------------------------------------------------------------
 			/// Calling this function will set the listener to which any
             /// transaction events are directed. This is not necessarily
@@ -155,10 +168,22 @@ namespace CSBackend
             /// @author S Downie
             //---------------------------------------------------------------
             void RestoreManagedPurchases() override;
+            //---------------------------------------------------------------
+            /// @author T Kane
+            ///
+            /// @return A vector of extra product information, particular to
+            /// this platform. Note that products must be requested from the
+            /// store via RequestProductDescriptions or
+            /// RequestProductDescriptions before being available so there is
+            /// no guarantee that a particular product will be available. It is
+            /// the application's responsibility to ensure the correct data
+            /// has been requested up-front.
+            //---------------------------------------------------------------
+            std::vector<ExtraProductInfo> GetExtraProductInfo() const;
             
         private:
             
-            friend CSNetworking::IAPSystemUPtr CSNetworking::IAPSystem::Create(const CSCore::ParamDictionary&);
+            friend ChilliSource::IAPSystemUPtr ChilliSource::IAPSystem::Create(const ChilliSource::ParamDictionary&);
             //-------------------------------------------------------
             /// Private constructor to force use of factory method
             ///

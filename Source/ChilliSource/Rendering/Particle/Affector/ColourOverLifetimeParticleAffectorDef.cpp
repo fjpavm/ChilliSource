@@ -1,6 +1,6 @@
 //
 //  ColourOverLifetimeParticleAffectorDef.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 02/11/2014.
 //
 //  The MIT License (MIT)
@@ -33,47 +33,102 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		CS_DEFINE_NAMEDTYPE(ColourOverLifetimeParticleAffectorDef);
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		ColourOverLifetimeParticleAffectorDef::ColourOverLifetimeParticleAffectorDef(ParticlePropertyUPtr<Core::Colour> in_targetColour)
-			: m_targetColourProperty(std::move(in_targetColour))
-		{
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		ColourOverLifetimeParticleAffectorDef::ColourOverLifetimeParticleAffectorDef(const Json::Value& in_paramsJson, const LoadedDelegate& in_asyncDelegate)
-		{
-			//Colour
-			Json::Value jsonValue = in_paramsJson.get("TargetColourProperty", Json::nullValue);
-			CS_ASSERT(jsonValue.isNull() == false, "No target colour property provided.");
-			m_targetColourProperty = ParticlePropertyFactory::CreateProperty<Core::Colour>(jsonValue);
+    namespace
+    {
+        const char k_intermediateColours[] = "IntermediateColours";
+        const char k_targetColourProperty[] = "TargetColourProperty";
+        const char k_colourProperty[] = "ColourProperty";
+        const char k_timeProperty[] = "TimeProperty";
+        
+        const char k_interpolationKey[] = "Interpolation";
+        const char k_defaultInterpolation[] = "Linear";
+    }
+    
+    CS_DEFINE_NAMEDTYPE(ColourOverLifetimeParticleAffectorDef);
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    ColourOverLifetimeParticleAffectorDef::IntermediateColour::IntermediateColour(IntermediateColour&& in_toMove)
+    {
+        m_colourProperty = std::move(in_toMove.m_colourProperty);
+        m_timeProperty = std::move(in_toMove.m_timeProperty);
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    ColourOverLifetimeParticleAffectorDef::IntermediateColour& ColourOverLifetimeParticleAffectorDef::IntermediateColour::operator=(IntermediateColour&& in_toMove)
+    {
+        m_colourProperty = std::move(in_toMove.m_colourProperty);
+        m_timeProperty = std::move(in_toMove.m_timeProperty);
 
-			//call the loaded delegate if required.
-			if (in_asyncDelegate != nullptr)
-			{
-				in_asyncDelegate(this);
-			}
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		bool ColourOverLifetimeParticleAffectorDef::IsA(Core::InterfaceIDType in_interfaceId) const
-		{
-			return (ParticleAffectorDef::InterfaceID == in_interfaceId || ColourOverLifetimeParticleAffectorDef::InterfaceID == in_interfaceId);
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		ParticleAffectorUPtr ColourOverLifetimeParticleAffectorDef::CreateInstance(Core::dynamic_array<Particle>* in_particleArray) const
-		{
-			return ParticleAffectorUPtr(new ColourOverLifetimeParticleAffector(this, in_particleArray));
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		const ParticleProperty<Core::Colour>* ColourOverLifetimeParticleAffectorDef::GetTargetColourProperty() const
-		{
-			return m_targetColourProperty.get();
-		}
-	}
+        return *this;
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    ColourOverLifetimeParticleAffectorDef::ColourOverLifetimeParticleAffectorDef(ParticlePropertyUPtr<Colour> in_targetColour, std::vector<IntermediateColour> in_intermediateColours,
+        const std::function<f32(f32)>& in_interpolation)
+        : m_targetColourProperty(std::move(in_targetColour)), m_intermediateColours(std::move(in_intermediateColours)), m_interpolation(in_interpolation)
+    {
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    ColourOverLifetimeParticleAffectorDef::ColourOverLifetimeParticleAffectorDef(const Json::Value& in_paramsJson, const LoadedDelegate& in_asyncDelegate)
+    {
+        // Target Colour
+        const auto& jsonValue = in_paramsJson.get(k_targetColourProperty, Json::nullValue);
+        CS_ASSERT(jsonValue.isNull() == false, "No target colour property provided.");
+        m_targetColourProperty = ParticlePropertyFactory::CreateProperty<Colour>(jsonValue);
+        
+        // Intermediate Colours
+        const auto& jsonArray = in_paramsJson.get(k_intermediateColours, Json::nullValue);
+        m_intermediateColours.reserve(jsonArray.size());
+        for(const auto& jsonIntermediateColour : jsonArray)
+        {
+            m_intermediateColours.push_back(IntermediateColour());
+            
+            const auto& jsonColour = jsonIntermediateColour.get(k_colourProperty, Json::nullValue);
+            m_intermediateColours.back().m_colourProperty = ParticlePropertyFactory::CreateProperty<Colour>(jsonColour);
+            
+            const auto& jsonTime = jsonIntermediateColour.get(k_timeProperty, Json::nullValue);
+            m_intermediateColours.back().m_timeProperty = ParticlePropertyFactory::CreateProperty<f32>(jsonTime);
+        }
+        
+        // Curve
+        auto interpolationName = in_paramsJson.get(k_interpolationKey, k_defaultInterpolation).asString();
+        m_interpolation = Interpolate::GetInterpolateFunction(interpolationName);
+
+        // Call the loaded delegate if required.
+        if (in_asyncDelegate != nullptr)
+        {
+            in_asyncDelegate(this);
+        }
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    bool ColourOverLifetimeParticleAffectorDef::IsA(InterfaceIDType in_interfaceId) const
+    {
+        return (ParticleAffectorDef::InterfaceID == in_interfaceId || ColourOverLifetimeParticleAffectorDef::InterfaceID == in_interfaceId);
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    ParticleAffectorUPtr ColourOverLifetimeParticleAffectorDef::CreateInstance(dynamic_array<Particle>* in_particleArray) const
+    {
+        return ParticleAffectorUPtr(new ColourOverLifetimeParticleAffector(this, in_particleArray));
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    const ParticleProperty<Colour>* ColourOverLifetimeParticleAffectorDef::GetTargetColourProperty() const
+    {
+        return m_targetColourProperty.get();
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    const std::function<f32(f32)>& ColourOverLifetimeParticleAffectorDef::GetInterpolation() const
+    {
+        return m_interpolation;
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    const std::vector<ColourOverLifetimeParticleAffectorDef::IntermediateColour>& ColourOverLifetimeParticleAffectorDef::GetIntermediateColours() const
+    {
+        return m_intermediateColours;
+    }
 }

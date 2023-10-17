@@ -1,6 +1,6 @@
 /**
  * DeviceNativeInterface.java
- * Chilli Source
+ * ChilliSource
  * Created by Scott Downie on 24/09/2014.
  * 
  * The MIT License (MIT)
@@ -42,30 +42,43 @@ import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 /**
  * Holds functions to query information about the device.
  * 
  * @author S Downie
  */
-public final class DeviceNativeInterface extends INativeInterface
+public final class DeviceNativeInterface extends System
 {
-	public static InterfaceIDType InterfaceID = new InterfaceIDType("DeviceNativeInterface");
+    public static InterfaceId INTERFACE_ID = new InterfaceId();
+
 	private static final String k_preferencesKey = "CSPreferences";
 	private static final String k_udidKey = "UDID";
-	
-	/**
-	 * @author S Downie
-	 * 
-	 * @param Java system interface ID
-	 * 
-	 * @return Whether the system implements the ID
-	 */
-	@Override public boolean IsA(InterfaceIDType in_interfaceType) 
-	{
-		return (in_interfaceType.Equals(InterfaceID));
-	}
+
+    /**
+     * Constructor.
+     *
+     * @author Ian Copland
+     */
+    public DeviceNativeInterface()
+    {
+        init();
+    }
+    /**
+     * Allows querying of whether or not the system implements the interface described by the
+     * given interface id.
+     *
+     * @author Ian Copland
+     *
+     * @param in_interfaceId - The interface id to check
+     *
+     * @return Whether the system implements the given interface
+     */
+    @Override public boolean isA(InterfaceId in_interfaceId)
+    {
+        return (in_interfaceId == INTERFACE_ID);
+    }
 	/**
 	 * @author Ian Copland
 	 * 
@@ -133,7 +146,7 @@ public final class DeviceNativeInterface extends INativeInterface
 		
 		//Google policy is that if the advertising id is available but the user has chosen not to
 		//enable it then we cannot track the user by falling back on these other methods.
-		int gpsAvailableResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(CSApplication.get().getAppContext());
+        int gpsAvailableResult = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(CSApplication.get().getAppContext());
 		
 		//If GPS is not potentially available i.e. Kindle etc then we can default to the older id types
 		//If GPS is potentially available but the user has chosen not to install/update then we cannot fallback on
@@ -179,7 +192,7 @@ public final class DeviceNativeInterface extends INativeInterface
 		String macAddress = getMacAddress();
 		if (macAddress.equals("") == false)
 		{
-			macAddress = HashMD5.generateHex(StringUtils.StringToUTF8ByteArray(macAddress));
+			macAddress = HashMD5.generateHex(StringUtils.stringToUTF8Bytes(macAddress));
 			SharedPreferencesNativeInterface.SetString(k_preferencesKey, k_udidKey, macAddress);
 			return macAddress;
 		}
@@ -188,7 +201,7 @@ public final class DeviceNativeInterface extends INativeInterface
 		String androidId = getAndroidID();
 		if (androidId.equals("") == false)
 		{
-			androidId = HashMD5.generateHex(StringUtils.StringToUTF8ByteArray(androidId));
+			androidId = HashMD5.generateHex(StringUtils.stringToUTF8Bytes(androidId));
 			SharedPreferencesNativeInterface.SetString(k_preferencesKey, k_udidKey, androidId);
 			return androidId;
 		}
@@ -197,13 +210,13 @@ public final class DeviceNativeInterface extends INativeInterface
 		String telephonyId = getTelephonyDeviceID();
 		if (telephonyId.equals("") == false)
 		{
-			telephonyId = HashMD5.generateHex(StringUtils.StringToUTF8ByteArray(telephonyId));
+			telephonyId = HashMD5.generateHex(StringUtils.stringToUTF8Bytes(telephonyId));
 			SharedPreferencesNativeInterface.SetString(k_preferencesKey, k_udidKey, telephonyId);
 			return telephonyId;
 		}
 
 		//--if all this fails, fall back on generating a random hash.
-		String randomId = HashMD5.generateHex(StringUtils.StringToUTF8ByteArray(UUID.randomUUID().toString()));
+		String randomId = HashMD5.generateHex(StringUtils.stringToUTF8Bytes(UUID.randomUUID().toString()));
 		SharedPreferencesNativeInterface.SetString(k_preferencesKey, k_udidKey, randomId);
 		return randomId;
 	}

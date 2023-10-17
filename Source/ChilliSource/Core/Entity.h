@@ -1,6 +1,6 @@
 //
 //  Entity.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 07/07/2014.
 //
 //  The MIT License (MIT)
@@ -32,6 +32,7 @@
 #include <ChilliSource/ChilliSource.h>
 #include <ChilliSource/Core/Entity/Component.h>
 #include <ChilliSource/Core/Entity/Entity.h>
+#include <ChilliSource/Core/Entity/PrimitiveEntityFactory.h>
 #include <ChilliSource/Core/Entity/Transform.h>
 
 #endif

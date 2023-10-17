@@ -1,6 +1,6 @@
 //
 //  TextEntry.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 08/07/2014
 //
 //  The MIT License (MIT)
@@ -40,32 +40,35 @@
 #include <CSBackend/Platform/Windows/Input/TextEntry/TextEntry.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_RPI
+#include <CSBackend/Platform/RPi/Input/TextEntry/TextEntry.h>
+#endif
+
 #ifdef CS_TARGETPLATFORM_LINUX
 #include <CSBackend/Platform/Linux/Input/TextEntry/TextEntry.h>
 #endif
 
 namespace ChilliSource
 {
-    namespace Input
+    CS_DEFINE_NAMEDTYPE(TextEntry);
+    
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    TextEntryUPtr TextEntry::Create()
     {
-        CS_DEFINE_NAMEDTYPE(TextEntry);
-        
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        TextEntryUPtr TextEntry::Create()
-        {
 #if defined CS_TARGETPLATFORM_ANDROID
-            return TextEntryUPtr(new CSBackend::Android::TextEntry());
+        return TextEntryUPtr(new CSBackend::Android::TextEntry());
 #elif defined CS_TARGETPLATFORM_IOS
-            return TextEntryUPtr(new CSBackend::iOS::TextEntry());
+        return TextEntryUPtr(new CSBackend::iOS::TextEntry());
 #elif defined CS_TARGETPLATFORM_WINDOWS
-            return TextEntryUPtr(new CSBackend::Windows::TextEntry());
+        return TextEntryUPtr(new CSBackend::Windows::TextEntry());
+#elif defined CS_TARGETPLATFORM_RPI
+        return TextEntryUPtr(new CSBackend::RPi::TextEntry());
 #elif defined CS_TARGETPLATFORM_LINUX
-			return TextEntryUPtr(new CSBackend::Linux::TextEntry());
+        return TextEntryUPtr(new CSBackend::Linux::TextEntry());
 #else
-            return nullptr;
+        return nullptr;
 #endif
 
-        }
     }
 }

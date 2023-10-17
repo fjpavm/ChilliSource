@@ -1,6 +1,6 @@
 //
 //  DeviceButtonSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 16/05/2014.
 //
 //  The MIT License (MIT)
@@ -30,7 +30,7 @@
 
 #include <CSBackend/Platform/Android/Main/JNI/Input/DeviceButtons/DeviceButtonSystem.h>
 
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceManager.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterfaceManager.h>
 #include <CSBackend/Platform/Android/Main/JNI/Input/DeviceButtons/DeviceButtonJavaInterface.h>
 #include <ChilliSource/Core/Delegate/MakeDelegate.h>
 
@@ -68,13 +68,13 @@ namespace CSBackend
         CS_DEFINE_NAMEDTYPE(DeviceButtonSystem);
         //----------------------------------------------------
         //----------------------------------------------------
-        bool DeviceButtonSystem::IsA(CSCore::InterfaceIDType in_interfaceID) const
+        bool DeviceButtonSystem::IsA(ChilliSource::InterfaceIDType in_interfaceID) const
         {
-            return (in_interfaceID == CSInput::DeviceButtonSystem::InterfaceID || in_interfaceID == DeviceButtonSystem::InterfaceID);
+            return (in_interfaceID == ChilliSource::DeviceButtonSystem::InterfaceID || in_interfaceID == DeviceButtonSystem::InterfaceID);
         }
         //----------------------------------------------------
         //----------------------------------------------------
-        CSCore::IConnectableEvent<DeviceButtonSystem::TriggeredDelegate>& DeviceButtonSystem::GetTriggeredEvent()
+        ChilliSource::IConnectableEvent<DeviceButtonSystem::TriggeredDelegate>& DeviceButtonSystem::GetTriggeredEvent()
         {
             return m_triggeredEvent;
         }
@@ -89,7 +89,7 @@ namespace CSBackend
         		JavaInterfaceManager::GetSingletonPtr()->AddJavaInterface(m_javaInterface);
         	}
 
-        	m_javaInterface->SetTriggeredDelegate(CSCore::MakeDelegate(this, &DeviceButtonSystem::OnTriggered));
+        	m_javaInterface->SetTriggeredDelegate(ChilliSource::MakeDelegate(this, &DeviceButtonSystem::OnTriggered));
         }
         //------------------------------------------------
         //------------------------------------------------

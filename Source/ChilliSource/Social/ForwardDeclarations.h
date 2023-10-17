@@ -1,6 +1,6 @@
 //
 //  ForwardDeclarations.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Stuart McGaw on 07/06/2011.
 //
 //  The MIT License (MIT)
@@ -35,18 +35,10 @@
 
 namespace ChilliSource
 {
-	namespace Social
-    {
-        //------------------------------------------------------
-        /// Communications
-        //------------------------------------------------------
-        CS_FORWARDDECLARE_CLASS(EmailComposer);
-        //------------------------------------------------------
-        /// Facebook
-        //------------------------------------------------------
-        CS_FORWARDDECLARE_CLASS(FacebookAuthenticationSystem);
-        CS_FORWARDDECLARE_CLASS(FacebookPostSystem);
-	}
+    //------------------------------------------------------
+    /// Communications
+    //------------------------------------------------------
+    CS_FORWARDDECLARE_CLASS(EmailComposer);
 }
 
 #endif

@@ -1,6 +1,6 @@
 //
 //  HorizontalTextJustification.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 10/11/2014.
 //
 //  The MIT License (MIT)
@@ -33,30 +33,27 @@
 
 namespace ChilliSource
 {
-    namespace Rendering
+    //-------------------------------------------------------------------
+    /// An enum describing the horizontal justification of text.
+    ///
+    /// @author Ian Copland
+    //-------------------------------------------------------------------
+    enum class HorizontalTextJustification
     {
-        //-------------------------------------------------------------------
-        /// An enum describing the horizontal justification of text.
-        ///
-        /// @author Ian Copland
-        //-------------------------------------------------------------------
-        enum class HorizontalTextJustification
-        {
-            k_left,
-            k_centre,
-            k_right
-        };
-        //-------------------------------------------------------------------
-        /// Parses a horizontal text justification from a string.
-        ///
-        /// @author Ian Copland
-        ///
-        /// @param The string.
-        ///
-        /// @return The horizontal text justification.
-        //-------------------------------------------------------------------
-        HorizontalTextJustification ParseHorizontalTextJustification(const std::string& in_string);
-    }
+        k_left,
+        k_centre,
+        k_right
+    };
+    //-------------------------------------------------------------------
+    /// Parses a horizontal text justification from a string.
+    ///
+    /// @author Ian Copland
+    ///
+    /// @param The string.
+    ///
+    /// @return The horizontal text justification.
+    //-------------------------------------------------------------------
+    HorizontalTextJustification ParseHorizontalTextJustification(const std::string& in_string);
 }
 
 #endif

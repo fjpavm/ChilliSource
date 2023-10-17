@@ -1,6 +1,6 @@
 //
 //  WebView.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Steven Hendrie on 10/12/12.
 //
 //  The MIT License (MIT)
@@ -32,10 +32,12 @@
 
 #include <CSBackend/Platform/Android/Main/JNI/Core/File/FileSystem.h>
 #include <CSBackend/Platform/Android/Main/JNI/Web/Base/WebViewJavaInterface.h>
+
 #include <ChilliSource/Core/Base/Application.h>
 #include <ChilliSource/Core/Base/Screen.h>
-#include <ChilliSource/Core/File/FileStream.h>
+#include <ChilliSource/Core/File/TaggedFilePathResolver.h>
 #include <ChilliSource/Core/String/StringUtils.h>
+#include <ChilliSource/Core/Threading/TaskScheduler.h>
 
 namespace CSBackend
 {
@@ -43,15 +45,15 @@ namespace CSBackend
 	{
 		namespace
 		{
-			//---------------------------------------------------------
+			//--------------------------------------------------------------------------------------
 			/// Breaks the given url path into the file path and anchor.
 			///
 			/// @author Ian Copland
 			///
-			/// @param The URL.
-			/// @param [Out] The file path.
-			/// @param [Out] The anchor.
-			//---------------------------------------------------------
+			/// @param in_combined - The URL.
+			/// @param out_filePath - [Out] The file path.
+			/// @param out_anchor - [Out] The anchor.
+			//--------------------------------------------------------------------------------------
 			void GetFilePathAndAnchor(const std::string& in_combined, std::string& out_filePath, std::string& out_anchor)
 			{
 				size_t anchorStart = in_combined.find_last_of('#');
@@ -73,8 +75,9 @@ namespace CSBackend
 		std::unordered_map<s32, WebView*> WebView::s_indexToWebViewMap;
 
 		CS_DEFINE_NAMEDTYPE(WebView);
-		//-----------------------------------------------
-		//-----------------------------------------------
+
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
 		void WebView::OnWebViewDismissed(s32 in_index)
 		{
 			auto webViewIt = s_indexToWebViewMap.find(in_index);
@@ -83,81 +86,84 @@ namespace CSBackend
 				webViewIt->second->OnWebViewDismissed();
 			}
 		}
-        //---------------------------------------------------------
-        //---------------------------------------------------------
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
+        bool WebView::OnLinkClicked(s32 in_index, const std::string& in_url)
+        {
+			auto webViewIt = s_indexToWebViewMap.find(in_index);
+            if (webViewIt != s_indexToWebViewMap.end())
+            {
+            	return webViewIt->second->OnLinkClicked(in_url);
+            }
+
+            return false;
+        }
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
 		WebView::WebView()
 			: m_index(s_nextIndex++), m_isPresented(false)
 		{
 		}
-		//-------------------------------------------------------
-		//-------------------------------------------------------
-		bool WebView::IsA(CSCore::InterfaceIDType in_interfaceId) const
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
+		bool WebView::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
 		{
-			return (CSWeb::WebView::InterfaceID == in_interfaceId || WebView::InterfaceID == in_interfaceId);
+			return (ChilliSource::WebView::InterfaceID == in_interfaceId || WebView::InterfaceID == in_interfaceId);
 		}
-		//-----------------------------------------------
-		//-----------------------------------------------
-		void WebView::Present(const std::string& in_url, const CSCore::UnifiedVector2& in_size, f32 in_dismissButtonRelativeSize, const DismissedDelegate& in_delegate)
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
+		void WebView::Present(const std::string& in_url, const ChilliSource::UnifiedVector2& in_size, f32 in_dismissButtonRelativeSize, const DismissedDelegate& in_delegate, const CustomLinkHandlerDelegate& in_customLinkHandler)
 		{
 			CS_ASSERT(m_isPresented == false, "Cannot present a web view while one is already displayed.");
+            CS_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread(), "Cannot present Web View on background threads.");
 
 			m_isPresented = true;
 			m_delegate = in_delegate;
-			CSCore::Vector2 absoluteSize = (m_screen->GetResolution() * in_size.GetRelative()) + in_size.GetAbsolute();
+			m_customLinkHandlerDelegate = in_customLinkHandler;
+
+			ChilliSource::Vector2 absoluteSize = (m_screen->GetResolution() * in_size.GetRelative()) + in_size.GetAbsolute();
 
 			WebViewJavaInterface::Present(m_index, in_url, absoluteSize, in_dismissButtonRelativeSize);
 		}
-		//-----------------------------------------------
-		//-----------------------------------------------
-		void WebView::PresentFromFile(CSCore::StorageLocation in_storageLocation, const std::string& in_filePath, const CSCore::UnifiedVector2& in_size, f32 in_dismissButtonRelativeSize, const DismissedDelegate& in_delegate)
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
+		void WebView::PresentFromFile(ChilliSource::StorageLocation in_storageLocation, const std::string& in_filePath, const ChilliSource::UnifiedVector2& in_size, f32 in_dismissButtonRelativeSize, const DismissedDelegate& in_delegate, const CustomLinkHandlerDelegate& in_customLinkHandler)
 		{
 			CS_ASSERT(m_isPresented == false, "Cannot present a web view while one is already displayed.");
+            CS_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread(), "Cannot present Web View on background threads.");
+
+			auto fileSystem = static_cast<CSBackend::Android::FileSystem*>(ChilliSource::Application::Get()->GetFileSystem());
 
 			std::string anchor;
 			std::string filePath;
 			GetFilePathAndAnchor(in_filePath, filePath, anchor);
-
-			CSBackend::Android::FileSystem* fileSystem = static_cast<CSBackend::Android::FileSystem*>(CSCore::Application::Get()->GetFileSystem());
+			auto taggedFilePath = ChilliSource::Application::Get()->GetTaggedFilePathResolver()->ResolveFilePath(in_storageLocation, filePath);
 
 			std::string htmlFileContents;
-			CSCore::FileStreamUPtr htmlFile = fileSystem->CreateFileStream(in_storageLocation, filePath, CSCore::FileMode::k_read);
-			htmlFile->GetAll(htmlFileContents);
-			htmlFile->Close();
-			htmlFile.reset();
+			if (fileSystem->ReadFile(in_storageLocation, taggedFilePath, htmlFileContents) == false)
+			{
+				CS_LOG_ERROR("Could not open WebView: " + taggedFilePath);
+				return;
+			}
 
-			std::string fullFilePath = fileSystem->GetAbsolutePathToFile(in_storageLocation, filePath);
+			std::string fullFilePath;
+			if (in_storageLocation == ChilliSource::StorageLocation::k_package || in_storageLocation == ChilliSource::StorageLocation::k_package ||
+            	(in_storageLocation == ChilliSource::StorageLocation::k_DLC && fileSystem->DoesFileExistInCachedDLC(taggedFilePath) == false))
+			{
+#ifdef CS_ANDROIDFLAVOUR_GOOGLEPLAY
+				fullFilePath = m_contentProvider->CallStringMethod("getContentPathPrefix") + fileSystem->GetAbsolutePathToStorageLocation(in_storageLocation) + taggedFilePath;
+#elif defined(CS_ANDROIDFLAVOUR_AMAZON)
+				fullFilePath = "file:///android_asset/" + fileSystem->GetAbsolutePathToStorageLocation(in_storageLocation) + taggedFilePath;
+#else
+				CS_LOG_FATAL("WebView doesn't support this Android flavour.");
+#endif
+			}
+			else
+			{
+				fullFilePath = "file://" + fileSystem->GetAbsolutePathToStorageLocation(in_storageLocation) + taggedFilePath;
+			}
 
-            switch(in_storageLocation)
-            {
-                case CSCore::StorageLocation::k_package:
-                {
-                	fullFilePath = "file:///android_asset/" + FileSystem::k_packageAPKDir + fullFilePath;
-                    break;
-                }
-                case CSCore::StorageLocation::k_chilliSource:
-                {
-                    fullFilePath = "file:///android_asset/" + FileSystem::k_csAPKDir + fullFilePath;
-                    break;
-                }
-                case CSCore::StorageLocation::k_DLC:
-                {
-                	if(fileSystem->DoesFileExistInCachedDLC(filePath) == true)
-                	{
-                		fullFilePath = "file://" + fullFilePath;
-                	}
-                	else
-                	{
-                		fullFilePath = "file:///android_asset/" + FileSystem::k_packageAPKDir + fullFilePath;
-                	}
-                    break;
-                }
-                default:
-                {
-                	fullFilePath = "file://" + fullFilePath;
-            		break;
-                }
-            }
-
+			//Get the directory.
 			u32 offset = fullFilePath.find_last_of("/");
 			if(offset != std::string::npos)
 			{
@@ -166,38 +172,47 @@ namespace CSBackend
 
 			m_isPresented = true;
 			m_delegate = in_delegate;
-			CSCore::Vector2 absoluteSize = (m_screen->GetResolution() * in_size.GetRelative()) + in_size.GetAbsolute();
+			m_customLinkHandlerDelegate = in_customLinkHandler;
+
+			ChilliSource::Vector2 absoluteSize = (m_screen->GetResolution() * in_size.GetRelative()) + in_size.GetAbsolute();
 			WebViewJavaInterface::PresentFromFile(m_index, htmlFileContents, absoluteSize, fullFilePath, anchor, in_dismissButtonRelativeSize);
 		}
-		//-----------------------------------------------
-		//-----------------------------------------------
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
 		void WebView::PresentInExternalBrowser(const std::string& in_url)
 		{
 			WebViewJavaInterface::PresentInExternalBrowser(in_url);
 		}
-		//-----------------------------------------------
-		//-----------------------------------------------
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
 		void WebView::Dismiss()
 		{
 			WebViewJavaInterface::Dismiss(m_index);
 		}
-        //---------------------------------------------------------
-        //---------------------------------------------------------
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
         bool WebView::IsPresented() const
         {
         	return m_isPresented;
         }
-        //-----------------------------------------------
-        //-----------------------------------------------
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
 		void WebView::OnInit()
 		{
-			m_screen = CSCore::Application::Get()->GetSystem<CSCore::Screen>();
+			m_screen = ChilliSource::Application::Get()->GetSystem<ChilliSource::Screen>();
 			s_indexToWebViewMap.emplace(m_index, this);
+
+#ifdef CS_ANDROIDFLAVOUR_GOOGLEPLAY
+			JavaStaticClassDef classDef("com/chilliworks/chillisource/core/ApkExpansionContentProvider");
+			classDef.AddMethod("getContentPathPrefix", "()Ljava/lang/String;");
+			m_contentProvider = JavaStaticClassUPtr(new JavaStaticClass(classDef));
+#endif
 		}
-		//---------------------------------------------------------
-        //---------------------------------------------------------
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
         void WebView::OnWebViewDismissed()
         {
+            CS_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread(), "Web View dismissal callback not on main thread.");
         	m_isPresented = false;
 
         	if (m_delegate != nullptr)
@@ -207,8 +222,19 @@ namespace CSBackend
         		delegate();
         	}
         }
-        //-----------------------------------------------
-        //-----------------------------------------------
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
+        bool WebView::OnLinkClicked(const std::string& in_url)
+        {
+			if(m_customLinkHandlerDelegate)
+			{
+				return m_customLinkHandlerDelegate(in_url);
+			}
+
+			return false;
+        }
+		//------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------
 		void WebView::OnDestroy()
 		{
 			if (IsPresented() == true)

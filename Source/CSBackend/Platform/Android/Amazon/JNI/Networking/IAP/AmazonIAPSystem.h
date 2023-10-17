@@ -1,6 +1,6 @@
 //
 //  AmazonIAPSystem.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 10/12/2013.
 //
 //  The MIT License (MIT)
@@ -33,8 +33,12 @@
 #ifndef _CSBACKEND_PLATFORM_ANDROID_EXTENSIONS_AMAZON_AMAZONIAPSYSTEM_H_
 #define _CSBACKEND_PLATFORM_ANDROID_EXTENSIONS_AMAZON_AMAZONIAPSYSTEM_H_
 
-#include <CSBackend/Platform/Android/Amazon/JNI/Networking/IAP/AmazonIAPJavaInterface.h>
+#include <ChilliSource/ChilliSource.h>
 #include <ChilliSource/Networking/IAP/IAPSystem.h>
+
+#include <CSBackend/Platform/Android/Amazon/JNI/ForwardDeclarations.h>
+#include <CSBackend/Platform/Android/Amazon/JNI/Networking/IAP/AmazonIAPJavaInterface.h>
+#include <CSBackend/Platform/Android/Main/JNI/ForwardDeclarations.h>
 
 namespace CSBackend
 {
@@ -52,7 +56,7 @@ namespace CSBackend
 		///
 		/// @author Ian Copland
 		//----------------------------------------------------------------------------------
-		class AmazonIAPSystem final : public CSNetworking::IAPSystem
+		class AmazonIAPSystem final : public ChilliSource::IAPSystem
 		{
 		public:
 
@@ -65,7 +69,7 @@ namespace CSBackend
             ///
             /// @return Whether the class is of the given type
             //---------------------------------------------------------------
-            bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+            bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
             //---------------------------------------------------------------
             /// Inform the system of which products are available for
             /// purchase and whether they are managed or unmanaged
@@ -84,9 +88,9 @@ namespace CSBackend
             //---------------------------------------------------------------
 			/// @author Ian Copland
 			///
-			/// @return Whether the purchasing is allowed by the device/OS
+            /// @param Purchasing enabled delegate
             //---------------------------------------------------------------
-            bool IsPurchasingEnabled() override;
+            void IsPurchasingEnabled(const PurchasingEnabledDelegate& in_delegate) override;
             //---------------------------------------------------------------
 			/// Calling this function will set the listener to which any
             /// transaction events are directed. This is not necessarily
@@ -161,7 +165,7 @@ namespace CSBackend
 
 		private:
 
-            friend CSNetworking::IAPSystemUPtr CSNetworking::IAPSystem::Create(const CSCore::ParamDictionary&);
+            friend ChilliSource::IAPSystemUPtr ChilliSource::IAPSystem::Create(const ChilliSource::ParamDictionary&);
             //---------------------------------------------------------------
             /// Private constructor to enforce use of factory method
             ///
@@ -173,7 +177,7 @@ namespace CSBackend
 			/// 	AmazonPrivateKey	The private key used to encrypt
             ///							the on disk Amazon IAP cache.
             //---------------------------------------------------------------
-			AmazonIAPSystem(const CSCore::ParamDictionary& in_params);
+			AmazonIAPSystem(const ChilliSource::ParamDictionary& in_params);
             //-------------------------------------------------------
             /// Called when the system is created. Initialises
             /// the StoreKit backend

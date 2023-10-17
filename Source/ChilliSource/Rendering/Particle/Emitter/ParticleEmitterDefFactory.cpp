@@ -1,6 +1,6 @@
 //
 //  ParticleEmitterDefFactory.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 08/11/2014.
 //
 //  The MIT License (MIT)
@@ -36,30 +36,27 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		CS_DEFINE_NAMEDTYPE(ParticleEmitterDefFactory);
-		//-----------------------------------------------------------------
-		//-----------------------------------------------------------------
-		ParticleEmitterDefFactoryUPtr ParticleEmitterDefFactory::Create()
-		{
-			return ParticleEmitterDefFactoryUPtr(new ParticleEmitterDefFactory());
-		}
-		//-----------------------------------------------------------------
-		//-----------------------------------------------------------------
-		bool ParticleEmitterDefFactory::IsA(Core::InterfaceIDType in_interfaceId) const
-		{
-			return (ParticleEmitterDefFactory::InterfaceID == in_interfaceId);
-		}
-		//-----------------------------------------------------------------
-		//-----------------------------------------------------------------
-		void ParticleEmitterDefFactory::RegisterDefaults()
-		{
-			Register<CircleParticleEmitterDef>("Circle");
-			Register<ConeParticleEmitterDef>("Cone");
-			Register<Cone2DParticleEmitterDef>("Cone2D");
-			Register<PointParticleEmitterDef>("Point");
-			Register<SphereParticleEmitterDef>("Sphere");
-		}
-	}
+    CS_DEFINE_NAMEDTYPE(ParticleEmitterDefFactory);
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    ParticleEmitterDefFactoryUPtr ParticleEmitterDefFactory::Create()
+    {
+        return ParticleEmitterDefFactoryUPtr(new ParticleEmitterDefFactory());
+    }
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    bool ParticleEmitterDefFactory::IsA(InterfaceIDType in_interfaceId) const
+    {
+        return (ParticleEmitterDefFactory::InterfaceID == in_interfaceId);
+    }
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    void ParticleEmitterDefFactory::RegisterDefaults()
+    {
+        Register<CircleParticleEmitterDef>("Circle");
+        Register<ConeParticleEmitterDef>("Cone");
+        Register<Cone2DParticleEmitterDef>("Cone2D");
+        Register<PointParticleEmitterDef>("Point");
+        Register<SphereParticleEmitterDef>("Sphere");
+    }
 }

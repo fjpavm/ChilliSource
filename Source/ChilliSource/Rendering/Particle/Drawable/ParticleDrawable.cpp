@@ -1,6 +1,6 @@
 //
 //  ParticleDrawable.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 13/10/2014.
 //
 //  The MIT License (MIT)
@@ -32,41 +32,38 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		//----------------------------------------------
-		//----------------------------------------------
-		ParticleDrawable::ParticleDrawable(const Core::Entity* in_entity, const ParticleDrawableDef* in_drawableDef, ConcurrentParticleData* in_concurrentParticleData)
-			: m_entity(in_entity), m_drawableDef(in_drawableDef), m_concurrentParticleData(in_concurrentParticleData)
-		{
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		void ParticleDrawable::Draw(const CameraComponent* in_camera)
-		{
-			m_concurrentParticleData->Lock();
+    //----------------------------------------------
+    //----------------------------------------------
+    ParticleDrawable::ParticleDrawable(const Entity* in_entity, const ParticleDrawableDef* in_drawableDef, ConcurrentParticleData* in_concurrentParticleData)
+        : m_entity(in_entity), m_drawableDef(in_drawableDef), m_concurrentParticleData(in_concurrentParticleData)
+    {
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    void ParticleDrawable::Draw(RenderSnapshot& renderSnapshot, IAllocator* frameAllocator) noexcept
+    {
+        m_concurrentParticleData->Lock();
 
-			auto newIndices = m_concurrentParticleData->TakeNewIndices();
-			for (const auto& index : newIndices)
-			{
-				ActivateParticle(m_concurrentParticleData->GetParticles(), index);
-			}
+        auto newIndices = m_concurrentParticleData->TakeNewIndices();
+        for (const auto& index : newIndices)
+        {
+            ActivateParticle(m_concurrentParticleData->GetParticles(), index);
+        }
 
-			DrawParticles(m_concurrentParticleData->GetParticles(), in_camera);
+        DrawParticles(m_concurrentParticleData->GetParticles(), renderSnapshot, frameAllocator);
 
-			m_concurrentParticleData->Unlock();
-		}
-		//----------------------------------------------
-		//----------------------------------------------
-		const Core::Entity* ParticleDrawable::GetEntity() const
-		{
-			return m_entity;
-		}
-		//----------------------------------------------
-		//----------------------------------------------
-		const ParticleDrawableDef* ParticleDrawable::GetDrawableDef() const
-		{
-			return m_drawableDef;
-		}
-	}
+        m_concurrentParticleData->Unlock();
+    }
+    //----------------------------------------------
+    //----------------------------------------------
+    const Entity* ParticleDrawable::GetEntity() const
+    {
+        return m_entity;
+    }
+    //----------------------------------------------
+    //----------------------------------------------
+    const ParticleDrawableDef* ParticleDrawable::GetDrawableDef() const
+    {
+        return m_drawableDef;
+    }
 }

@@ -1,6 +1,6 @@
 /**
  * HashMD5.java
- * Chilli Source
+ * ChilliSource
  * Created by Scott Downie on 23/09/2014.
  * 
  * The MIT License (MIT)
@@ -57,7 +57,7 @@ public class HashMD5
 	    }
 	    catch (Exception e)
 	    {
-	    	Logging.logError(ExceptionUtils.ConvertToString(e));
+	    	Logging.logError(ExceptionUtils.convertToString(e));
 	    }
 	    
 	    return output;

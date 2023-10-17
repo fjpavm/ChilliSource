@@ -1,6 +1,6 @@
 //
 //  SurfaceFormat.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 03/06/2014.
 //
 //  The MIT License (MIT)
@@ -33,22 +33,23 @@
 
 namespace ChilliSource
 {
-    namespace Rendering
+    //---------------------------------------------------------
+    /// An enum describing the different possible surface
+    /// formats.
+    ///
+    /// @author Ian Copland
+    //---------------------------------------------------------
+    enum class SurfaceFormat
     {
-        //---------------------------------------------------------
-        /// An enum describing the different possible surface
-        /// formats.
-        ///
-        /// @author Ian Copland
-        //---------------------------------------------------------
-        enum class SurfaceFormat
-        {
-            k_rgb565_depth24,
-            k_rgb565_depth32,
-            k_rgb888_depth24,
-            k_rgb888_depth32
-        };
-    }
+        k_rgb565_depth24,
+        k_rgb565_depth32,
+        k_rgb888_depth24,
+        k_rgb888_depth32,
+        k_rgb565_depth24_stencil8,
+        k_rgb565_depth32_stencil8,
+        k_rgb888_depth24_stencil8,
+        k_rgb888_depth32_stencil8
+    };
 }
 
 #endif

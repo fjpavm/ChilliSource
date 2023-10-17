@@ -1,6 +1,6 @@
 //
 //  ForwardDeclarations.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 12/05/2011.
 //
 //  The MIT License (MIT)
@@ -35,16 +35,13 @@
 
 namespace ChilliSource
 {
-    namespace Video
-    {
-        //------------------------------------------------------
-        /// Base
-        //------------------------------------------------------
-        CS_FORWARDDECLARE_CLASS(CSSubtitlesProvider);
-        CS_FORWARDDECLARE_CLASS(Subtitles);
-        CS_FORWARDDECLARE_CLASS(SubtitlesManager);
-        CS_FORWARDDECLARE_CLASS(VideoPlayer);
-    }
+    //------------------------------------------------------
+    /// Base
+    //------------------------------------------------------
+    CS_FORWARDDECLARE_CLASS(CSSubtitlesProvider);
+    CS_FORWARDDECLARE_CLASS(Subtitles);
+    CS_FORWARDDECLARE_CLASS(SubtitlesManager);
+    CS_FORWARDDECLARE_CLASS(VideoPlayer);
 }
 
 #endif

@@ -1,6 +1,6 @@
 //
 //  DialogueBoxJavaInterface.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 04/03/2014.
 //
 //  The MIT License (MIT)
@@ -35,7 +35,7 @@
 #include <ChilliSource/ChilliSource.h>
 #include <CSBackend/Platform/Android/Main/JNI/ForwardDeclarations.h>
 
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterface.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterface.h>
 
 namespace CSBackend
 {
@@ -61,7 +61,7 @@ namespace CSBackend
 			/// @return whether or not this object implements
 			/// the given interface.
 			//-----------------------------------------------
-			bool IsA(CSCore::InterfaceIDType in_interfaceId) const;
+			bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const;
             //-----------------------------------------------
             /// Display the systems confirmation dialog
             ///

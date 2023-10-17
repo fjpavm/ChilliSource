@@ -1,6 +1,6 @@
 //
 //  Accelerometer.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 13/06/2013
 //
 //  The MIT License (MIT)
@@ -38,27 +38,24 @@
 
 namespace ChilliSource
 {
-	namespace Input
-	{
-		CS_DEFINE_NAMEDTYPE(Accelerometer);
-        //----------------------------------------------------
-        //----------------------------------------------------
-        AccelerometerUPtr Accelerometer::Create()
-        {
+    CS_DEFINE_NAMEDTYPE(Accelerometer);
+    //----------------------------------------------------
+    //----------------------------------------------------
+    AccelerometerUPtr Accelerometer::Create()
+    {
 #if defined CS_TARGETPLATFORM_ANDROID
-            return AccelerometerUPtr(new CSBackend::Android::Accelerometer());
+        return AccelerometerUPtr(new CSBackend::Android::Accelerometer());
 #elif defined CS_TARGETPLATFORM_IOS
-            if (CSBackend::iOS::Accelerometer::IsSupportedByDevice() == true)
-            {
-                return AccelerometerUPtr(new CSBackend::iOS::Accelerometer());
-            }
-            else
-            {
-                return nullptr;
-            }
-#else
-            return nullptr;
-#endif
+        if (CSBackend::iOS::Accelerometer::IsSupportedByDevice() == true)
+        {
+            return AccelerometerUPtr(new CSBackend::iOS::Accelerometer());
         }
-	}
+        else
+        {
+            return nullptr;
+        }
+#else
+        return nullptr;
+#endif
+    }
 }

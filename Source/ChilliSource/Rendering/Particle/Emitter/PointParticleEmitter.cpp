@@ -1,6 +1,6 @@
 //
 //  PointParticleEmitter.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 02/11/2014.
 //
 //  The MIT License (MIT)
@@ -34,20 +34,17 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		PointParticleEmitter::PointParticleEmitter(const ParticleEmitterDef* in_particleEmitter, Core::dynamic_array<Particle>* in_particleArray)
-			: ParticleEmitter(in_particleEmitter, in_particleArray)
-		{
-		}
-		//----------------------------------------------------------------
-		//----------------------------------------------------------------
-		void PointParticleEmitter::GenerateEmission(f32 in_normalisedEmissionTime, Core::Vector3& out_position, Core::Vector3& out_direction)
-		{
-			out_position = Core::Vector3::k_zero;
-			out_direction = Core::Random::GenerateDirection3D<f32>();
-		}
-	}
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    PointParticleEmitter::PointParticleEmitter(const ParticleEmitterDef* in_particleEmitter, dynamic_array<Particle>* in_particleArray)
+        : ParticleEmitter(in_particleEmitter, in_particleArray)
+    {
+    }
+    //----------------------------------------------------------------
+    //----------------------------------------------------------------
+    void PointParticleEmitter::GenerateEmission(f32 in_normalisedEmissionTime, Vector3& out_position, Vector3& out_direction)
+    {
+        out_position = Vector3::k_zero;
+        out_direction = Random::GenerateDirection3D<f32>();
+    }
 }

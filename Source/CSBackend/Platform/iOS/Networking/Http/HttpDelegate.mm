@@ -1,6 +1,6 @@
 //
 //  HttpDelegate.mm
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 11/12/2014.
 //
 //  The MIT License (MIT)
@@ -37,15 +37,20 @@
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-- (id) initWithRequest:(CSBackend::iOS::HttpRequest*)in_request andMaxBufferSize:(u32) in_bufferSize
+- (id) initWithConnectionDelegate:(const ConnectionEstablishedDelegate&)in_connectionEstablishedDelegate andFlushedDelegate:(const FlushedDelegate&)in_flushedDelegate andCompleteDelegate:(const FlushedDelegate&)in_completeDelegate andMaxBufferSize:(u32) in_bufferSize
 {
     if (self = [super init])
     {
         m_data = nil;
-        m_request = in_request;
         m_responseCode = 0;
         m_maxBufferSize = in_bufferSize;
-        CS_ASSERT(m_request != nullptr, "Request must be supplied to Http Delegate.");
+        
+        m_connectionEstablishedDelegate = in_connectionEstablishedDelegate;
+        m_flushedDelegate = in_flushedDelegate;
+        m_completeDelegate = in_completeDelegate;
+        
+        CS_ASSERT(m_flushedDelegate && m_completeDelegate, "HttpDelegate needs to have the flushed and complete delegates set!");
+        
         return self;
     }
     
@@ -71,6 +76,11 @@
     m_data = [[NSMutableData alloc] init];
     
     m_responseCode = static_cast<u32>(((NSHTTPURLResponse*)in_response).statusCode);
+    
+    if(m_connectionEstablishedDelegate)
+    {
+        m_connectionEstablishedDelegate(in_response.expectedContentLength);
+    }
 }
 //-----------------------------------------------------------------------------
 /// Called when the next block of data is received. This should be appended to
@@ -83,7 +93,7 @@
 //-----------------------------------------------------------------------------
 - (void) connection:(NSURLConnection*)in_connection didReceiveData:(NSData *)in_data
 {
-    CS_ASSERT(m_data != nil, "Cannot receive data before connection is estabilished!");
+    CS_ASSERT(m_data != nil, "Cannot receive data before connection is established!");
     
     if(m_maxBufferSize > 0)
     {
@@ -92,10 +102,10 @@
         if(currentSize + appendSize >= m_maxBufferSize)
         {
             std::string data(reinterpret_cast<const s8*>([m_data bytes]), (s32)[m_data length]);
-            m_request->OnFlushed(CSNetworking::HttpResponse::Result::k_flushed, m_responseCode, data);
+            m_flushedDelegate(ChilliSource::HttpResponse::Result::k_flushed, m_responseCode, data);
+            
             [m_data setLength:0];
         }
-        
     }
     
     [m_data appendData:in_data];
@@ -109,13 +119,13 @@
 //-----------------------------------------------------------------------------
 - (void) connectionDidFinishLoading:(NSURLConnection*)in_connection
 {
-    CS_ASSERT(m_data != nil, "Cannot finish before connection is estabilished!");
+    CS_ASSERT(m_data != nil, "Cannot finish before connection is established!");
     
     std::string data(reinterpret_cast<const s8*>([m_data bytes]), (s32)[m_data length]);
     [m_data release];
     m_data = nil;
     
-    m_request->OnComplete(CSNetworking::HttpResponse::Result::k_completed, m_responseCode, data);
+    m_completeDelegate(ChilliSource::HttpResponse::Result::k_completed, m_responseCode, data);
 }
 //-----------------------------------------------------------------------------
 /// Called if a connection fails.
@@ -129,8 +139,8 @@
 {
     std::string errorMessage = [NSStringUtils newUTF8StringWithNSString:[in_error localizedDescription]];
     CS_LOG_VERBOSE("HTTP Request error: " + errorMessage);
-    
-    m_request->OnComplete(CSNetworking::HttpResponse::Result::k_failed, m_responseCode, "");
+
+    m_completeDelegate(ChilliSource::HttpResponse::Result::k_failed, m_responseCode, "");
 }
 //-----------------------------------------------------------------------------
 /// Called to check how a response should be cached. We don't want to cache
@@ -164,8 +174,6 @@
 //---------------------------------------------------------------------------
 -(void) dealloc
 {
-    m_request = nullptr;
-    
     if (m_data != nil)
     {
         [m_data release];

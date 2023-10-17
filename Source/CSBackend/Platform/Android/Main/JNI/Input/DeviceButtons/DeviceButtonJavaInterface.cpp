@@ -1,6 +1,6 @@
 //
 //  DeviceButtonJavaInterface.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 16/05/2014.
 //
 //  The MIT License (MIT)
@@ -30,8 +30,8 @@
 
 #include <CSBackend/Platform/Android/Main/JNI/Input/DeviceButtons/DeviceButtonJavaInterface.h>
 
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceManager.h>
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceUtils.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterfaceManager.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaUtils.h>
 #include <ChilliSource/Core/Base/Application.h>
 #include <ChilliSource/Core/Threading/TaskScheduler.h>
 
@@ -59,8 +59,10 @@ void Java_com_chilliworks_chillisource_input_DeviceButtonNativeInterface_onTrigg
 	CSBackend::Android::DeviceButtonJavaInterfaceSPtr javaInterface = CSBackend::Android::JavaInterfaceManager::GetSingletonPtr()->GetJavaInterface<CSBackend::Android::DeviceButtonJavaInterface>();
 	if (javaInterface != nullptr)
 	{
-		auto task = std::bind(&CSBackend::Android::DeviceButtonJavaInterface::OnTriggered, javaInterface.get(), in_buttonPressed);
-		CSCore::Application::Get()->GetTaskScheduler()->ScheduleMainThreadTask(task);
+		ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_mainThread, [=](const ChilliSource::TaskContext&)
+		{
+			javaInterface->OnTriggered(in_buttonPressed);
+		});
 	}
 }
 
@@ -77,7 +79,7 @@ namespace CSBackend
 		}
 		//-----------------------------------------------
 		//-----------------------------------------------
-		bool DeviceButtonJavaInterface::IsA(CSCore::InterfaceIDType in_interfaceId) const
+		bool DeviceButtonJavaInterface::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
 		{
 			return (DeviceButtonJavaInterface::InterfaceID == in_interfaceId);
 		}

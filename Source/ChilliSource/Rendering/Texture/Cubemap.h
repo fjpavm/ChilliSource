@@ -1,11 +1,7 @@
 //
-//  CubeMap.h
-//  Chilli Source
-//  Created by Scott Downie on 15/07/2013.
-//
 //  The MIT License (MIT)
 //
-//  Copyright (c) 2013 Tag Games Limited
+//  Copyright (c) 2010 Tag Games Limited
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -30,117 +26,112 @@
 #define _CHILLISOURCE_RENDERING_TEXTURE_CUBEMAP_H_
 
 #include <ChilliSource/ChilliSource.h>
+#include <ChilliSource/Core/Memory/UniquePtr.h>
+#include <ChilliSource/Core/Image/ImageFormat.h>
+#include <ChilliSource/Core/Image/ImageCompression.h>
 #include <ChilliSource/Core/Resource/Resource.h>
-#include <ChilliSource/Rendering/Texture/Texture.h>
 
 #include <array>
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-        //--------------------------------------------------------------
-        /// Interface class to backend rendering cubemap resource. A
-        /// cubemap resource is created from 6 images into a format
-        /// that can be used by the render system.
+    /// A cubemap texture resource consisting of 6 textures. All 6 textures must share
+    /// the same dimensions, filter mode, etc.
+    ///
+    /// This is not thread safe and should only be accessed from one thread at a time.
+    ///
+    /// NOTE: Texture data is specified in the following order:
+    ///     * PosX, NegX, PosY, NegY, PosZ, NegZ
+    ///
+    class Cubemap final : public Resource
+    {
+    public:
+        CS_DECLARE_NAMEDTYPE(Cubemap);
+        
+        /// The buffer used to hold texture data.
         ///
-        /// @author S Downie
-        //--------------------------------------------------------------
-		class Cubemap : public Core::Resource
-		{
-		public:
-			
-            enum class Face
-            {
-                k_posX,
-                k_negX,
-                k_posY,
-                k_negY,
-                k_posZ,
-                k_negZ
-            };
-            
-			CS_DECLARE_NAMEDTYPE(Cubemap);
-            //--------------------------------------------------
-            /// Construct the texture from the given image data.
-            /// The texture will take ownership of the image data
-            ///
-            /// Order is as follows:
-            /// - Pos X
-            /// - Neg X
-            /// - Pos Y
-            /// - Neg Y
-            /// - Pos Z
-            /// - Neg Z
-            ///
-            /// @author S Downie
-            ///
-            /// @param Texture descriptors (6)
-            /// @param Image datas (6)
-            /// @param Whether the texture should have mip maps generated
-            /// @param Whether or not the cubemap data should be
-            /// restored after a context loss. This involves maintaining
-            /// a copy of the cubemap data in memory which is costly
-            /// so this should be disabled for any cubemaps that can
-            /// easily be recreated. This has no effect on cubemaps that
-            /// are loaded from file as they are always restored from
-            /// disk. This will only work for RGBA8888, RGB888, RGBA4444
-            /// and RGB565 cubemaps.
-            //--------------------------------------------------
-            virtual void Build(const std::array<Texture::Descriptor, 6>& in_descs, std::array<Texture::TextureDataUPtr, 6>&& in_datas, bool in_mipMap, bool in_restoreCubemapDataEnabled) = 0;
-			//--------------------------------------------------------------
-            /// Binds this cubemap to the given texture unit allowing it to
-            /// be accessed by the shaders and operations to be performed on it
-            ///
-            /// @author S Downie
-            ///
-            /// @param Texture unit
-            //--------------------------------------------------------------
-			virtual void Bind(u32 in_texUnit = 0) = 0;
-            //--------------------------------------------------------------
-            /// Unbind this cubemap from its current texture unit. This
-            /// means it can no longer be used or changed until rebound.
-            ///
-            /// @author S Downie
-            //--------------------------------------------------------------
-			virtual void Unbind() = 0;
-			//--------------------------------------------------------------
-            /// Future sampling of the cubemap will use the given filter function
-            ///
-            /// @author S Downie
-            ///
-            /// @param Filter mode
-            //--------------------------------------------------------------
-			virtual void SetFilterMode(Texture::FilterMode in_mode) = 0;
-            //--------------------------------------------------------------
-            /// Future sampling of the cubemap will use the given wrap mode
-            ///
-            /// @author S Downie
-            ///
-            /// @param Horizontal wrapping
-            /// @param Vertical wrapping
-            //--------------------------------------------------------------
-			virtual void SetWrapMode(Texture::WrapMode in_sMode, Texture::WrapMode in_tMode) = 0;
-            //--------------------------------------------------------------
-            /// Virtual destructor
-            ///
-            /// @author S Downie
-            //--------------------------------------------------------------
-			virtual ~Cubemap(){}
-            
-        protected:
-            friend class Core::ResourcePool;
-            //--------------------------------------------------------------
-            /// Factory method for creating an empty cubemap resource.
-            /// Only called by the resource pool
-            ///
-            /// @author S Downie
-            ///
-            /// @return Concrete cubemap resource
-            //--------------------------------------------------------------
-            static CubemapUPtr Create();
-		};
-	}
+        using DataUPtr = std::unique_ptr<const u8[]>;
+        
+        /// Allows querying of whether or not this system implements the interface described by the
+        /// given interface Id. Typically this is not called directly as the templated equivalent
+        /// IsA<Interface>() is preferred.
+        ///
+        /// @param interfaceId
+        ///     The Id of the interface.
+        ///
+        /// @return Whether or not the interface is implemented.
+        ///
+        bool IsA(InterfaceIDType interfaceId) const noexcept override;
+        
+        /// Construct the texture from the given image data. The texture will take ownership of
+        /// the image data. The texture must not already be in the loaded state.
+        ///
+        /// @param textureData
+        ///     The texture data buffer and size for each face.
+        /// @param dataSize
+        ///     Size of each face texture data. Only 1 value as all faces must be the same format and dimensions
+        /// @param textureDesc
+        ///     The texture description.
+        ///
+        void Build(std::array<DataUPtr, 6> textureData, u32 dataSize, const TextureDesc& textureDesc) noexcept;
+
+        /// @return The texture dimensions.
+        ///
+        const Integer2& GetDimensions() const noexcept;
+        
+        /// @return The format of the image.
+        ///
+        ImageFormat GetImageFormat() const noexcept;
+        
+        /// @return The compression type of the image.
+        ///
+        ImageCompression GetImageCompression() const noexcept;
+        
+        /// @return The texture filter mode used when rendering the texture.
+        ///
+        TextureFilterMode GetFilterMode() const noexcept;
+        
+        /// @return The s-coordinate texture wrap mode used when rendering the texture.
+        ///
+        TextureWrapMode GetWrapModeS() const noexcept;
+        
+        /// @return The t-coordinate texture wrap mode used when rendering the texture.
+        ///
+        TextureWrapMode GetWrapModeT() const noexcept;
+        
+        /// @return Whether or not the texture should be mipmapped.
+        ///
+        bool IsMipmappingEnabled() const noexcept;
+        
+        /// @return Whether or not texture data should be restored on context loss.
+        ///
+        bool IsRestoreTextureDataEnabled() const noexcept;
+        
+        /// @return The underlying RenderTexture used by the render system.
+        ///
+        const RenderTexture* GetRenderTexture() const noexcept;
+        
+        ~Cubemap() noexcept;
+        
+    private:
+        friend class ResourcePool;
+        
+        /// A factory method for creating new, empty instances of the resource. This must only be
+        /// called by ResourcePool.
+        ///
+        /// @return The new instance of the resource.
+        ///
+        static CubemapUPtr Create() noexcept;
+        
+        /// Destroys the render texture if one currently exists.
+        ///
+        void DestroyRenderTexture() noexcept;
+        
+        Cubemap() = default;
+        
+        UniquePtr<RenderTexture> m_renderTexture;
+        bool m_restoreTextureDataEnabled = false;
+    };
 }
 
 #endif

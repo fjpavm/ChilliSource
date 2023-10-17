@@ -1,6 +1,6 @@
 //
 //  WidgetPropertyTypes.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 04/12/2014.
 //
 //  The MIT License (MIT)
@@ -28,35 +28,35 @@
 
 #include <ChilliSource/UI/Base/PropertyTypes.h>
 
-#include <ChilliSource/UI/Base/SizePolicy.h>
-#include <ChilliSource/UI/Drawable/DrawableDef.h>
-#include <ChilliSource/UI/Layout/LayoutDef.h>
+#include <ChilliSource/UI/Drawable/UIDrawableDef.h>
+#include <ChilliSource/UI/Layout/UILayoutDef.h>
 #include <ChilliSource/UI/ProgressBar/ProgressBarDirection.h>
 #include <ChilliSource/UI/ProgressBar/ProgressBarType.h>
 #include <ChilliSource/UI/Slider/SliderDirection.h>
+#include <ChilliSource/Input/TextEntry.h>
 #include <ChilliSource/Rendering/Base/AlignmentAnchors.h>
 #include <ChilliSource/Rendering/Base/HorizontalTextJustification.h>
+#include <ChilliSource/Rendering/Base/SizePolicy.h>
 #include <ChilliSource/Rendering/Base/VerticalTextJustification.h>
 
 namespace ChilliSource
 {
-    namespace UI
+    namespace PropertyTypes
     {
-        namespace PropertyTypes
-        {
-            CS_DEFINE_PROPERTYTYPE(Rendering::AlignmentAnchor, AlignmentAnchor, Rendering::AlignmentAnchor::k_middleCentre, &Rendering::ParseAlignmentAnchor);
-            CS_DEFINE_PROPERTYTYPE(UI::SizePolicy, SizePolicy, UI::SizePolicy::k_none, &ParseSizePolicy);
-            CS_DEFINE_PROPERTYTYPE(DrawableDefCSPtr, DrawableDef, nullptr, nullptr);
-            CS_DEFINE_PROPERTYTYPE(LayoutDefCSPtr, LayoutDef, nullptr, nullptr);
-            CS_DEFINE_PROPERTYTYPE(Rendering::TextureCSPtr, Texture, nullptr, nullptr);
-            CS_DEFINE_PROPERTYTYPE(Rendering::TextureAtlasCSPtr, TextureAtlas, nullptr, nullptr);
-            CS_DEFINE_PROPERTYTYPE(Rendering::FontCSPtr, Font, nullptr, nullptr);
-            CS_DEFINE_PROPERTYTYPE(Core::LocalisedTextCSPtr, LocalisedText, nullptr, nullptr);
-            CS_DEFINE_PROPERTYTYPE(Rendering::HorizontalTextJustification, HorizontalTextJustification, Rendering::HorizontalTextJustification::k_centre, &Rendering::ParseHorizontalTextJustification);
-            CS_DEFINE_PROPERTYTYPE(Rendering::VerticalTextJustification, VerticalTextJustification, Rendering::VerticalTextJustification::k_centre, &Rendering::ParseVerticalTextJustification);
-            CS_DEFINE_PROPERTYTYPE(UI::SliderDirection, SliderDirection, UI::SliderDirection::k_horizontal, &ParseSliderDirection);
-            CS_DEFINE_PROPERTYTYPE(UI::ProgressBarDirection, ProgressBarDirection, UI::ProgressBarDirection::k_horizontal, &ParseProgressBarDirection);
-            CS_DEFINE_PROPERTYTYPE(UI::ProgressBarType, ProgressBarType, UI::ProgressBarType::k_stretch, &ParseProgressBarType);
-        }
+        CS_DEFINE_PROPERTYTYPE(ChilliSource::AlignmentAnchor, AlignmentAnchor, ChilliSource::AlignmentAnchor::k_middleCentre, &ParseAlignmentAnchor);
+        CS_DEFINE_PROPERTYTYPE(ChilliSource::SizePolicy, SizePolicy, ChilliSource::SizePolicy::k_none, &ParseSizePolicy);
+        CS_DEFINE_PROPERTYTYPE(UIDrawableDefCSPtr, UIDrawableDef, nullptr, nullptr);
+        CS_DEFINE_PROPERTYTYPE(UILayoutDefCSPtr, UILayoutDef, nullptr, nullptr);
+        CS_DEFINE_PROPERTYTYPE(TextureCSPtr, Texture, nullptr, nullptr);
+        CS_DEFINE_PROPERTYTYPE(TextureAtlasCSPtr, TextureAtlas, nullptr, nullptr);
+        CS_DEFINE_PROPERTYTYPE(FontCSPtr, Font, nullptr, nullptr);
+        CS_DEFINE_PROPERTYTYPE(LocalisedTextCSPtr, LocalisedText, nullptr, nullptr);
+        CS_DEFINE_PROPERTYTYPE(ChilliSource::HorizontalTextJustification, HorizontalTextJustification, ChilliSource::HorizontalTextJustification::k_centre, &ParseHorizontalTextJustification);
+        CS_DEFINE_PROPERTYTYPE(ChilliSource::VerticalTextJustification, VerticalTextJustification, ChilliSource::VerticalTextJustification::k_centre, &ParseVerticalTextJustification);
+        CS_DEFINE_PROPERTYTYPE(ChilliSource::SliderDirection, SliderDirection, ChilliSource::SliderDirection::k_horizontal, &ParseSliderDirection);
+        CS_DEFINE_PROPERTYTYPE(ChilliSource::ProgressBarDirection, ProgressBarDirection, ChilliSource::ProgressBarDirection::k_horizontal, &ParseProgressBarDirection);
+        CS_DEFINE_PROPERTYTYPE(ChilliSource::ProgressBarType, ProgressBarType, ChilliSource::ProgressBarType::k_stretch, &ParseProgressBarType);
+        CS_DEFINE_PROPERTYTYPE(ChilliSource::TextEntryType, InputType, ChilliSource::TextEntryType::k_text, &ParseKeyboardInputType);
+        CS_DEFINE_PROPERTYTYPE(ChilliSource::TextEntryCapitalisation, CapitalisationFormat, ChilliSource::TextEntryCapitalisation::k_sentences, &ParseCapitalisationFormat);
     }
 }

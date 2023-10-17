@@ -1,6 +1,6 @@
 //
 //  WidgetPropertyTypes.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 04/12/2014.
 //
 //  The MIT License (MIT)
@@ -31,32 +31,32 @@
 
 #include <ChilliSource/ChilliSource.h>
 #include <ChilliSource/Core/Container/Property/PropertyType.h>
+#include <ChilliSource/Input/TextEntry.h>
 
 namespace ChilliSource
 {
-    namespace UI
+    //------------------------------------------------------------------------
+    /// Additional property types that are specific to UI.
+    ///
+    /// @author Ian Copland
+    //------------------------------------------------------------------------
+    namespace PropertyTypes
     {
-        //------------------------------------------------------------------------
-        /// Additional property types that are specific to UI.
-        ///
-        /// @author Ian Copland
-        //------------------------------------------------------------------------
-        namespace PropertyTypes
-        {
-            CS_DECLARE_PROPERTYTYPE(Rendering::AlignmentAnchor, AlignmentAnchor);
-            CS_DECLARE_PROPERTYTYPE(SizePolicy, SizePolicy);
-            CS_DECLARE_PROPERTYTYPE(DrawableDefCSPtr, DrawableDef);
-            CS_DECLARE_PROPERTYTYPE(LayoutDefCSPtr, LayoutDef);
-            CS_DECLARE_PROPERTYTYPE(Rendering::TextureCSPtr, Texture);
-            CS_DECLARE_PROPERTYTYPE(Rendering::TextureAtlasCSPtr, TextureAtlas);
-            CS_DECLARE_PROPERTYTYPE(Rendering::FontCSPtr, Font);
-            CS_DECLARE_PROPERTYTYPE(Core::LocalisedTextCSPtr, LocalisedText);
-            CS_DECLARE_PROPERTYTYPE(Rendering::HorizontalTextJustification, HorizontalTextJustification);
-            CS_DECLARE_PROPERTYTYPE(Rendering::VerticalTextJustification, VerticalTextJustification);
-            CS_DECLARE_PROPERTYTYPE(SliderDirection, SliderDirection);
-            CS_DECLARE_PROPERTYTYPE(ProgressBarDirection, ProgressBarDirection);
-            CS_DECLARE_PROPERTYTYPE(ProgressBarType, ProgressBarType);
-        }
+        CS_DECLARE_PROPERTYTYPE(AlignmentAnchor, AlignmentAnchor);
+        CS_DECLARE_PROPERTYTYPE(SizePolicy, SizePolicy);
+        CS_DECLARE_PROPERTYTYPE(UIDrawableDefCSPtr, UIDrawableDef);
+        CS_DECLARE_PROPERTYTYPE(UILayoutDefCSPtr, UILayoutDef);
+        CS_DECLARE_PROPERTYTYPE(TextureCSPtr, Texture);
+        CS_DECLARE_PROPERTYTYPE(TextureAtlasCSPtr, TextureAtlas);
+        CS_DECLARE_PROPERTYTYPE(FontCSPtr, Font);
+        CS_DECLARE_PROPERTYTYPE(LocalisedTextCSPtr, LocalisedText);
+        CS_DECLARE_PROPERTYTYPE(HorizontalTextJustification, HorizontalTextJustification);
+        CS_DECLARE_PROPERTYTYPE(VerticalTextJustification, VerticalTextJustification);
+        CS_DECLARE_PROPERTYTYPE(SliderDirection, SliderDirection);
+        CS_DECLARE_PROPERTYTYPE(ProgressBarDirection, ProgressBarDirection);
+        CS_DECLARE_PROPERTYTYPE(ProgressBarType, ProgressBarType);
+        CS_DECLARE_PROPERTYTYPE(TextEntryType, InputType);
+        CS_DECLARE_PROPERTYTYPE(TextEntryCapitalisation, CapitalisationFormat);
     }
 }
 

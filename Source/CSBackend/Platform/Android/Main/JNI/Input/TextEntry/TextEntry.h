@@ -1,6 +1,6 @@
 //
 //  TextEntry.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 08/07/2014
 //
 //  The MIT License (MIT)
@@ -34,6 +34,9 @@
 #include <ChilliSource/ChilliSource.h>
 #include <CSBackend/Platform/Android/Main/JNI/ForwardDeclarations.h>
 #include <ChilliSource/Input/TextEntry/TextEntry.h>
+#include <ChilliSource/Input/TextEntry/TextEntryCapitalisation.h>
+#include <ChilliSource/Input/TextEntry/TextEntryType.h>
+
 
 namespace CSBackend
 {
@@ -43,9 +46,12 @@ namespace CSBackend
 		/// The Android backend to the text entry system. This provides access
 		/// to the Android virtual keyboard functionality.
 		///
+        /// The methods in this class are not thread-safe and must be called
+        /// from the main thread.
+        ///
 		/// @author Ian Copland
 		//----------------------------------------------------------------
-		class TextEntry final : public CSInput::TextEntry
+		class TextEntry final : public ChilliSource::TextEntry
 		{
 		public:
 
@@ -57,7 +63,7 @@ namespace CSBackend
             ///
             /// @return Whether this system implements the given inteface
             //-------------------------------------------------------
-            bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+            bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
             //-------------------------------------------------------
             /// The system will now receive text input. This will also
             /// show the virtual keyboard if required
@@ -70,7 +76,7 @@ namespace CSBackend
             /// @param Text changed delegate
             /// @param Deactivate delegate
             //-------------------------------------------------------
-			void Activate(const std::string& in_text, Type in_type, Capitalisation in_capitalisation, const TextBufferChangedDelegate& in_changeDelegate, const TextInputDeactivatedDelegate& in_deactivateDelegate) override;
+			void Activate(const std::string& in_text, ChilliSource::TextEntryType in_type, ChilliSource::TextEntryCapitalisation in_capitalisation, const TextBufferChangedDelegate& in_changeDelegate, const TextInputDeactivatedDelegate& in_deactivateDelegate) override;
             //-------------------------------------------------------
             /// The system will no longer receive text input. This
             /// will also hide the virtual keyboard if required
@@ -105,7 +111,7 @@ namespace CSBackend
 			~TextEntry();
 
 		private:
-			friend CSInput::TextEntryUPtr CSInput::TextEntry::Create();
+			friend ChilliSource::TextEntryUPtr ChilliSource::TextEntry::Create();
 
 			//-------------------------------------------------------
 			/// Constructor. Declared private to force the use of the

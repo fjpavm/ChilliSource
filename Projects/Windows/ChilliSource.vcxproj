@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -26,13 +26,19 @@
     <ClCompile Include="..\..\Source\ChilliSource\Audio\CricketAudio\CricketAudioSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Base\AppConfig.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Base\Application.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Base\ByteBuffer.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Base\ByteColour.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Base\Colour.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Base\ColourUtils.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Base\Device.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Base\DeviceInfo.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Base\LifecycleManager.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Base\Logging.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Base\PlatformSystem.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Base\RenderInfo.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Base\Screen.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Base\ScreenInfo.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Base\SystemInfo.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Base\Utils.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Container\ParamDictionary.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Container\ParamDictionarySerialiser.cpp" />
@@ -43,16 +49,22 @@
     <ClCompile Include="..\..\Source\ChilliSource\Core\Cryptographic\HashCRC32.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Cryptographic\HashMD5.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Cryptographic\HashSHA1.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Cryptographic\HashSHA256.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Cryptographic\OAuth.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\DialogueBox\DialogueBoxSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Entity\Component.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Entity\Entity.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Entity\PrimitiveEntityFactory.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Entity\Transform.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Event\EventConnection.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\File\AppDataStore.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\File\CSBinaryChunk.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\File\CSBinaryInputStream.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Core\File\FileStream.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\File\FileStream\BinaryInputStream.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\File\FileStream\BinaryOutputStream.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\File\FileStream\FileWriteMode.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\File\FileStream\TextInputStream.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\File\FileStream\TextOutputStream.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\File\FileSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\File\TaggedFilePathResolver.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Image\CSImageProvider.cpp" />
@@ -66,9 +78,12 @@
     <ClCompile Include="..\..\Source\ChilliSource\Core\Localisation\LocalisedTextProvider.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Math\Geometry\ShapeIntersection.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Math\Geometry\Shapes.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Math\Interpolate.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Math\MathUtils.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Math\Random.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Math\UnifiedCoordinates.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Memory\LinearAllocator.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Memory\PagedLinearAllocator.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Notification\AppNotificationSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Notification\LocalNotificationSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Notification\NotificationManager.cpp" />
@@ -79,13 +94,17 @@
     <ClCompile Include="..\..\Source\ChilliSource\Core\Scene\Scene.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\State\State.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\State\StateManager.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\String\MarkupDef.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\String\StringMarkupParser.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\String\StringParser.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\String\StringUtils.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\String\ToString.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\String\UTF8StringUtils.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\System\StateSystem.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Threading\SingleThreadTaskPool.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Threading\TaskContext.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Core\Threading\TaskPool.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Threading\TaskScheduler.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Core\Threading\ThreadPool.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Time\CoreTimer.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Time\PerformanceTimer.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\Time\Timer.cpp" />
@@ -93,8 +112,10 @@
     <ClCompile Include="..\..\Source\ChilliSource\Core\XML\XML.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Core\XML\XMLUtils.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\Accelerometer\Accelerometer.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Input\Base\Filter.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Input\Base\InputFilter.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\DeviceButtons\DeviceButtonSystem.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Input\Gamepad\Gamepad.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Input\Gamepad\GamepadSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\Gesture\DragGesture.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\Gesture\Gesture.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\Gesture\GestureSystem.cpp" />
@@ -102,10 +123,14 @@
     <ClCompile Include="..\..\Source\ChilliSource\Input\Gesture\PinchGesture.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\Gesture\RotationGesture.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\Gesture\TapGesture.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Input\Gyroscope\Gyroscope.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\Keyboard\Keyboard.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Input\Keyboard\KeyCode.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\Pointer\Pointer.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\Pointer\PointerSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Input\TextEntry\TextEntry.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Input\TextEntry\TextEntryCapitalisation.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Input\TextEntry\TextEntryType.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Networking\ContentDownload\ContentManagementSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Networking\ContentDownload\MoContentDownloader.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Networking\Http\HttpRequestSystem.cpp" />
@@ -113,41 +138,69 @@
     <ClCompile Include="..\..\Source\ChilliSource\Networking\IAP\IAPSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\AlignmentAnchors.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\AspectRatioUtils.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\CameraRenderPassGroup.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\CanvasDrawMode.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\CanvasMaterialPool.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\CanvasRenderer.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\CullingPredicates.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\ForwardRenderPassCompiler.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\FrameAllocatorQueue.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\HorizontalTextJustification.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\MeshBatch.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\MeshBuffer.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\IRenderCommandProcessor.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderCapabilities.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderComponent.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderComponentFactory.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderCommandBufferManager.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderCommandCompiler.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\Renderer.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RendererSortPredicates.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderSystem.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\VertexDeclaration.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderFrame.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderFrameCompiler.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderFrameData.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderObject.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderPass.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderPassObject.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderPassObjectSorter.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderPassVisibilityChecker.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\RenderSnapshot.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\SizePolicy.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\TargetRenderPassGroup.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Base\VerticalTextJustification.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Camera\CameraComponent.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Camera\OrthographicCameraComponent.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Camera\PerspectiveCameraComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Camera\RenderCamera.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Font\Font.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Font\FontProvider.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Lighting\AmbientLightComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Lighting\AmbientRenderLight.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Lighting\DirectionalLightComponent.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Lighting\LightComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Lighting\DirectionalRenderLight.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Lighting\PointLightComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Lighting\PointRenderLight.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Material\ForwardRenderMaterialGroupManager.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Material\Material.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Material\MaterialFactory.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Material\MaterialProvider.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\AnimatedMeshComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Material\RenderMaterial.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Material\RenderMaterialGroup.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Material\RenderMaterialGroupManager.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\AnimatedModelComponent.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\CSAnimProvider.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\CSModelProvider.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\Mesh.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\MeshDescriptor.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\IndexFormat.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\MeshDesc.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\Model.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\ModelDesc.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\PrimitiveModelFactory.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\RenderDynamicMesh.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\RenderMesh.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\RenderMeshBatch.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\RenderMeshManager.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\RenderSkinnedAnimation.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\Skeleton.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\SkeletonDesc.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\SkinnedAnimation.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\SkinnedAnimationGroup.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\StaticMeshComponent.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\SubMesh.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\SmallMeshBatcher.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\StaticModelComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Model\VertexFormat.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Particle\Affector\AccelerationParticleAffector.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Particle\Affector\AccelerationParticleAffectorDef.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Particle\Affector\AngularAccelerationParticleAffector.cpp" />
@@ -181,31 +234,69 @@
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Particle\Emitter\SphereParticleEmitterDef.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Particle\ParticleEffect.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Particle\ParticleEffectComponent.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Particle\Property\ParticlePropertyCurveFunctions.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Particle\Property\ParticlePropertyFactoryImpl.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyAmbientLightRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyCameraRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyDirectionalLightRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyDynamicMeshRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyMaterialRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyMeshBatchRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyMeshRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyPointLightRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplySkinnedAnimationRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\BeginRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\BeginWithTargetGroupRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\EndRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadCubemapRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadMaterialGroupRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadMeshRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadShaderRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadTargetGroupRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadTextureRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\RenderInstanceRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\RestoreCubemapRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\RestoreMeshRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\RestoreRenderTargetGroupCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\RestoreTextureRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadCubemapRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadMaterialGroupRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadMeshRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadShaderRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadTargetGroupRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadTextureRenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\RenderCommand.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\RenderCommandBuffer.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\RenderCommand\RenderCommandList.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Shader\CSShaderProvider.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Shader\RenderShaderManager.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Shader\RenderShaderVariables.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Shader\Shader.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Sprite\DynamicSpriteBatcher.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Sprite\SpriteBatch.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Skybox\SkyboxComponent.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Sprite\SpriteComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Sprite\SpriteMeshBuilder.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Target\RenderTargetGroup.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Target\RenderTargetGroupManager.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Target\TargetGroup.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\Cubemap.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\CubemapProvider.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\CubemapResourceOptions.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\RenderTexture.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\RenderTextureManager.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\Texture.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\TextureAtlas.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\TextureAtlasProvider.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\TextureDesc.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\TextureProvider.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\TextureResourceOptions.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Rendering\Texture\UVs.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Social\Communications\EmailComposer.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Social\Facebook\FacebookAuthenticationSystem.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\Social\Facebook\FacebookPostSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\Base\Canvas.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Base\Component.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Base\ComponentDesc.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Base\ComponentFactory.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Base\CursorSystem.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\Base\PropertyLink.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\Base\PropertyTypes.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Base\SizePolicy.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Base\UIComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Base\UIComponentDesc.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Base\UIComponentFactory.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\Base\Widget.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\Base\WidgetDef.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\Base\WidgetDefProvider.cpp" />
@@ -214,41 +305,42 @@
     <ClCompile Include="..\..\Source\ChilliSource\UI\Base\WidgetParserUtils.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\Base\WidgetTemplate.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\Base\WidgetTemplateProvider.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Button\HighlightComponent.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Button\ToggleHighlightComponent.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\Drawable.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\DrawableComponent.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\DrawableDef.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\DrawableUtils.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\NinePatchDrawable.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\NinePatchDrawableDef.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\StandardDrawable.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\StandardDrawableDef.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\ThreePatchDrawable.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\ThreePatchDrawableDef.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\GridLayout.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\GridLayoutDef.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\HListLayout.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\HListLayoutDef.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\Layout.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\LayoutComponent.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\LayoutDef.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\VListLayout.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\VListLayoutDef.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\ProgressBar\ProgressBarComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Button\HighlightUIComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Button\ToggleHighlightUIComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\DrawableUIComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\NinePatchUIDrawable.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\NinePatchUIDrawableDef.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\StandardUIDrawable.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\StandardUIDrawableDef.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\ThreePatchUIDrawable.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\ThreePatchUIDrawableDef.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\UIDrawable.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\UIDrawableDef.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Drawable\UIDrawableUtils.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\GridUILayout.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\GridUILayoutDef.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\HListUILayout.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\HListUILayoutDef.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\LayoutUIComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\UILayout.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\UILayoutDef.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\VListUILayout.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Layout\VListUILayoutDef.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\ProgressBar\ProgressBarDirection.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\ProgressBar\ProgressBarType.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Slider\SliderComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\ProgressBar\ProgressBarUIComponent.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\Slider\SliderDirection.cpp" />
-    <ClCompile Include="..\..\Source\ChilliSource\UI\Text\TextComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Slider\SliderUIComponent.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Text\EditableTextUIComponent.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\UI\Text\TextIcon.cpp" />
+    <ClCompile Include="..\..\Source\ChilliSource\UI\Text\TextUIComponent.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Video\Base\CSSubtitlesProvider.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Video\Base\Subtitles.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Video\Base\VideoPlayer.cpp" />
     <ClCompile Include="..\..\Source\ChilliSource\Web\Base\WebView.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Core\Base\Device.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Core\Base\PlatformSystem.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Core\Base\Screen.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Core\Base\SystemInfoFactory.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Core\DialogueBox\DialogueBoxSystem.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Core\File\FileSystem.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Core\File\WindowsFileUtils.cpp" />
@@ -256,6 +348,7 @@
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Core\Image\PNGImageProvider.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Core\String\WindowsStringUtils.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Input\DeviceButtons\DeviceButtonSystem.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Input\Gamepad\GamepadSystem.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Input\Keyboard\Keyboard.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Input\Pointer\PointerSystem.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Input\TextEntry\TextEntry.cpp" />
@@ -263,17 +356,26 @@
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Networking\Http\HttpRequest.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\Networking\Http\HttpRequestSystem.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Platform\Windows\SFML\Base\SFMLWindow.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\ContextRestorer.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\GLContextRestorer.cpp" />
     <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\GLError.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\MeshBuffer.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\RenderCapabilities.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\RenderSystem.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\RenderTarget.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Shader\GLSLShaderProvider.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Shader\Shader.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\Cubemap.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\Texture.cpp" />
-    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\TextureUnitSystem.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\GLExtensions.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\RenderCommandProcessor.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\RenderInfoFactory.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Camera\GLCamera.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Lighting\GLAmbientLight.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Lighting\GLDirectionalLight.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Lighting\GLPointLight.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Material\GLMaterial.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Model\GLDynamicMesh.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Model\GLMesh.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Model\GLMeshUtils.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Model\GLSkinnedAnimation.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Shader\GLShader.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Target\GLTargetGroup.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\GLCubemap.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\GLTexture.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\GLTextureUnitManager.cpp" />
+    <ClCompile Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\GLTextureUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\ChilliSource\Audio\CricketAudio.h" />
@@ -288,17 +390,26 @@
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\AppConfig.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\Application.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Base\ByteBuffer.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\ByteColour.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\Colour.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\ColourUtils.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Base\ConstMethodCast.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Base\CursorType.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\Device.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Base\DeviceInfo.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Base\GenericFactory.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Base\LifecycleManager.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\Logging.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\MakeSharedArray.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\PlatformSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\QueryableInterface.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Base\RenderInfo.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\Screen.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Base\ScreenInfo.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\Singleton.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\StandardMacros.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Base\SystemInfo.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Base\Utils.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Container.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Container\concurrent_blocking_queue.h" />
@@ -327,6 +438,7 @@
     <ClInclude Include="..\..\Source\ChilliSource\Core\Cryptographic\HashCRC32.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Cryptographic\HashMD5.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Cryptographic\HashSHA1.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Cryptographic\HashSHA256.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Cryptographic\OAuth.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Delegate.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Delegate\ConnectableDelegate.h" />
@@ -338,6 +450,7 @@
     <ClInclude Include="..\..\Source\ChilliSource\Core\Entity.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Entity\Component.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Entity\Entity.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Entity\PrimitiveEntityFactory.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Entity\Transform.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Event.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Event\Event.h" />
@@ -348,7 +461,13 @@
     <ClInclude Include="..\..\Source\ChilliSource\Core\File\AppDataStore.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\File\CSBinaryChunk.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\File\CSBinaryInputStream.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Core\File\FileStream.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\File\FileStream\BinaryInputStream.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\File\FileStream\BinaryOutputStream.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\File\FileStream\FileWriteMode.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\File\FileStream\IBinaryInputStream.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\File\FileStream\ITextInputStream.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\File\FileStream\TextInputStream.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\File\FileStream\TextOutputStream.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\File\FileSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\File\StorageLocation.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\File\TaggedFilePathResolver.h" />
@@ -371,17 +490,29 @@
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Geometry\Curves.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Geometry\ShapeIntersection.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Geometry\Shapes.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Interpolate.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\MathUtils.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Matrix3.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Matrix4.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Math\NumericLimits.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Quaternion.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Random.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\RandomImpl.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Core\Math\NumericLimits.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\UnifiedCoordinates.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Vector2.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Vector3.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Math\Vector4.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory\IAllocator.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory\LinearAllocator.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory\MemoryUtils.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory\MemoryUtilsImpl.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory\ObjectPoolAllocator.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory\PagedLinearAllocator.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory\SharedPtr.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory\SharedPtrImpl.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory\UniquePtr.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Memory\UniquePtrImpl.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Notification.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Notification\AppNotificationSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Notification\LocalNotificationSystem.h" />
@@ -399,6 +530,8 @@
     <ClInclude Include="..\..\Source\ChilliSource\Core\State\State.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\State\StateManager.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\String.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\String\MarkupDef.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\String\StringMarkupParser.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\String\StringParser.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\String\StringUtils.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\String\ToString.h" />
@@ -407,8 +540,12 @@
     <ClInclude Include="..\..\Source\ChilliSource\Core\System\AppSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\System\StateSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Threading.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Threading\SingleThreadTaskPool.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Threading\Task.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Threading\TaskContext.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Threading\TaskPool.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Threading\TaskScheduler.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Core\Threading\ThreadPool.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Core\Threading\TaskType.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Time.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Time\CoreTimer.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\Time\PerformanceTimer.h" />
@@ -424,11 +561,19 @@
     <ClInclude Include="..\..\Source\ChilliSource\Core\XML.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\XML\XML.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Core\XML\XMLUtils.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Accelerometer.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Accelerometer\Accelerometer.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Base.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Input\Base\Filter.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Base\InputFilter.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\DeviceButtons.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\DeviceButtons\DeviceButtonSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\ForwardDeclarations.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Gamepad.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Gamepad\Gamepad.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Gamepad\GamepadAxis.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Gamepad\GamepadMappings.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Gamepad\GamepadSystem.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Gesture.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Gesture\DragGesture.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Gesture\Gesture.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Gesture\GestureSystem.h" />
@@ -436,70 +581,112 @@
     <ClInclude Include="..\..\Source\ChilliSource\Input\Gesture\PinchGesture.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Gesture\RotationGesture.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Gesture\TapGesture.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Gyroscope\Gyroscope.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Keyboard.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Keyboard\Keyboard.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Keyboard\KeyCode.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Keyboard\ModifierKeyCode.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\Pointer.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Pointer\Pointer.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\Pointer\PointerSystem.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\TextEntry.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Input\TextEntry\TextEntry.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\TextEntry\TextEntryCapitalisation.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Input\TextEntry\TextEntryType.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Networking\ContentDownload.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Networking\ContentDownload\ContentManagementSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Networking\ContentDownload\IContentDownloader.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Networking\ContentDownload\MoContentDownloader.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Networking\ForwardDeclarations.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Networking\Http.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Networking\Http\HttpRequest.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Networking\Http\HttpRequestSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Networking\Http\HttpResponse.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Networking\IAP.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Networking\IAP\IAPSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\AlignmentAnchors.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\AspectRatioUtils.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\BlendMode.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\CameraRenderPassGroup.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\CanvasDrawMode.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\CanvasMaterialPool.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\CanvasRenderer.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\CullFace.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\CullingPredicates.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\DepthTestComparison.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\ForwardRenderPassCompiler.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\ForwardRenderPasses.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\FrameAllocatorQueue.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\HorizontalTextJustification.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\MeshBatch.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\MeshBuffer.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\IRenderCommandProcessor.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\IRenderPassCompiler.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderCapabilities.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderComponent.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderComponentFactory.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderCommandBufferManager.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderCommandCompiler.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\Renderer.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RendererSortPredicates.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderSystem.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderTarget.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\ShaderPass.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderFrame.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderFrameCompiler.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderFrameData.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderLayer.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderObject.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderPass.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderPassObject.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderPassObjectSorter.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderPassVisibilityChecker.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\RenderSnapshot.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\SizePolicy.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\StencilOp.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\SurfaceFormat.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\VertexDeclaration.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\VertexLayouts.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\TargetRenderPassGroup.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\TargetType.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\TestFunc.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Base\VerticalTextJustification.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Camera.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Camera\CameraComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Camera\OrthographicCameraComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Camera\PerspectiveCameraComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Camera\RenderCamera.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Font.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Font\Font.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Font\FontProvider.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\ForwardDeclarations.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Lighting.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Lighting\AmbientLightComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Lighting\AmbientRenderLight.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Lighting\DirectionalLightComponent.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Lighting\LightComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Lighting\DirectionalRenderLight.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Lighting\PointLightComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Lighting\PointRenderLight.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Material.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Material\ForwardRenderMaterialGroupManager.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Material\Material.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Material\MaterialFactory.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Material\MaterialProvider.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Material\RenderMaterial.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Material\RenderMaterialGroup.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Material\RenderMaterialGroupManager.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\AnimatedMeshComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\AnimatedModelComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\CSAnimProvider.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\CSModelProvider.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\Mesh.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\MeshDescriptor.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\IndexFormat.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\MeshDesc.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\Model.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\ModelDesc.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\PolygonType.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\PrimitiveModelFactory.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\RenderDynamicMesh.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\RenderMesh.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\RenderMeshBatch.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\RenderMeshManager.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\RenderSkinnedAnimation.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\Skeleton.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\SkeletonDesc.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\SkinnedAnimation.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\SkinnedAnimationGroup.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\StaticMeshComponent.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\SubMesh.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\SmallMeshBatcher.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\StaticModelComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Model\VertexFormat.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle\Affector\AccelerationParticleAffector.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle\Affector\AccelerationParticleAffectorDef.h" />
@@ -540,39 +727,84 @@
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle\Property\ConstantParticleProperty.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle\Property\CurveParticleProperty.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle\Property\ParticleProperty.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle\Property\ParticlePropertyCurveFunctions.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle\Property\ParticlePropertyFactory.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle\Property\ParticlePropertyFactoryImpl.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle\Property\RandomConstantParticleProperty.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Particle\Property\RandomCurveParticleProperty.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyAmbientLightRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyCameraRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyDirectionalLightRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyDynamicMeshRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyMaterialRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyMeshBatchRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyMeshRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplyPointLightRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\ApplySkinnedAnimationRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\BeginRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\BeginWithTargetGroupRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\EndRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadCubemapRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadMaterialGroupRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadMeshRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadShaderRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadTargetGroupRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\LoadTextureRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\RenderInstanceRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\RestoreCubemapRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\RestoreMeshRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\RestoreRenderTargetGroupCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\RestoreTextureRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadCubemapRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadMaterialGroupRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadMeshRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadShaderRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadTargetGroupRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\Commands\UnloadTextureRenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\RenderCommand.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\RenderCommandBuffer.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\RenderCommand\RenderCommandList.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Shader.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Shader\CSShaderProvider.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Shader\RenderShader.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Shader\RenderShaderManager.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Shader\RenderShaderVariables.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Shader\Shader.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Skybox.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Skybox\SkyboxComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Sprite.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Sprite\DynamicSpriteBatcher.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Sprite\SpriteBatch.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Sprite\SpriteComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Sprite\SpriteMeshBuilder.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Target.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Target\RenderTargetGroup.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Target\RenderTargetGroupManager.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Target\TargetGroup.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\Cubemap.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\CubemapProvider.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\CubemapResourceOptions.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\RenderTexture.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\RenderTextureManager.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\Texture.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\TextureAtlas.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\TextureAtlasProvider.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\TextureDesc.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\TextureFilterMode.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\TextureProvider.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\TextureResourceOptions.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\TextureWrapMode.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Rendering\Texture\UVs.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Social\Communications.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Social\Communications\EmailComposer.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Social\Facebook\FacebookAuthenticationSystem.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\Social\Facebook\FacebookPostSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Social\ForwardDeclarations.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Base.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Base\Canvas.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Base\Component.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Base\ComponentDesc.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Base\ComponentFactory.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Base\CursorSystem.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Base\PropertyLink.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Base\PropertyTypes.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Base\SizePolicy.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Base\UIComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Base\UIComponentDesc.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Base\UIComponentFactory.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Base\Widget.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Base\WidgetDef.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Base\WidgetDefProvider.h" />
@@ -582,49 +814,54 @@
     <ClInclude Include="..\..\Source\ChilliSource\UI\Base\WidgetTemplate.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Base\WidgetTemplateProvider.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Button.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Button\HighlightComponent.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Button\ToggleHighlightComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Button\HighlightUIComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Button\ToggleHighlightUIComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\Drawable.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\DrawableComponent.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\DrawableDef.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\DrawableUtils.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\NinePatchDrawable.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\NinePatchDrawableDef.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\StandardDrawable.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\StandardDrawableDef.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\ThreePatchDrawable.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\ThreePatchDrawableDef.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\DrawableUIComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\NinePatchUIDrawable.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\NinePatchUIDrawableDef.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\StandardUIDrawable.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\StandardUIDrawableDef.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\ThreePatchUIDrawable.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\ThreePatchUIDrawableDef.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\UIDrawable.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\UIDrawableDef.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Drawable\UIDrawableUtils.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\ForwardDeclarations.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Layout.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\GridLayout.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\GridLayoutDef.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\HListLayout.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\HListLayoutDef.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\Layout.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\LayoutComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\GridUILayout.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\GridUILayoutDef.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\HListUILayout.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\HListUILayoutDef.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\LayoutDef.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\VListLayout.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\VListLayoutDef.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\LayoutUIComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\UILayout.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\UILayoutDef.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\VListUILayout.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Layout\VListUILayoutDef.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\ProgressBar.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\ProgressBar\ProgressBarComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\ProgressBar\ProgressBarDirection.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\ProgressBar\ProgressBarType.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\ProgressBar\ProgressBarUIComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Slider.h" />
-    <ClInclude Include="..\..\Source\ChilliSource\UI\Slider\SliderComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Slider\SliderDirection.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Slider\SliderUIComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Text.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Text\EditableTextUIComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Text\TextComponent.h" />
     <ClInclude Include="..\..\Source\ChilliSource\UI\Text\TextIcon.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\UI\Text\TextUIComponent.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Video\Base.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Video\Base\CSSubtitlesProvider.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Video\Base\Subtitles.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Video\Base\VideoPlayer.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Video\ForwardDeclarations.h" />
+    <ClInclude Include="..\..\Source\ChilliSource\Web\Base.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Web\Base\WebView.h" />
     <ClInclude Include="..\..\Source\ChilliSource\Web\ForwardDeclarations.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Core\Base\Device.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Core\Base\PlatformSystem.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Core\Base\Screen.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Core\Base\SystemInfoFactory.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Core\DialogueBox\DialogueBoxSystem.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Core\File\FileSystem.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Core\File\WindowsFileUtils.h" />
@@ -633,121 +870,177 @@
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Core\String\WindowsStringUtils.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\ForwardDeclarations.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Input\DeviceButtons\DeviceButtonSystem.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Input\Gamepad\GamepadSystem.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Input\Keyboard\Keyboard.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Input\Pointer\PointerSystem.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Input\TextEntry\TextEntry.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Networking\Http\HttpRequest.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\Networking\Http\HttpRequestSystem.h" />
     <ClInclude Include="..\..\Source\CSBackend\Platform\Windows\SFML\Base\SFMLWindow.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\ContextRestorer.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\GLContextRestorer.h" />
     <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\GLError.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\GLExtensions.h" />
     <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\GLIncludes.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\MeshBuffer.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\RenderCapabilities.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\RenderSystem.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\RenderTarget.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\RenderCommandProcessor.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Base\RenderInfoFactory.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Camera\GLCamera.h" />
     <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\ForwardDeclarations.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Shader\GLSLShaderProvider.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Shader\Shader.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\Cubemap.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\Texture.h" />
-    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\TextureUnitSystem.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Lighting\GLAmbientLight.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Lighting\GLDirectionalLight.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Lighting\GLLight.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Lighting\GLPointLight.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Material\GLMaterial.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Model\GLDynamicMesh.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Model\GLMesh.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Model\GLMeshUtils.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Model\GLSkinnedAnimation.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Shader\GLShader.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Target\GLTargetGroup.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\GLCubemap.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\GLTexture.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\GLTextureUnitManager.h" />
+    <ClInclude Include="..\..\Source\CSBackend\Rendering\OpenGL\Texture\GLTextureUtils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A9B516D3-71D5-4661-8EEE-DA55F3EADC9A}</ProjectGuid>
+    <ProjectGuid>{09108227-056C-4A6F-9A74-1C3ECA245C3F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ChilliSource</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  <ImportGroup Label="Shared">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)..\..\Source\;$(ProjectDir)..\..\Libraries\Core\Windows\Headers\;$(ProjectDir)..\..\Libraries\CricketAudio\Windows\Headers\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\csbin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\csobj\$(Platform)\$(Configuration)\a\b\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ProjectName)\Output\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(ProjectName)\Intermediate\$(Platform)\$(Configuration)\a\b\</IntDir>
+    <IncludePath>$(ProjectDir)..\..\Source;$(ProjectDir)..\..\Libraries\Core\Windows\Headers;$(ProjectDir)..\..\Libraries\CricketAudio\Windows\Headers;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)..\..\Source\;$(ProjectDir)..\..\Libraries\Core\Windows\Headers\;$(ProjectDir)..\..\Libraries\CricketAudio\Windows\Headers\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\csbin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\csobj\$(Platform)\$(Configuration)\a\b\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ProjectName)\Output\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(ProjectName)\Intermediate\$(Platform)\$(Configuration)\a\b\</IntDir>
+    <IncludePath>$(ProjectDir)..\..\Source;$(ProjectDir)..\..\Libraries\Core\Windows\Headers;$(ProjectDir)..\..\Libraries\CricketAudio\Windows\Headers;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)..\..\Source\;$(ProjectDir)..\..\Libraries\Core\Windows\Headers\;$(ProjectDir)..\..\Libraries\CricketAudio\Windows\Headers\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\csbin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\csobj\$(Platform)\$(Configuration)\a\b\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ProjectName)\Output\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(ProjectName)\Intermediate\$(Platform)\$(Configuration)\a\b\</IntDir>
+    <IncludePath>$(ProjectDir)..\..\Source;$(ProjectDir)..\..\Libraries\Core\Windows\Headers;$(ProjectDir)..\..\Libraries\CricketAudio\Windows\Headers;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)..\..\Source\;$(ProjectDir)..\..\Libraries\Core\Windows\Headers\;$(ProjectDir)..\..\Libraries\CricketAudio\Windows\Headers\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\csbin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\csobj\$(Platform)\$(Configuration)\a\b\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ProjectName)\Output\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Build\$(ProjectName)\Intermediate\$(Platform)\$(Configuration)\a\b\</IntDir>
+    <IncludePath>$(ProjectDir)..\..\Source;$(ProjectDir)..\..\Libraries\Core\Windows\Headers;$(ProjectDir)..\..\Libraries\CricketAudio\Windows\Headers;$(IncludePath)</IncludePath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;GLEW_STATIC;SFML_STATIC;CS_TARGETPLATFORM_WINDOWS;CS_LOGLEVEL_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;GLEW_STATIC;SFML_STATIC;CS_TARGETPLATFORM_WINDOWS;CS_LOGLEVEL_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
-    </ClCompile>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;GLEW_STATIC;SFML_STATIC;CS_TARGETPLATFORM_WINDOWS;CS_ENABLE_DEBUG;CS_LOGLEVEL_VERBOSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;GLEW_STATIC;SFML_STATIC;CS_TARGETPLATFORM_WINDOWS;CS_ENABLE_DEBUG;CS_LOGLEVEL_VERBOSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;GLEW_STATIC;SFML_STATIC;CS_TARGETPLATFORM_WINDOWS;CS_ENABLE_DEBUG;CS_LOGLEVEL_VERBOSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_LIB;GLEW_STATIC;SFML_STATIC;CS_TARGETPLATFORM_WINDOWS;CS_ENABLE_DEBUG;CS_LOGLEVEL_VERBOSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;GLEW_STATIC;SFML_STATIC;CS_TARGETPLATFORM_WINDOWS;CS_LOGLEVEL_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;GLEW_STATIC;SFML_STATIC;CS_TARGETPLATFORM_WINDOWS;CS_LOGLEVEL_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

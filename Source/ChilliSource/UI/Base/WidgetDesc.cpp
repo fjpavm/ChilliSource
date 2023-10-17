@@ -1,6 +1,6 @@
 //
 //  WidgetDesc.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 19/11/2014.
 //
 //  The MIT License (MIT)
@@ -30,31 +30,28 @@
 
 namespace ChilliSource
 {
-    namespace UI
+    //------------------------------------------------------------------
+    //------------------------------------------------------------------
+    WidgetDesc::WidgetDesc(const std::string& in_type, const PropertyMap& in_propertyMap, const std::vector<WidgetDesc>& in_childDescs)
+        : m_type(in_type), m_propertyMap(in_propertyMap), m_childDescs(in_childDescs)
     {
-        //------------------------------------------------------------------
-        //------------------------------------------------------------------
-        WidgetDesc::WidgetDesc(const std::string& in_type, const Core::PropertyMap& in_propertyMap, const std::vector<WidgetDesc>& in_childDescs)
-            : m_type(in_type), m_propertyMap(in_propertyMap), m_childDescs(in_childDescs)
-        {
-        }
-        //------------------------------------------------------------------
-        //------------------------------------------------------------------
-        const std::string& WidgetDesc::GetType() const
-        {
-            return m_type;
-        }
-        //------------------------------------------------------------------
-        //------------------------------------------------------------------
-        const Core::PropertyMap& WidgetDesc::GetProperties() const
-        {
-            return m_propertyMap;
-        }
-        //------------------------------------------------------------------
-        //------------------------------------------------------------------
-        const std::vector<WidgetDesc>& WidgetDesc::GetChildDescs() const
-        {
-            return m_childDescs;
-        }
+    }
+    //------------------------------------------------------------------
+    //------------------------------------------------------------------
+    const std::string& WidgetDesc::GetType() const
+    {
+        return m_type;
+    }
+    //------------------------------------------------------------------
+    //------------------------------------------------------------------
+    const PropertyMap& WidgetDesc::GetProperties() const
+    {
+        return m_propertyMap;
+    }
+    //------------------------------------------------------------------
+    //------------------------------------------------------------------
+    const std::vector<WidgetDesc>& WidgetDesc::GetChildDescs() const
+    {
+        return m_childDescs;
     }
 }

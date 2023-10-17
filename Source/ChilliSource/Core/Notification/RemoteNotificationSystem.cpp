@@ -1,6 +1,6 @@
 //
 //  RemoteNotificationSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Robert Henning on 22/01/2014.
 //
 //  The MIT License (MIT)
@@ -32,29 +32,20 @@
 #import <CSBackend/Platform/iOS/Core/Notification/RemoteNotificationSystem.h>
 #endif
 
-#ifdef CS_TARGETPLATFORM_ANDROID
-#ifdef CS_ANDROIDFLAVOUR_GOOGLEPLAY
-#include <CSBackend/Platform/Android/GooglePlay/JNI/Core/Notification/GooglePlayRemoteNotificationSystem.h>
-#endif
-#endif
-
 namespace ChilliSource
 {
-	namespace Core
+    CS_DEFINE_NAMEDTYPE(RemoteNotificationSystem);
+    //----------------------------------------------------
+    //----------------------------------------------------
+    RemoteNotificationSystemUPtr RemoteNotificationSystem::Create()
     {
-        CS_DEFINE_NAMEDTYPE(RemoteNotificationSystem);
-        //----------------------------------------------------
-        //----------------------------------------------------
-        RemoteNotificationSystemUPtr RemoteNotificationSystem::Create()
-        {
 #ifdef CS_TARGETPLATFORM_IOS
-        	return RemoteNotificationSystemUPtr(new CSBackend::iOS::RemoteNotificationSystem());
+        return RemoteNotificationSystemUPtr(new CSBackend::iOS::RemoteNotificationSystem());
 #elif defined(CS_TARGETPLATFORM_ANDROID)
 #ifdef CS_ANDROIDFLAVOUR_GOOGLEPLAY
-        	return RemoteNotificationSystemUPtr(new CSBackend::Android::GooglePlayRemoteNotificationSystem());
+        return nullptr;
 #endif
 #endif
-        	return nullptr;
-        }
+        return nullptr;
     }
 }

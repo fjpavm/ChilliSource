@@ -1,6 +1,6 @@
 //
 //  PlatformSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 24/11/2010.
 //
 //  The MIT License (MIT)
@@ -31,9 +31,9 @@
 #include <CSBackend/Platform/Android/Main/JNI/Core/Base/PlatformSystem.h>
 
 #include <CSBackend/Platform/Android/Main/JNI/Core/Base/CoreJavaInterface.h>
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceManager.h>
-#include <CSBackend/Rendering/OpenGL/Shader/GLSLShaderProvider.h>
-#include <CSBackend/Rendering/OpenGL/Texture/TextureUnitSystem.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterfaceManager.h>
+
+#include <ChilliSource/Core/Base/Application.h>
 #include <ChilliSource/Core/Image/ETC1ImageProvider.h>
 
 namespace CSBackend 
@@ -43,17 +43,15 @@ namespace CSBackend
 		CS_DEFINE_NAMEDTYPE(PlatformSystem);
 		//-------------------------------------------------------
 		//-------------------------------------------------------
-		bool PlatformSystem::IsA(CSCore::InterfaceIDType in_interfaceId) const
+		bool PlatformSystem::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
 		{
-			return (CSCore::PlatformSystem::InterfaceID == in_interfaceId || PlatformSystem::InterfaceID == in_interfaceId);
+			return (ChilliSource::PlatformSystem::InterfaceID == in_interfaceId || PlatformSystem::InterfaceID == in_interfaceId);
 		}
 		//-------------------------------------------------
 		//-------------------------------------------------
-		void PlatformSystem::CreateDefaultSystems(CSCore::Application* in_application)
+		void PlatformSystem::CreateDefaultSystems(ChilliSource::Application* in_application)
 		{
-			in_application->CreateSystem<CSBackend::OpenGL::GLSLShaderProvider>();
-			in_application->CreateSystem<CSCore::ETC1ImageProvider>();
-			in_application->CreateSystem<CSBackend::OpenGL::TextureUnitSystem>();
+			in_application->CreateSystem<ChilliSource::ETC1ImageProvider>();
 		}
         //-----------------------------------------
         //-----------------------------------------
@@ -67,18 +65,6 @@ namespace CSBackend
         {
         	JavaInterfaceManager::GetSingletonPtr()->GetJavaInterface<CoreJavaInterface>()->ForceQuit();
         }
-        //-------------------------------------------------
-        //-------------------------------------------------
-        std::string PlatformSystem::GetAppVersion() const
-		{
-			return JavaInterfaceManager::GetSingletonPtr()->GetJavaInterface<CoreJavaInterface>()->GetApplicationVersionName();
-		}
-		//--------------------------------------------------------------
-		//--------------------------------------------------------------
-		TimeIntervalMs PlatformSystem::GetSystemTimeMS() const
-		{
-			return JavaInterfaceManager::GetSingletonPtr()->GetJavaInterface<CoreJavaInterface>()->GetSystemTimeInMilliseconds();
-		}
 	}
 }
 

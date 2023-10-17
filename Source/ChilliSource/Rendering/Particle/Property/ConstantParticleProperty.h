@@ -1,6 +1,6 @@
 //
 //  ConstantParticleProperty.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 06/10/2014.
 //
 //  The MIT License (MIT)
@@ -34,51 +34,48 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		//------------------------------------------------------------------------------
-		/// A simple particle property for containing a value that remains constant over
-        /// the lifetime of a particle effect.
-		///
-		/// @author Ian Copland
-		//------------------------------------------------------------------------------
-		template <typename TPropertyType> class ConstantParticleProperty final : public ParticleProperty<TPropertyType>
-		{
-		public:
-			//------------------------------------------------------------------------------
-			/// Constructor.
-			///
-			/// @author Ian Copland
-			///
-			/// @param The static value.
-			//------------------------------------------------------------------------------
-			ConstantParticleProperty(TPropertyType in_value);
-			//------------------------------------------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @param The normalised (0.0 - 1.0) particle effect playback progress.
-			///
-			/// @return simply returns the static value.
-			//------------------------------------------------------------------------------
-			TPropertyType GenerateValue(f32 in_playbackProgress) const override;
-            
-		private:
-			TPropertyType m_value;
-		};
+    //------------------------------------------------------------------------------
+    /// A simple particle property for containing a value that remains constant over
+    /// the lifetime of a particle effect.
+    ///
+    /// @author Ian Copland
+    //------------------------------------------------------------------------------
+    template <typename TPropertyType> class ConstantParticleProperty final : public ParticleProperty<TPropertyType>
+    {
+    public:
+        //------------------------------------------------------------------------------
+        /// Constructor.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The static value.
+        //------------------------------------------------------------------------------
+        ConstantParticleProperty(TPropertyType in_value);
+        //------------------------------------------------------------------------------
+        /// @author Ian Copland
+        ///
+        /// @param The normalised (0.0 - 1.0) particle effect playback progress.
+        ///
+        /// @return simply returns the static value.
+        //------------------------------------------------------------------------------
+        TPropertyType GenerateValue(f32 in_playbackProgress) const override;
         
-		//------------------------------------------------------------------------------
-		//------------------------------------------------------------------------------
-		template <typename TPropertyType> ConstantParticleProperty<TPropertyType>::ConstantParticleProperty(TPropertyType in_value)
-			: m_value(in_value)
-		{
-		}
-		//------------------------------------------------------------------------------
-		//------------------------------------------------------------------------------
-		template <typename TPropertyType> TPropertyType ConstantParticleProperty<TPropertyType>::GenerateValue(f32 in_playbackProgress) const
-		{
-			return m_value;
-		}
-	}
+    private:
+        TPropertyType m_value;
+    };
+    
+    //------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    template <typename TPropertyType> ConstantParticleProperty<TPropertyType>::ConstantParticleProperty(TPropertyType in_value)
+        : m_value(in_value)
+    {
+    }
+    //------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    template <typename TPropertyType> TPropertyType ConstantParticleProperty<TPropertyType>::GenerateValue(f32 in_playbackProgress) const
+    {
+        return m_value;
+    }
 }
 
 #endif

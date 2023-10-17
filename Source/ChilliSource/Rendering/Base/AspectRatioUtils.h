@@ -1,6 +1,6 @@
 //
 //  AspectRatioUtils.h
-//  Chilli Source
+//  ChilliSource
 //  Created by S Downie on 24/06/2014.
 //
 //  The MIT License (MIT)
@@ -33,65 +33,62 @@
 
 namespace ChilliSource
 {
-    namespace Rendering
+    //--------------------------------------------------------------------
+    /// Utility methods for calculating a size based on the given
+    /// size and preferred aspect ratio.
+    ///
+    /// @author S Downie
+    //--------------------------------------------------------------------
+    namespace AspectRatioUtils
     {
-        //--------------------------------------------------------------------
-        /// Utility methods for calculating a size based on the given
-        /// size and preferred aspect ratio.
+        //----------------------------------------------------------------------------------------
+        /// Aspect ratio maintaining function that keeps the original width but adapts
+        /// the height to maintain the aspect ratio
         ///
         /// @author S Downie
-        //--------------------------------------------------------------------
-        namespace AspectRatioUtils
-        {
-            //----------------------------------------------------------------------------------------
-            /// Aspect ratio maintaining function that keeps the original width but adapts
-            /// the height to maintain the aspect ratio
-            ///
-            /// @author S Downie
-            ///
-            /// @param Original size
-            /// @param Preferred aspect ratio
-            ///
-            /// @return Size with aspect maintained
-            //----------------------------------------------------------------------------------------
-            Core::Vector2 KeepOriginalWidthAdaptHeight(const Core::Vector2& in_originalSize, f32 in_preferredAspectRatio);
-            //----------------------------------------------------------------------------------------
-            /// Aspect ratio maintaining function that keeps the original height but adapts
-            /// the width to maintain the aspect ratio
-            ///
-            /// @author S Downie
-            ///
-            /// @param Original size
-            /// @param Preferred aspect ratio
-            ///
-            /// @return Size with aspect maintained
-            //----------------------------------------------------------------------------------------
-            Core::Vector2 KeepOriginalHeightAdaptWidth(const Core::Vector2& in_originalSize, f32 in_preferredAspectRatio);
-            //----------------------------------------------------------------------------------------
-            /// Aspect ratio maintaining function that maintains the given target aspect ratio
-            /// while ensuring the size does not DROP BELOW the original size
-            ///
-            /// @author S Downie
-            ///
-            /// @param Original size
-            /// @param Preferred aspect ratio
-            ///
-            /// @return Size with aspect maintained
-            //----------------------------------------------------------------------------------------
-            Core::Vector2 FillOriginal(const Core::Vector2& in_originalSize, f32 in_preferredAspectRatio);
-            //----------------------------------------------------------------------------------------
-            /// Aspect ratio maintaining function that maintains the given target aspect ratio
-            /// while ensuring the size does not EXCEED the original size
-            ///
-            /// @author S Downie
-            ///
-            /// @param Original size
-            /// @param Preferred aspect ratio
-            ///
-            /// @return Size with aspect maintained
-            //----------------------------------------------------------------------------------------
-            Core::Vector2 FitOriginal(const Core::Vector2& in_originalSize, f32 in_preferredAspectRatio);
-        }
+        ///
+        /// @param Original size
+        /// @param Preferred aspect ratio
+        ///
+        /// @return Size with aspect maintained
+        //----------------------------------------------------------------------------------------
+        Vector2 KeepOriginalWidthAdaptHeight(const Vector2& in_originalSize, f32 in_preferredAspectRatio);
+        //----------------------------------------------------------------------------------------
+        /// Aspect ratio maintaining function that keeps the original height but adapts
+        /// the width to maintain the aspect ratio
+        ///
+        /// @author S Downie
+        ///
+        /// @param Original size
+        /// @param Preferred aspect ratio
+        ///
+        /// @return Size with aspect maintained
+        //----------------------------------------------------------------------------------------
+        Vector2 KeepOriginalHeightAdaptWidth(const Vector2& in_originalSize, f32 in_preferredAspectRatio);
+        //----------------------------------------------------------------------------------------
+        /// Aspect ratio maintaining function that maintains the given target aspect ratio
+        /// while ensuring the size does not DROP BELOW the original size
+        ///
+        /// @author S Downie
+        ///
+        /// @param Original size
+        /// @param Preferred aspect ratio
+        ///
+        /// @return Size with aspect maintained
+        //----------------------------------------------------------------------------------------
+        Vector2 FillOriginal(const Vector2& in_originalSize, f32 in_preferredAspectRatio);
+        //----------------------------------------------------------------------------------------
+        /// Aspect ratio maintaining function that maintains the given target aspect ratio
+        /// while ensuring the size does not EXCEED the original size
+        ///
+        /// @author S Downie
+        ///
+        /// @param Original size
+        /// @param Preferred aspect ratio
+        ///
+        /// @return Size with aspect maintained
+        //----------------------------------------------------------------------------------------
+        Vector2 FitOriginal(const Vector2& in_originalSize, f32 in_preferredAspectRatio);
     }
 }
 

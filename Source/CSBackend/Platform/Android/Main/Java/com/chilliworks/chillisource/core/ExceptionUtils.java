@@ -1,6 +1,6 @@
 /**
  * ExceptionUtils.java
- * Chilli Source
+ * ChilliSource
  * Created by Ian Copland on 16/12/2013.
  * 
  * The MIT License (MIT)
@@ -60,7 +60,7 @@ public class ExceptionUtils
 	/// @return The details of the exception in string 
 	/// format.
 	//-----------------------------------------------
-	public static String ConvertToString(Exception inException)
+	public static String convertToString(Exception inException)
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append(inException.getLocalizedMessage() + "\n");

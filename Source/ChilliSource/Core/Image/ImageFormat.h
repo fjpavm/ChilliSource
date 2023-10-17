@@ -1,6 +1,6 @@
 //
 //  ImageFormat.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 15/04/2014.
 //
 //  The MIT License (MIT)
@@ -31,26 +31,23 @@
 
 namespace ChilliSource
 {
-	namespace Core
-	{
-        //-----------------------------------------------------
-        /// Holds the supported image formats that can be
-        /// converted to texture.
-        ///
-        /// @author S Downie
-        //-----------------------------------------------------
-        enum class ImageFormat
-        {
-            k_RGBA4444,
-            k_RGBA8888,
-            k_RGB888,
-            k_RGB565,
-            k_LumA88,
-            k_Lum8,
-            k_Depth16,
-            k_Depth32
-        };
-	}
+    //-----------------------------------------------------
+    /// Holds the supported image formats that can be
+    /// converted to texture.
+    ///
+    /// @author S Downie
+    //-----------------------------------------------------
+    enum class ImageFormat
+    {
+        k_RGBA4444,
+        k_RGBA8888,
+        k_RGB888,
+        k_RGB565,
+        k_LumA88,
+        k_Lum8,
+        k_Depth16,
+        k_Depth32
+    };
 }
 
 #endif

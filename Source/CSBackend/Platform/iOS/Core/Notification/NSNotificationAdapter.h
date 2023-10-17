@@ -1,6 +1,6 @@
 //
 //  NSNotificationAdapter.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 01/02/2011.
 //
 //  The MIT License (MIT)
@@ -43,8 +43,8 @@ typedef std::function<void()> NotificationEventDelegate;
 @interface NSNotificationAdapter : NSObject 
 {    
     //---Media Player
-    CSCore::Event<NotificationEventDelegate> mMPLoadStateChangeEvent;
-    CSCore::Event<NotificationEventDelegate> mMPPlaybackDidFinishEvent;
+    ChilliSource::Event<NotificationEventDelegate> mMPLoadStateChangeEvent;
+    ChilliSource::Event<NotificationEventDelegate> mMPPlaybackDidFinishEvent;
 }
 
 //-----------------------------------------------
@@ -77,13 +77,13 @@ typedef std::function<void()> NotificationEventDelegate;
 ///
 /// @return Event Object
 //-----------------------------------------------
--(CSCore::IConnectableEvent<NotificationEventDelegate>&) GetMPLoadStateChangeEvent;
+-(ChilliSource::IConnectableEvent<NotificationEventDelegate>&) GetMPLoadStateChangeEvent;
 //-----------------------------------------------
 /// Get Movie Player Playback Did Finish Event
 ///
 /// @return Event Object
 //-----------------------------------------------
--(CSCore::IConnectableEvent<NotificationEventDelegate>&) GetMPPlaybackDidFinishEvent;
+-(ChilliSource::IConnectableEvent<NotificationEventDelegate>&) GetMPPlaybackDidFinishEvent;
 
 //---Notification callbacks
 //-----------------------------------------------

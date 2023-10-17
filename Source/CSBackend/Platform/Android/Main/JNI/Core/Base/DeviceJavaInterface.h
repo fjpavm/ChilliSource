@@ -1,6 +1,6 @@
 //
 //  DeviceJavaInterface.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 24/09/2014.
 //
 //  The MIT License (MIT)
@@ -32,7 +32,7 @@
 #define _CSBACKEND_PLATFORM_ANDROID_CORE_BASE_DEVICEJAVAINTERFACE_H_
 
 #include <ChilliSource/ChilliSource.h>
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterface.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterface.h>
 
 #include <jni.h>
 
@@ -62,7 +62,7 @@ namespace CSBackend
 			///
 			/// @return Whether or not this object implements the given interface.
 			//--------------------------------------------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+			bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
 			//--------------------------------------------------------------------------------------
 			/// @author S Downie
 			///

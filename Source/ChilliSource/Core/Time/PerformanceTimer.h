@@ -1,6 +1,6 @@
 //
 //  PerformanceTimer.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 04/09/2012.
 //
 //  The MIT License (MIT)
@@ -37,28 +37,25 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    class PerformanceTimer final
     {
-		class PerformanceTimer final
-		{
-		public:
-			PerformanceTimer();
-			void Start();
-			void Stop();
-			f64 GetTimeTakenS() const;
-			f64 GetTimeTakenMS() const;
-			f64 GetTimeTakenMicroS() const;
-        private:
-			f64 m_lastDurationMicroS;
+    public:
+        PerformanceTimer();
+        void Start();
+        void Stop();
+        f64 GetTimeTakenS() const;
+        f64 GetTimeTakenMS() const;
+        f64 GetTimeTakenMicroS() const;
+    private:
+        f64 m_lastDurationMicroS;
 
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_LINUX  
-			timeval m_startTime;
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGET_PLATFORM_RPI || defined CS_TARGETPLATFORM_LINUX  
+        timeval m_startTime;
 #elif defined CS_TARGETPLATFORM_WINDOWS
-			s64 m_frequency;
-			s64 m_startTime;
+        s64 m_frequency;
+        s64 m_startTime;
 #endif
-        };
-    }
+    };
 }
 
 #endif

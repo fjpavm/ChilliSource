@@ -1,6 +1,6 @@
 //
 //  StandardMacros.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 25/02/2014.
 //
 //  The MIT License (MIT)
@@ -37,18 +37,24 @@
 //------------------------------------------------------------
 /// Logging macros
 //------------------------------------------------------------
-#define CS_LOG_VERBOSE(in_message)      (CSCore::Logging::Get()->LogVerbose(in_message))
-#define CS_LOG_WARNING(in_message)      (CSCore::Logging::Get()->LogWarning(in_message))
-#define CS_LOG_ERROR(in_message)        (CSCore::Logging::Get()->LogError(in_message))
-#define CS_LOG_FATAL(in_message)        (CSCore::Logging::Get()->LogFatal(in_message))
+#define CS_LOG_VERBOSE(message)      (ChilliSource::Logging::Get()->LogVerbose(message))
+#define CS_LOG_WARNING(message)      (ChilliSource::Logging::Get()->LogWarning(message))
+#define CS_LOG_ERROR(message)        (ChilliSource::Logging::Get()->LogError(message))
+#define CS_LOG_FATAL(message)        (ChilliSource::Logging::Get()->LogFatal(message))
+
+#define CS_LOG_VERBOSE_FMT(message, ...)  (ChilliSource::Logging::Get()->LogVerboseFormatted(message, __VA_ARGS__))
+#define CS_LOG_WARNING_FMT(message, ...)  (ChilliSource::Logging::Get()->LogWarningFormatted(message, __VA_ARGS__))
+#define CS_LOG_ERROR_FMT(message, ...)  (ChilliSource::Logging::Get()->LogErrorFormatted(message, __VA_ARGS__))
+#define CS_LOG_FATAL_FMT(message, ...)  (ChilliSource::Logging::Get()->LogFatalFormatted(message, __VA_ARGS__))
 //------------------------------------------------------------
 /// Assertion macros
 //------------------------------------------------------------
 #ifdef CS_ENABLE_DEBUG
-#define CS_ASSERT(in_query, in_message) if((in_query) == 0){CSCore::Logging::Get()->LogFatal(in_message);}
+#define CS_ASSERT(in_query, in_message) if((in_query) == 0){ChilliSource::Logging::Get()->LogFatal(in_message);}
 #else
 #define CS_ASSERT(in_query, in_message)
 #endif
+#define CS_RELEASE_ASSERT(in_query, in_message) if((in_query) == 0){ChilliSource::Logging::Get()->LogFatal(in_message);}
 //------------------------------------------------------------
 /// Casting macros
 //------------------------------------------------------------
@@ -77,6 +83,16 @@
     using in_structName##CUPtr = std::unique_ptr<const in_structName>;  \
     using in_structName##CSPtr = std::shared_ptr<const in_structName>;  \
     using in_structName##CWPtr = std::weak_ptr<const in_structName>;
+
+#define CS_FORWARDDECLARE_TEMPLATECLASS(className, T)                                   \
+    template <typename T> class className;												\
+    template <typename T> using className##UPtr = std::unique_ptr<className<T>>;        \
+    template <typename T> using className##SPtr = std::shared_ptr<className<T>>;        \
+    template <typename T> using className##WPtr = std::weak_ptr<className<T>>;          \
+    template <typename T> using className##CUPtr = std::unique_ptr<const className<T>>; \
+    template <typename T> using className##CSPtr = std::shared_ptr<const className<T>>; \
+    template <typename T> using className##CWPtr = std::weak_ptr<const className<T>>;
+
 //------------------------------------------------------------
 /// A macro for declaring a class non copyable. This is acheived
 /// by deleting the default copy and assignment constructor.

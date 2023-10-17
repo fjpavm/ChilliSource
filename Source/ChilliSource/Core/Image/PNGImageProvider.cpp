@@ -1,6 +1,6 @@
 //
 //  PNGImageProvider.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 01/08/2011.
 //
 //  The MIT License (MIT)
@@ -40,30 +40,34 @@
 #include <CSBackend/Platform/Windows/Core/Image/PNGImageProvider.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_RPI
+#include <CSBackend/Platform/RPi/Core/Image/PNGImageProvider.h>
+#endif
+
 #ifdef CS_TARGETPLATFORM_LINUX
 #include <CSBackend/Platform/Linux/Core/Image/PNGImageProvider.h>
 #endif
 
 namespace ChilliSource
 {
-    namespace Core
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    PNGImageProviderUPtr PNGImageProvider::Create()
     {
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        PNGImageProviderUPtr PNGImageProvider::Create()
-        {
 #ifdef CS_TARGETPLATFORM_IOS
-            return PNGImageProviderUPtr(new CSBackend::iOS::PNGImageProvider());
+        return PNGImageProviderUPtr(new CSBackend::iOS::PNGImageProvider());
 #endif
 #ifdef CS_TARGETPLATFORM_ANDROID
-            return PNGImageProviderUPtr(new CSBackend::Android::PNGImageProvider());
+        return PNGImageProviderUPtr(new CSBackend::Android::PNGImageProvider());
 #endif
 #ifdef CS_TARGETPLATFORM_WINDOWS
-            return PNGImageProviderUPtr(new CSBackend::Windows::PNGImageProvider());
+        return PNGImageProviderUPtr(new CSBackend::Windows::PNGImageProvider());
+#endif
+#ifdef CS_TARGETPLATFORM_RPI
+        return PNGImageProviderUPtr(new CSBackend::RPi::PNGImageProvider());
 #endif
 #ifdef CS_TARGETPLATFORM_LINUX
 			return PNGImageProviderUPtr(new CSBackend::Linux::PNGImageProvider());
 #endif
-        }
     }
 }

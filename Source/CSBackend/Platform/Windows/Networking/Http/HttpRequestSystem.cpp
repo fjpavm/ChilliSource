@@ -1,6 +1,6 @@
 //
 //  HttpRequestSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 23/05/2011.
 //
 //  The MIT License (MIT)
@@ -35,9 +35,24 @@
 #include <ChilliSource/Core/Threading/TaskScheduler.h>
 
 #include <Windows.h>
+
+// Have to wrap WinInet's include in a namespace, because MS violates ODR with WinInet and WinHTTP.
+namespace WinInet
+{
+#include <WinInet.h>
+}
+
+// A couple of undefs required too.
+#undef BOOLAPI
+#undef SECURITY_FLAG_IGNORE_CERT_DATE_INVALID
+#undef SECURITY_FLAG_IGNORE_CERT_CN_INVALID
+
 #include <winhttp.h>
 
+
+
 #pragma comment(lib, "winhttp")
+#pragma comment(lib, "wininet")
 
 namespace CSBackend
 {
@@ -74,7 +89,7 @@ namespace CSBackend
 			///
 			/// @return Header blob
 			//--------------------------------------------------------------------------------------------------
-			std::wstring ConvertHeaders(const CSCore::ParamDictionary& in_headers)
+			std::wstring ConvertHeaders(const ChilliSource::ParamDictionary& in_headers)
 			{
 				//The headers must be passed as a single string with each header except the last
 				//terminated by a carraige return/line feed
@@ -107,19 +122,19 @@ namespace CSBackend
 		}
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------
-		bool HttpRequestSystem::IsA(CSCore::InterfaceIDType in_interfaceId) const
+		bool HttpRequestSystem::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
 		{
-			return in_interfaceId == CSNetworking::HttpRequestSystem::InterfaceID || in_interfaceId == HttpRequestSystem::InterfaceID;
+			return in_interfaceId == ChilliSource::HttpRequestSystem::InterfaceID || in_interfaceId == HttpRequestSystem::InterfaceID;
 		}
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------
 		HttpRequest* HttpRequestSystem::MakeGetRequest(const std::string& in_url, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
 		{
-			return MakeRequest(HttpRequest::Type::k_get, in_url, "", CSCore::ParamDictionary(), in_delegate, in_timeoutSecs);
+			return MakeRequest(HttpRequest::Type::k_get, in_url, "", ChilliSource::ParamDictionary(), in_delegate, in_timeoutSecs);
 		}
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------
-		HttpRequest* HttpRequestSystem::MakeGetRequest(const std::string& in_url, const CSCore::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
+		HttpRequest* HttpRequestSystem::MakeGetRequest(const std::string& in_url, const ChilliSource::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
 		{
 			return MakeRequest(HttpRequest::Type::k_get, in_url, "", in_headers, in_delegate, in_timeoutSecs);
 		}
@@ -127,19 +142,19 @@ namespace CSBackend
 		//--------------------------------------------------------------------------------------------------
 		HttpRequest* HttpRequestSystem::MakePostRequest(const std::string& in_url, const std::string& in_body, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
 		{
-			return MakeRequest(HttpRequest::Type::k_post, in_url, in_body, CSCore::ParamDictionary(), in_delegate, in_timeoutSecs);
+			return MakeRequest(HttpRequest::Type::k_post, in_url, in_body, ChilliSource::ParamDictionary(), in_delegate, in_timeoutSecs);
 		}
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------
-		HttpRequest* HttpRequestSystem::MakePostRequest(const std::string& in_url, const std::string& in_body, const CSCore::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
+		HttpRequest* HttpRequestSystem::MakePostRequest(const std::string& in_url, const std::string& in_body, const ChilliSource::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
 		{
 			return MakeRequest(HttpRequest::Type::k_post, in_url, in_body, in_headers, in_delegate, in_timeoutSecs);
 		}
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------
-		HttpRequest* HttpRequestSystem::MakeRequest(HttpRequest::Type in_type, const std::string& in_url, const std::string& in_body, const CSCore::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
+		HttpRequest* HttpRequestSystem::MakeRequest(HttpRequest::Type in_type, const std::string& in_url, const std::string& in_body, const ChilliSource::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
 		{
-			CS_ASSERT(CSCore::Application::Get()->GetTaskScheduler()->IsMainThread() == true, "Http requests can currently only be made on the main thread");
+			CS_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread() == true, "Http requests can currently only be made on the main thread");
 			CS_ASSERT(in_delegate != nullptr, "Cannot make an http request with a null delegate");
 			CS_ASSERT(in_url.empty() == false, "Cannot make an http request to a blank url");
 
@@ -177,7 +192,7 @@ namespace CSBackend
 			}
 
 			//Set up the request based on whether it is POST or GET and whether it is SSL
-			LPCWSTR type = (in_type == CSNetworking::HttpRequest::Type::k_get ? L"GET" : L"POST");
+			LPCWSTR type = (in_type == ChilliSource::HttpRequest::Type::k_get ? L"GET" : L"POST");
 			HINTERNET requestHandle = 0;
 
 			std::wstring urlPath = urlComps.lpszUrlPath;
@@ -208,7 +223,7 @@ namespace CSBackend
 			{
 				std::wstring headerBlob = ConvertHeaders(in_headers);
 
-				if (WinHttpAddRequestHeaders(requestHandle, headerBlob.c_str(), headerBlob.length(), WINHTTP_ADDREQ_FLAG_ADD) == false)
+				if (WinHttpAddRequestHeaders(requestHandle, headerBlob.c_str(), DWORD(headerBlob.length()), WINHTTP_ADDREQ_FLAG_ADD) == false)
 				{
 					CS_LOG_ERROR("Failed to add http headers: " + in_url);
 					WinHttpCloseHandle(requestHandle);
@@ -225,7 +240,7 @@ namespace CSBackend
 		//--------------------------------------------------------------------------------------------------
 		void HttpRequestSystem::CancelAllRequests()
 		{
-			CS_ASSERT(CSCore::Application::Get()->GetTaskScheduler()->IsMainThread() == true, "Http requests can currently only be made on the main thread");
+			CS_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread() == true, "Http requests can currently only be made on the main thread");
 
 			for(u32 nRequest=0; nRequest<m_requests.size(); ++nRequest)
 			{
@@ -234,9 +249,18 @@ namespace CSBackend
 		}
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------
-		bool HttpRequestSystem::CheckReachability() const
+		void HttpRequestSystem::CheckReachability(const ReachabilityResultDelegate& in_reachabilityDelegate) const
 		{
-			return true;
+			// Check internet connectivity/reachability, using WinINet.
+			DWORD inetState = 0;
+			BOOL hasConnection = WinInet::InternetGetConnectedState(&inetState, 0);
+
+			// True is returned when the device has an active connection to the internet, or a correctly-configured proxy connection.
+			// False is returned when the device has no connection to the internet, even if successfully connected to LAN.
+			// More information about the connection can be obtained from the 'inetState' flag.
+			 
+            CS_ASSERT(in_reachabilityDelegate, "The reachability delegate should not be null.");
+			in_reachabilityDelegate(hasConnection ? true : false); //ternary operator used here because BOOL is a typedef'd int & conversion has perf issues
 		}
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------

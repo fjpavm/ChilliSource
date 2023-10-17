@@ -1,6 +1,6 @@
 //
-//  LayoutDef.h
-//  Chilli Source
+//  UILayoutDef.h
+//  ChilliSource
 //  Created by Ian Copland on 08/05/2015.
 //
 //  The MIT License (MIT)
@@ -37,58 +37,55 @@
 
 namespace ChilliSource
 {
-    namespace UI
+    //------------------------------------------------------------------------------
+    /// A definition of a layout which can be built from a json object. This is
+    /// effectively an immutable container for the properties of a specific type of
+    /// layout.
+    ///
+    /// UILayout Defs can be either created using the concrete def's constructor or
+    /// using the Create() method. This creates the def from json which describes the
+    /// type and properties of the def.
+    ///
+    /// All layouts defs contain the following property. Specific def types can also
+    /// contain further properties.
+    ///
+    /// "Type": Describes the type of layout def.
+    ///
+    /// @author Ian Copland
+    //------------------------------------------------------------------------------
+    class UILayoutDef : public QueryableInterface
     {
+    public:
+        CS_DECLARE_NAMEDTYPE(UILayoutDef);
         //------------------------------------------------------------------------------
-        /// A definition of a layout which can be built from a json object. This is
-        /// effectively an immutable container for the properties of a specific type of
-        /// layout.
+        /// Creates a new layout def from json which describes the type of def and its
+        /// properties.
         ///
-        /// Layout Defs can be either created using the concrete def's constructor or
-        /// using the Create() method. This creates the def from json which describes the
-        /// type and properties of the def.
+        /// @author Ian Copland
         ///
-        /// All layouts defs contain the following property. Specific def types can also
-        /// contain further properties.
-        ///
-        /// "Type": Describes the type of layout def.
+        /// @param The JSON object containing the layout properties.
+        //------------------------------------------------------------------------------
+        static UILayoutDefCUPtr Create(const Json::Value& in_json);
+        //------------------------------------------------------------------------------
+        /// Destructor
         ///
         /// @author Ian Copland
         //------------------------------------------------------------------------------
-        class LayoutDef : public Core::QueryableInterface
-        {
-        public:
-            CS_DECLARE_NAMEDTYPE(LayoutDef);
-            //------------------------------------------------------------------------------
-            /// Creates a new layout def from json which describes the type of def and its
-            /// properties.
-            ///
-            /// @author Ian Copland
-            ///
-            /// @param The JSON object containing the layout properties.
-            //------------------------------------------------------------------------------
-            static LayoutDefCUPtr Create(const Json::Value& in_json);
-            //------------------------------------------------------------------------------
-            /// Destructor
-            ///
-            /// @author Ian Copland
-            //------------------------------------------------------------------------------
-            virtual ~LayoutDef() {};
-        protected:
-            friend class LayoutComponent;
-            //------------------------------------------------------------------------------
-            /// Creates a new instance of the layout described by this definition. This
-            /// should typically only be called by a layout component.
-            ///
-            /// @author Ian Copland
-            ///
-            /// @param The owning component.
-            ///
-            /// @return a new layout instance.
-            //------------------------------------------------------------------------------
-            virtual LayoutUPtr CreateLayout(LayoutComponent* in_owner) const = 0;
-        };
-    }
+        virtual ~UILayoutDef() {};
+    protected:
+        friend class LayoutUIComponent;
+        //------------------------------------------------------------------------------
+        /// Creates a new instance of the layout described by this definition. This
+        /// should typically only be called by a layout component.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The owning component.
+        ///
+        /// @return a new layout instance.
+        //------------------------------------------------------------------------------
+        virtual UILayoutUPtr CreateLayout(LayoutUIComponent* in_owner) const = 0;
+    };
 }
 
 #endif

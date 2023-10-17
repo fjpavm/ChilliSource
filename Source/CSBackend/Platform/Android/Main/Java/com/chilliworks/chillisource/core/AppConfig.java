@@ -1,6 +1,6 @@
 /**
  * AppConfig.java
- * Chilli Source
+ * ChilliSource
  * Created by Scott Downie on 23/09/2014.
  * 
  * The MIT License (MIT)
@@ -82,10 +82,9 @@ public final class AppConfig
 	 */
 	private void parse(Activity in_activity)
 	{
-		if (FileUtils.doesFileExistAPK(in_activity, k_configFilePath))
+		if (PackageFileUtils.doesFileExist(in_activity, k_configFilePath))
 		{
-			byte[] byteContents = FileUtils.readFileAPK(in_activity, k_configFilePath);
-			String stringContents = StringUtils.UTF8ByteArrayToString(byteContents);
+			String stringContents = PackageFileUtils.readTextFile(in_activity, k_configFilePath);
 			
 			try
 			{

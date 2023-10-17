@@ -1,6 +1,6 @@
 //
 //  EmailComposer.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 06/03/2014.
 //
 //  The MIT License (MIT)
@@ -38,27 +38,24 @@
 
 namespace ChilliSource
 {
-    namespace Social
+    CS_DEFINE_NAMEDTYPE(EmailComposer);
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    EmailComposerUPtr EmailComposer::Create()
     {
-        CS_DEFINE_NAMEDTYPE(EmailComposer);
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        EmailComposerUPtr EmailComposer::Create()
-        {
 #ifdef CS_TARGETPLATFORM_IOS
-            if (CSBackend::iOS::EmailComposer::IsSupportedByDevice() == true)
-            {
-                return EmailComposerUPtr(new CSBackend::iOS::EmailComposer());
-            }
-            else
-            {
-                return nullptr;
-            }
-#elif defined CS_TARGETPLATFORM_ANDROID
-            return EmailComposerUPtr(new CSBackend::Android::EmailComposer());
-#else
-            return nullptr;
-#endif
+        if (CSBackend::iOS::EmailComposer::IsSupportedByDevice() == true)
+        {
+            return EmailComposerUPtr(new CSBackend::iOS::EmailComposer());
         }
+        else
+        {
+            return nullptr;
+        }
+#elif defined CS_TARGETPLATFORM_ANDROID
+        return EmailComposerUPtr(new CSBackend::Android::EmailComposer());
+#else
+        return nullptr;
+#endif
     }
 }

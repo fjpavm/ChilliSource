@@ -1,6 +1,6 @@
 //
 //  PlatformSystem.mm
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 24/11/2010.
 //
 //  The MIT License (MIT)
@@ -32,13 +32,9 @@
 
 #import <CSBackend/Platform/iOS/Core/Base/CSAppDelegate.h>
 #import <CSBackend/Platform/iOS/Core/String/NSStringUtils.h>
-#import <CSBackend/Rendering/OpenGL/Shader/GLSLShaderProvider.h>
-#import <CSBackend/Rendering/OpenGL/Texture/TextureUnitSystem.h>
 #import <ChilliSource/Core/Base/Application.h>
 #import <ChilliSource/Core/Image/PVRImageProvider.h>
-
-#import <mach/mach.h>
-#import <mach/mach_time.h>
+#import <ChilliSource/Core/Threading/TaskScheduler.h>
 
 namespace CSBackend 
 {
@@ -47,43 +43,25 @@ namespace CSBackend
         CS_DEFINE_NAMEDTYPE(PlatformSystem);
         //-------------------------------------------------------
         //-------------------------------------------------------
-        bool PlatformSystem::IsA(CSCore::InterfaceIDType in_interfaceId) const
+        bool PlatformSystem::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
         {
-            return (CSCore::PlatformSystem::InterfaceID == in_interfaceId || PlatformSystem::InterfaceID == in_interfaceId);
+            return (ChilliSource::PlatformSystem::InterfaceID == in_interfaceId || PlatformSystem::InterfaceID == in_interfaceId);
         }
         //-------------------------------------------------------
         //-------------------------------------------------------
-		void PlatformSystem::CreateDefaultSystems(CSCore::Application* in_application)
+		void PlatformSystem::CreateDefaultSystems(ChilliSource::Application* in_application)
 		{
-            in_application->CreateSystem<CSCore::PVRImageProvider>();
-            in_application->CreateSystem<OpenGL::GLSLShaderProvider>();
-            in_application->CreateSystem<OpenGL::TextureUnitSystem>();
+            in_application->CreateSystem<ChilliSource::PVRImageProvider>();
 		}
         //-------------------------------------------------------
         //-------------------------------------------------------
         void PlatformSystem::SetPreferredFPS(u32 in_fps)
         {
-            [[CSAppDelegate sharedInstance] setPreferredFPS:in_fps];
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        std::string PlatformSystem::GetAppVersion() const
-        {
-            @autoreleasepool
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& in_taskContext)
             {
-                NSString* version = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
-                return [NSStringUtils newUTF8StringWithNSString:version];
-            }
+                [[CSAppDelegate sharedInstance] setPreferredFPS:in_fps];
+            });
         }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-		TimeIntervalMs PlatformSystem::GetSystemTimeMS() const
-		{
-            mach_timebase_info_data_t machtimeBase;
-            mach_timebase_info(&machtimeBase);
-            u64 nanoSecs = (mach_absolute_time() * machtimeBase.numer) / machtimeBase.denom;
-			return nanoSecs / 1000000;
-		}
 	}
 }
 

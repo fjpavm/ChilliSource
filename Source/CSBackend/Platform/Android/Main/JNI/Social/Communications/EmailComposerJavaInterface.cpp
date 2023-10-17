@@ -1,6 +1,6 @@
 //
 //  EmailComposerJavaInterface.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Steven Hendrie on 20/01/2012.
 //
 //  The MIT License (MIT)
@@ -30,8 +30,11 @@
 
 #include <CSBackend/Platform/Android/Main/JNI/Social/Communications/EmailComposerJavaInterface.h>
 
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceManager.h>
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceUtils.h>
+#include <ChilliSource/Core/Base/Application.h>
+#include <ChilliSource/Core/Threading/TaskScheduler.h>
+
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterfaceManager.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaUtils.h>
 
 //function definitions
 extern "C"
@@ -102,7 +105,7 @@ namespace CSBackend
 		//--------------------------------------------------------------
 		/// Is A
 		//--------------------------------------------------------------
-		bool EmailComposerJavaInterface::IsA(CSCore::InterfaceIDType inInterfaceID) const
+		bool EmailComposerJavaInterface::IsA(ChilliSource::InterfaceIDType inInterfaceID) const
 		{
 			return (inInterfaceID == EmailComposerJavaInterface::InterfaceID);
 		}
@@ -121,14 +124,14 @@ namespace CSBackend
 			jobjectArray ajstrRecipients = pEnv->NewObjectArray(inastrRecipientAddresses.size(), pEnv->FindClass("java/lang/String"), pEnv->NewStringUTF(""));
 			for(auto it = inastrRecipientAddresses.begin(); it != inastrRecipientAddresses.end(); ++it)
 			{
-				jstring jstrRecipient = JavaInterfaceUtils::CreateJStringFromSTDString(*it);
+				jstring jstrRecipient = JavaUtils::CreateJStringFromSTDString(*it);
 				pEnv->SetObjectArrayElement(ajstrRecipients,udwCount++, jstrRecipient);
 				pEnv->DeleteLocalRef(jstrRecipient);
 			}
 
-			jstring jstrSubject = JavaInterfaceUtils::CreateJStringFromSTDString(instrSubject);
-			jstring jstrContents = JavaInterfaceUtils::CreateJStringFromSTDString(instrContents);
-			jstring jstrAttachmentFilename = JavaInterfaceUtils::CreateJStringFromSTDString(instrAttachmentFilename);
+			jstring jstrSubject = JavaUtils::CreateJStringFromSTDString(instrSubject);
+			jstring jstrContents = JavaUtils::CreateJStringFromSTDString(instrContents);
+			jstring jstrAttachmentFilename = JavaUtils::CreateJStringFromSTDString(instrAttachmentFilename);
 
 			//call method
 			pEnv->CallVoidMethod(GetJavaObject(), GetMethodID("Present"), ajstrRecipients, jstrSubject, jstrContents, inbFormatAsHtml, jstrAttachmentFilename);
@@ -144,12 +147,15 @@ namespace CSBackend
 		//--------------------------------------------------------------
 		void EmailComposerJavaInterface::OnEmailClosed(s32 indwResultCode)
 		{
-			if (mDelegate != nullptr)
-			{
-				ResultDelegate delegate = mDelegate;
-				mDelegate = nullptr;
-				delegate(IntegerToResult(indwResultCode));
-			}
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_mainThread, [=](const ChilliSource::TaskContext& taskContext)
+            {
+                if (mDelegate != nullptr)
+                {
+                    ResultDelegate delegate = mDelegate;
+                    mDelegate = nullptr;
+                    delegate(IntegerToResult(indwResultCode));
+                }
+            });
 		}
 	}
 }

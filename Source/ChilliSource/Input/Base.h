@@ -1,6 +1,6 @@
 //
 //  Base.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 17/09/2014.
 //
 //  The MIT License (MIT)
@@ -31,6 +31,6 @@
 #define _CHILLISOURCE_INPUT_BASE_H_
 
 #include <ChilliSource/ChilliSource.h>
-#include <ChilliSource/Input/Base/Filter.h>
+#include <ChilliSource/Input/Base/InputFilter.h>
 
 #endif

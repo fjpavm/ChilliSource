@@ -1,6 +1,6 @@
 /**
  * ColladaToCSModelOptions.java
- * Chilli Source
+ * ChilliSource
  * Created by Ian Copland on 15/01/2013.
  * 
  * The MIT License (MIT)
@@ -46,6 +46,8 @@ public final class ColladaToCSModelOptions
 	public boolean m_vertexHasPosition = false;
 	public boolean m_vertexHasTexCoords = false;
 	public boolean m_vertexHasNormal = false;
+	public boolean m_vertexHasTangent = false;
+	public boolean m_vertexHasBitangent = false;
 	public boolean m_vertexHasColour = false;
 	public boolean m_vertexHasWeights = false;
 	public boolean m_vertexHasJointIndices = false;

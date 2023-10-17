@@ -1,6 +1,6 @@
 /**
  * WebViewNativeInterface.java
- * Chilli Source
+ * ChilliSource
  * Created by Steven Hendrie on 15/12/2011.
  * 
  * The MIT License (MIT)
@@ -39,14 +39,29 @@ import android.widget.RelativeLayout;
 
 import com.chilliworks.chillisource.core.CSActivity;
 import com.chilliworks.chillisource.core.CSApplication;
-import com.chilliworks.chillisource.core.ResourceHelper;
-import com.chilliworks.chillisource.web.CSWebView;
-import com.chilliworks.chillisource.web.CSWebViewClient;
-import com.chilliworks.chillisource.web.WebViewCloseButton;
+import com.chilliworks.chillisource.core.R;
 
 public class WebViewNativeInterface 
 {
-	native public static void OnWebviewDismissed(int inudwIndex);
+	/**
+	 * Called when a webview is dimissed
+	 *
+	 * @author Steven Hendrie
+	 *
+	 * @param in_index - WebView index.
+	 */
+	native public static void onWebviewDismissed(int in_index);
+	/**
+	 * Called when a link is clicked on a webview
+	 *
+	 * @author Steven Hendrie
+	 *
+	 * @param in_index - WebView index.
+	 * @param in_linkURL - URL of the link to be handled.
+	 *
+	 * @return Whether the URL is handled externally.
+	 */
+	native public static boolean onLinkClicked(int in_index, String in_linkURL);
 	
 	private static CSActivity msActivity;
 	private static RelativeLayout msWebviewHolder;
@@ -179,7 +194,7 @@ public class WebViewNativeInterface
 		    }
 		});	
 		
-		WebViewNativeInterface.OnWebviewDismissed(inudwIndex);
+		WebViewNativeInterface.onWebviewDismissed(inudwIndex);
 	}
 	//---------------------------------------------------------------------
 	/// Add Activity Indicator
@@ -191,9 +206,9 @@ public class WebViewNativeInterface
 			return;
 		
 		mActivityIndicator = new ProgressDialog(msActivity);
-		int LoadingTextID = ResourceHelper.GetDynamicResourceIDForField(msActivity, ResourceHelper.RESOURCE_SUBCLASS.RESOURCE_STRING, "com_chillisource_webview_loading");
-		if(LoadingTextID > 0)
+		if (R.doesExist(R.Type.STRING, "com_chillisource_webview_loading") == true)
 		{
+			int LoadingTextID = R.getId(R.Type.STRING, "com_chillisource_webview_loading");
 			String strMessage = msActivity.getString(LoadingTextID);
 			mActivityIndicator.setMessage(strMessage);
 		}

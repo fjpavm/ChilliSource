@@ -1,6 +1,6 @@
 //
 //  PNGImageProvider.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 01/08/2011.
 //
 //  The MIT License (MIT)
@@ -34,33 +34,30 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    //---------------------------------------------------------------
+    /// An image loader interface that providers PNG resources
+    ///
+    /// @author S Downie
+    //---------------------------------------------------------------
+    class PNGImageProvider : public ResourceProvider
     {
-        //---------------------------------------------------------------
-        /// An image loader interface that providers PNG resources
+    protected:
+        friend class Application;
+        //-------------------------------------------------------
+        /// Create the platform dependent backend
         ///
         /// @author S Downie
-        //---------------------------------------------------------------
-        class PNGImageProvider : public Core::ResourceProvider
-        {
-        protected:
-            friend class Application;
-            //-------------------------------------------------------
-            /// Create the platform dependent backend
-            ///
-            /// @author S Downie
-            ///
-            /// @return New backend instance
-            //-------------------------------------------------------
-            static PNGImageProviderUPtr Create();
-            //-------------------------------------------------------
-            /// Private constructor to force use of factory method
-            ///
-            /// @author S Downie
-            //-------------------------------------------------------
-            PNGImageProvider() = default;
-        };
-    }
+        ///
+        /// @return New backend instance
+        //-------------------------------------------------------
+        static PNGImageProviderUPtr Create();
+        //-------------------------------------------------------
+        /// Private constructor to force use of factory method
+        ///
+        /// @author S Downie
+        //-------------------------------------------------------
+        PNGImageProvider() = default;
+    };
 }
 
 #endif

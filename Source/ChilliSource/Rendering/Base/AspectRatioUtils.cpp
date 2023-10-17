@@ -1,6 +1,6 @@
 //
 //  AspectRatioUtils.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by S Downie on 24/06/2014.
 //
 //  The MIT License (MIT)
@@ -32,56 +32,53 @@
 
 namespace ChilliSource
 {
-    namespace Rendering
+    namespace AspectRatioUtils
     {
-        namespace AspectRatioUtils
+        //----------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------
+        Vector2 KeepOriginalWidthAdaptHeight(const Vector2& in_originalSize, f32 in_preferredAspectRatio)
         {
-            //----------------------------------------------------------------------------------------
-            //----------------------------------------------------------------------------------------
-            Core::Vector2 KeepOriginalWidthAdaptHeight(const Core::Vector2& in_originalSize, f32 in_preferredAspectRatio)
+            CS_ASSERT(in_preferredAspectRatio > 0.0f, "Aspect ratio must be greater than zero");
+            
+            f32 targetAspectRatio = 1.0f/in_preferredAspectRatio;
+            f32 originalHeight = (targetAspectRatio * in_originalSize.x);
+            return Vector2(in_originalSize.x, originalHeight);
+        }
+        //----------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------
+        Vector2 KeepOriginalHeightAdaptWidth(const Vector2& in_originalSize, f32 in_preferredAspectRatio)
+        {
+            f32 originalWidth = (in_preferredAspectRatio * in_originalSize.y);
+            return Vector2(originalWidth, in_originalSize.y);
+        }
+        //----------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------
+        Vector2 FillOriginal(const Vector2& in_originalSize, f32 in_preferredAspectRatio)
+        {
+            f32 originalRatio = in_originalSize.x / in_originalSize.y;
+            
+            if(in_preferredAspectRatio <= originalRatio)
             {
-                CS_ASSERT(in_preferredAspectRatio > 0.0f, "Aspect ratio must be greater than zero");
-                
-                f32 targetAspectRatio = 1.0f/in_preferredAspectRatio;
-                f32 originalHeight = (targetAspectRatio * in_originalSize.x);
-                return Core::Vector2(in_originalSize.x, originalHeight);
+                return KeepOriginalWidthAdaptHeight(in_originalSize, in_preferredAspectRatio);
             }
-            //----------------------------------------------------------------------------------------
-            //----------------------------------------------------------------------------------------
-            Core::Vector2 KeepOriginalHeightAdaptWidth(const Core::Vector2& in_originalSize, f32 in_preferredAspectRatio)
+            else
             {
-                f32 originalWidth = (in_preferredAspectRatio * in_originalSize.y);
-                return Core::Vector2(originalWidth, in_originalSize.y);
+                return KeepOriginalHeightAdaptWidth(in_originalSize, in_preferredAspectRatio);
             }
-            //----------------------------------------------------------------------------------------
-            //----------------------------------------------------------------------------------------
-            Core::Vector2 FillOriginal(const Core::Vector2& in_originalSize, f32 in_preferredAspectRatio)
+        }
+        //----------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------
+        Vector2 FitOriginal(const Vector2& in_originalSize, f32 in_preferredAspectRatio)
+        {
+            f32 originalRatio = in_originalSize.x / in_originalSize.y;
+            
+            if(in_preferredAspectRatio > originalRatio)
             {
-                f32 originalRatio = in_originalSize.x / in_originalSize.y;
-                
-                if(in_preferredAspectRatio <= originalRatio)
-                {
-                    return KeepOriginalWidthAdaptHeight(in_originalSize, in_preferredAspectRatio);
-                }
-                else
-                {
-                    return KeepOriginalHeightAdaptWidth(in_originalSize, in_preferredAspectRatio);
-                }
+                return KeepOriginalWidthAdaptHeight(in_originalSize, in_preferredAspectRatio);
             }
-            //----------------------------------------------------------------------------------------
-            //----------------------------------------------------------------------------------------
-            Core::Vector2 FitOriginal(const Core::Vector2& in_originalSize, f32 in_preferredAspectRatio)
+            else
             {
-                f32 originalRatio = in_originalSize.x / in_originalSize.y;
-                
-                if(in_preferredAspectRatio > originalRatio)
-                {
-                    return KeepOriginalWidthAdaptHeight(in_originalSize, in_preferredAspectRatio);
-                }
-                else
-                {
-                    return KeepOriginalHeightAdaptWidth(in_originalSize, in_preferredAspectRatio);
-                }
+                return KeepOriginalHeightAdaptWidth(in_originalSize, in_preferredAspectRatio);
             }
         }
     }

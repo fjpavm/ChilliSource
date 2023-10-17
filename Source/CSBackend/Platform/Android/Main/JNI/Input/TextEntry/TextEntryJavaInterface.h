@@ -1,6 +1,6 @@
 //
 //  TextEntryJavaInterface.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 04/02/2014.
 //
 //  The MIT License (MIT)
@@ -32,8 +32,10 @@
 #define _CHILLISOURCE_PLATFORM_ANDROID_INPUT_TEXTENTRY_TEXTENTRYJAVAINTERFACE_H_
 
 #include <CSBackend/Platform/Android/Main/JNI/ForwardDeclarations.h>
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterface.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterface.h>
 #include <ChilliSource/Input/TextEntry/TextEntry.h>
+#include <ChilliSource/Input/TextEntry/TextEntryCapitalisation.h>
+#include <ChilliSource/Input/TextEntry/TextEntryType.h>
 
 namespace CSBackend
 {
@@ -63,7 +65,7 @@ namespace CSBackend
 			/// @return whether or not this object implements
 			/// the given interface.
 			//-----------------------------------------------
-			bool IsA(CSCore::InterfaceIDType inInterfaceID) const;
+			bool IsA(ChilliSource::InterfaceIDType inInterfaceID) const;
 			//-------------------------------------------------------
 			/// @author Ian Copland
 			///
@@ -107,7 +109,7 @@ namespace CSBackend
 			/// @param The keyboard type to be used the
 			/// next time the keyboard is displayed.
 			//-------------------------------------------
-            void SetKeyboardType(CSInput::TextEntry::Type ineKeyboardType);
+            void SetKeyboardType(ChilliSource::TextEntryType ineKeyboardType);
 			//-------------------------------------------
 			/// Set Capitalisation Method
 			///
@@ -115,7 +117,7 @@ namespace CSBackend
             /// used the next time the keyboard is
             /// displayed.
 			//-------------------------------------------
-            void SetCapitalisationMethod(CSInput::TextEntry::Capitalisation ineKeyboardCapitalisation);
+            void SetCapitalisationMethod(ChilliSource::TextEntryCapitalisation ineKeyboardCapitalisation);
 			//-----------------------------------------------
 			/// Called when the contents of the text buffer
             /// has changed

@@ -1,6 +1,6 @@
 //
 //  WebView.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 25/07/2011.
 //
 //  The MIT License (MIT)
@@ -48,10 +48,11 @@ namespace CSBackend
         ///
         /// @author S Downie
         //-------------------------------------------------------
-		class WebView final : public CSWeb::WebView
+		class WebView final : public ChilliSource::WebView
 		{
 		public:
             CS_DECLARE_NAMEDTYPE(WebView);
+            
             //-------------------------------------------------------
 			/// Queries whether or not this system implements the
             /// interface with the given Id.
@@ -61,7 +62,7 @@ namespace CSBackend
 			/// @param The interface Id.
 			/// @param Whether system is of given type.
 			//-------------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+			bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
             //---------------------------------------------------------
             /// Displays the website at the given URL in an in-app
             /// web view.
@@ -72,8 +73,10 @@ namespace CSBackend
             /// @param The size of the webview in GUI coordinates.
             /// @param The relative size of the dismiss button.
             /// @param The dismissed delegate.
+            /// @param in_customURLClickHandler - The delegate to call when a link is
+            /// clicked on the displayed page
             //---------------------------------------------------------
-            void Present(const std::string& in_url, const CSCore::UnifiedVector2& in_size, f32 in_dismissButtonRelativeSize, const DismissedDelegate& in_delegate) override;
+            void Present(const std::string& in_url, const ChilliSource::UnifiedVector2& in_size, f32 in_dismissButtonRelativeSize, const DismissedDelegate& in_delegate, const CustomLinkHandlerDelegate& in_customLinkHandler = nullptr) override;
             //---------------------------------------------------------
             /// Displays the website at the given location on disk in
             /// an in-app web view.
@@ -85,8 +88,10 @@ namespace CSBackend
             /// @param The size of the webview in GUI coordinates.
             /// @param The relative size of the dismiss button.
             /// @param The dismissed delegate.
+            /// @param in_customURLClickHandler - The delegate to call when a link is
+            /// clicked on the displayed page
             //---------------------------------------------------------
-            void PresentFromFile(CSCore::StorageLocation in_storageLocation, const std::string& in_filePath, const CSCore::UnifiedVector2& in_size, f32 in_dismissButtonRelativeSize, const DismissedDelegate& in_delegate) override;
+            void PresentFromFile(ChilliSource::StorageLocation in_storageLocation, const std::string& in_filePath, const ChilliSource::UnifiedVector2& in_size, f32 in_dismissButtonRelativeSize, const DismissedDelegate& in_delegate, const CustomLinkHandlerDelegate& in_customLinkHandler = nullptr) override;
             //---------------------------------------------------------
             /// Displays the website at the given Url in an external
             /// browser.
@@ -117,9 +122,35 @@ namespace CSBackend
             /// @author Ian Copland
             //---------------------------------------------------------
             void OnViewDidFinishLoad();
+            //---------------------------------------------------------
+            /// Called from the webview delegate to inform the system
+            /// that a link on the webview has been clicked. This will
+            /// pass the link to any external handlers (if any) and
+            /// return based on whether it will be handled elsewhere
+            ///
+            /// This should not be called manually by the user.
+            ///
+            /// @author HMcLaughlin
+            ///
+            /// @param in_url - URL Clicked
+            ///
+            /// @return If this link will be handled elsewhere
+            //---------------------------------------------------------
+            bool OnLinkClicked(const std::string& in_url);
             
         private:
-            friend CSWeb::WebViewUPtr CSWeb::WebView::Create();
+            friend ChilliSource::WebViewUPtr ChilliSource::WebView::Create();
+            //------------------------------------------------------------------------------
+            /// Describes the current state of the webview.
+            ///
+            /// @author Jordan Brown
+            //------------------------------------------------------------------------------
+            enum class State
+            {
+                k_inactive,
+                k_presented,
+                k_dismissing
+            };
             //---------------------------------------------------------
             /// Private constructor to force use of factory method
             ///
@@ -140,7 +171,7 @@ namespace CSBackend
             ///
             /// @param The size.
             //---------------------------------------------------------
-            void CreateWebview(const CSCore::UnifiedVector2& in_size);
+            void CreateWebview(const ChilliSource::UnifiedVector2& in_size);
             //---------------------------------------------------------
             /// Adds the webview to the main view.
             ///
@@ -175,20 +206,23 @@ namespace CSBackend
             void OnDestroy() override;
 		private:
 			
-            CSCore::Screen* m_screen;
-            
-            bool m_isPresented;
             DismissedDelegate m_dismissedDelegate;
+            CustomLinkHandlerDelegate m_linkHandlerDelegate;
+            
+            ChilliSource::Screen* m_screen;
 			UIWebView* m_webView;
 			UIButton * m_dismissButton;
             UIActivityIndicatorView* m_activityIndicator;
 			WebViewDelegate* m_webViewDelegate;
-			
-			CSCore::Vector2 m_absoluteSize;
-			CSCore::Vector2 m_absolutePosition;
+            
+            std::string m_anchor;
+            
+			ChilliSource::Vector2 m_absoluteSize;
+			ChilliSource::Vector2 m_absolutePosition;
+            
             f32 m_dismissButtonRelativeSize;
 			
-            std::string m_anchor;
+            State m_currentState = State::k_inactive;
 		};
 	}
 }

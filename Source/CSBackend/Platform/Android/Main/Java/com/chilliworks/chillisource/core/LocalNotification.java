@@ -1,6 +1,6 @@
 /**
  * LocalNotification.java
- * Chilli Source
+ * ChilliSource
  * Created by Ian Copland on 11/07/2014.
  * 
  * The MIT License (MIT)
@@ -55,7 +55,7 @@ public final class LocalNotification
 	public final static String k_paramNameTime = "Time";
 	
 	private final static String k_paramNameParams = "Params";
-	private final static String k_intentAction = "com.chillisource.core.ALARM_NOTIFICATION_INTENT";
+	private final static String k_intentAction = "com.chilliworks.chillisource.core.ALARM_NOTIFICATION_INTENT";
 	
 	private int m_intentId = 0;
 	private int m_notificationId = 0;
@@ -108,7 +108,7 @@ public final class LocalNotification
 		}
 		catch (Exception e)
 		{
-			Logging.logFatal("An exception occurred while building a Local Notification from JSON: \n" + ExceptionUtils.ConvertToString(e));
+			Logging.logFatal("An exception occurred while building a Local Notification from JSON: \n" + ExceptionUtils.convertToString(e));
 		}
 	}
 	/**
@@ -243,7 +243,7 @@ public final class LocalNotification
 		}
 		catch (JSONException e)
 		{
-			Logging.logFatal("An exception occurred while converting a local notification to JSON: \n" + ExceptionUtils.ConvertToString(e));
+			Logging.logFatal("An exception occurred while converting a local notification to JSON: \n" + ExceptionUtils.convertToString(e));
 		}
 		
 		return jsonRoot;

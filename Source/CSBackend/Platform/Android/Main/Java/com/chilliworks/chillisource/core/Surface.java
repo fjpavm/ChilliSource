@@ -1,6 +1,6 @@
 /**
  * Surface.java
- * Chilli Source
+ * ChilliSource
  * Created by Ian Copland on 14/08/2012.
  * 
  * The MIT License (MIT)
@@ -92,6 +92,22 @@ public class Surface extends GLSurfaceView
 		else if (surfaceFormat.equalsIgnoreCase("rgb888_depth32") == true)
 		{
 			return new ConfigChooser(8, 8, 8, 0, 16, 32, 0);
+		}
+		else if (surfaceFormat.equalsIgnoreCase("rgb565_depth24_stencil8") == true)
+		{
+			return new ConfigChooser(5, 6, 5, 0, 16, 24, 8);
+		}
+		else if (surfaceFormat.equalsIgnoreCase("rgb565_depth32_stencil8") == true)
+		{
+			return new ConfigChooser(5, 6, 5, 0, 16, 32, 8);
+		}
+		else if (surfaceFormat.equalsIgnoreCase("rgb888_depth24_stencil8") == true)
+		{
+			return new ConfigChooser(8, 8, 8, 0, 16, 24, 8);
+		}
+		else if (surfaceFormat.equalsIgnoreCase("rgb888_depth32_stencil8") == true)
+		{
+			return new ConfigChooser(8, 8, 8, 0, 16, 32, 8);
 		}
 		else
 		{

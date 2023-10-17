@@ -1,6 +1,6 @@
 //
 //  RenderCapabilities.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 27/01/2014.
 //
 //  The MIT License (MIT)
@@ -28,25 +28,75 @@
 
 #include <ChilliSource/Rendering/Base/RenderCapabilities.h>
 
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_WINDOWS || defined CS_TARGETPLATFORM_LINUX
-#include <CSBackend/Rendering/OpenGL/Base/RenderCapabilities.h>
-#endif
-
 namespace ChilliSource
 {
-    namespace Rendering
+    CS_DEFINE_NAMEDTYPE(RenderCapabilities);
+    
+    //-------------------------------------------------------
+    RenderCapabilitiesUPtr RenderCapabilities::Create(const RenderInfo& renderInfo) noexcept
     {
-        CS_DEFINE_NAMEDTYPE(RenderCapabilities);
-        
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        RenderCapabilitiesUPtr RenderCapabilities::Create()
-        {
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_WINDOWS || defined CS_TARGETPLATFORM_LINUX
-            return RenderCapabilitiesUPtr(new CSBackend::OpenGL::RenderCapabilities());
-#else
-            return nullptr;
-#endif
-        }
+        return RenderCapabilitiesUPtr(new RenderCapabilities(renderInfo.IsShadowMappingSupported(), renderInfo.IsDepthTextureSupported(), renderInfo.IsMapBufferSupported(), renderInfo.IsVAOSupported(),
+                                                             renderInfo.IsHighPrecisionFloatsSupported(), renderInfo.GetMaxTextureSize(), renderInfo.GetNumTextureUnits(), renderInfo.GetNumVertexAttributes()));
+    }
+    
+    //-------------------------------------------------------
+    RenderCapabilities::RenderCapabilities(bool isShadowMapsSupported, bool isDepthTexturesSupported, bool isMapBuffersSupported, bool isVAOSupported, bool isHighPrecisionFloatsSupported, u32 maxTextureSize, u32 numTextureUnits, u32 maxVertexAttribs)
+    : m_isShadowMapsSupported(isShadowMapsSupported), m_isDepthTexturesSupported(isDepthTexturesSupported), m_isMapBuffersSupported(isMapBuffersSupported), m_isVAOSupported(isVAOSupported),
+    m_isHighPrecisionFloatsSupported(isHighPrecisionFloatsSupported), m_maxTextureSize(maxTextureSize), m_maxTextureUnits(numTextureUnits), m_maxVertexAttribs(maxVertexAttribs)
+    {
+    }
+    
+    //-------------------------------------------------------
+    bool RenderCapabilities::IsA(ChilliSource::InterfaceIDType interfaceId) const
+    {
+        return (RenderCapabilities::InterfaceID == interfaceId);
+    }
+    
+    //-------------------------------------------------------
+    bool RenderCapabilities::IsShadowMappingSupported() const noexcept
+    {
+        return m_isShadowMapsSupported;
+    }
+    
+    //-------------------------------------------------------
+    bool RenderCapabilities::IsDepthTextureSupported() const noexcept
+    {
+        return m_isDepthTexturesSupported;
+    }
+    
+    //-------------------------------------------------------
+    bool RenderCapabilities::IsMapBufferSupported() const noexcept
+    {
+        return m_isMapBuffersSupported;
+    }
+    
+    //-------------------------------------------------------
+    bool RenderCapabilities::IsVAOSupported() const noexcept
+    {
+        return m_isVAOSupported;
+    }
+    
+    //-------------------------------------------------------
+    bool RenderCapabilities::IsHighPrecisionFloatsSupported() const noexcept
+    {
+        return m_isHighPrecisionFloatsSupported;
+    }
+    
+    //-------------------------------------------------------
+    u32 RenderCapabilities::GetMaxTextureSize() const noexcept
+    {
+        return m_maxTextureSize;
+    }
+    
+    //-------------------------------------------------------
+    u32 RenderCapabilities::GetNumTextureUnits() const noexcept
+    {
+        return m_maxTextureUnits;
+    }
+    
+    //-------------------------------------------------------
+    u32 RenderCapabilities::GetNumVertexAttributes() const noexcept
+    {
+        return m_maxVertexAttribs;
     }
 }

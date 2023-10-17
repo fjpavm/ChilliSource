@@ -1,6 +1,6 @@
 //
 //  AmazonIAPSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 10/12/2013.
 //
 //  The MIT License (MIT)
@@ -32,7 +32,7 @@
 
 #include <CSBackend/Platform/Android/Amazon/JNI/Networking/IAP/AmazonIAPSystem.h>
 
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceManager.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterfaceManager.h>
 #include <ChilliSource/Core/Base/Application.h>
 #include <ChilliSource/Core/Base/Device.h>
 
@@ -53,7 +53,7 @@ namespace CSBackend
             /// @return Whether a product reg info exists in the list
             /// with the given Id.
             //---------------------------------------------------------------
-            bool ContainsProductId(const std::vector<CSNetworking::IAPSystem::ProductRegInfo>& in_productInfos, const std::string& in_productId)
+            bool ContainsProductId(const std::vector<ChilliSource::IAPSystem::ProductRegInfo>& in_productInfos, const std::string& in_productId)
             {
                 for(u32 i=0; i<in_productInfos.size(); ++i)
                 {
@@ -71,16 +71,16 @@ namespace CSBackend
 
     	//---------------------------------------------------------------
     	//---------------------------------------------------------------
-		AmazonIAPSystem::AmazonIAPSystem(const CSCore::ParamDictionary& in_params)
+		AmazonIAPSystem::AmazonIAPSystem(const ChilliSource::ParamDictionary& in_params)
 		{
 			CS_ASSERT(in_params.HasKey(k_amazonPrivateKeyKey) == true, "Cannot create Amazon IAP system without store key - AmazonPrivateKey");
 			m_privateKey = in_params.GetValue(k_amazonPrivateKeyKey);
 		}
         //---------------------------------------------------------------
         //---------------------------------------------------------------
-        bool AmazonIAPSystem::IsA(CSCore::InterfaceIDType in_interfaceId) const
+        bool AmazonIAPSystem::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
         {
-            return in_interfaceId == CSNetworking::IAPSystem::InterfaceID || in_interfaceId == AmazonIAPSystem::InterfaceID;
+            return in_interfaceId == ChilliSource::IAPSystem::InterfaceID || in_interfaceId == AmazonIAPSystem::InterfaceID;
         }
         //---------------------------------------------------------------
         //---------------------------------------------------------------
@@ -89,7 +89,7 @@ namespace CSBackend
 			m_javaInterface = JavaInterfaceManager::GetSingletonPtr()->GetJavaInterface<AmazonIAPJavaInterface>();
 			if (m_javaInterface == nullptr)
 			{
-				CSCore::Device* device = CSCore::Application::Get()->GetSystem<CSCore::Device>();
+				ChilliSource::Device* device = ChilliSource::Application::Get()->GetSystem<ChilliSource::Device>();
 				m_javaInterface = AmazonIAPJavaInterfaceSPtr(new AmazonIAPJavaInterface(m_privateKey, device->GetUDID()));
 	        	JavaInterfaceManager::GetSingletonPtr()->AddJavaInterface(m_javaInterface);
 			}
@@ -109,9 +109,10 @@ namespace CSBackend
 		}
         //---------------------------------------------------------------
         //---------------------------------------------------------------
-        bool AmazonIAPSystem::IsPurchasingEnabled()
+        void AmazonIAPSystem::IsPurchasingEnabled(const PurchasingEnabledDelegate& in_delegate)
         {
-        	return m_javaInterface->IsPurchasingEnabled();
+            CS_ASSERT(in_delegate, "Cannot have empty delegate");
+        	in_delegate(m_javaInterface->IsPurchasingEnabled());
         }
         //---------------------------------------------------------------
         //---------------------------------------------------------------

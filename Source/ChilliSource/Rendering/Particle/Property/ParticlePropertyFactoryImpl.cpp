@@ -1,6 +1,6 @@
 //
 //  ParticlePropertyFactory.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 04/11/2014.
 //
 //  The MIT License (MIT)
@@ -28,147 +28,87 @@
 
 #include <ChilliSource/Rendering/Particle/Property/ParticlePropertyFactory.h>
 
-#include <ChilliSource/Rendering/Particle/Property/ParticlePropertyCurveFunctions.h>
-
 #include <ChilliSource/Core/Delegate/MakeDelegate.h>
 #include <ChilliSource/Core/String/StringParser.h>
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		namespace ParticlePropertyFactory
-		{
-            namespace Impl
+    namespace ParticlePropertyFactory
+    {
+        namespace Impl
+        {
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> u32 ParseValue(const std::string& in_value)
             {
-                namespace
-                {
-                    const char k_linearCurveName[] = "linear";
-                    const char k_easeInQuadCurveName[] = "easeinquad";
-                    const char k_easeOutQuadCurveName[] = "easeoutquad";
-                    const char k_smoothStepCurveName[] = "smoothstep";
-                    const char k_linearPingPongCurveName[] = "linearpingpong";
-                    const char k_easeInQuadPingPongCurveName[] = "easeinquadpingpong";
-                    const char k_easeOutQuadPingPongCurveName[] = "easeoutquadpingpong";
-                    const char k_smoothStepPingPongCurveName[] = "smoothsteppingpong";
-                }
-                
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                std::function<f32(f32)> ParseCurveFunction(const std::string& in_curveName)
-                {
-                    std::string nameLower = in_curveName;
-                    Core::StringUtils::ToLowerCase(nameLower);
-                    
-                    if (nameLower == k_linearCurveName)
-                    {
-                        return Core::MakeDelegate(&ParticlePropertyCurveFunctions::Linear);
-                    }
-                    else if (nameLower == k_easeInQuadCurveName)
-                    {
-                        return Core::MakeDelegate(&ParticlePropertyCurveFunctions::EaseInQuad);
-                    }
-                    else if (nameLower == k_easeOutQuadCurveName)
-                    {
-                        return Core::MakeDelegate(&ParticlePropertyCurveFunctions::EaseOutQuad);
-                    }
-                    else if (nameLower == k_smoothStepCurveName)
-                    {
-                        return Core::MakeDelegate(&ParticlePropertyCurveFunctions::SmoothStep);
-                    }
-                    else if (nameLower == k_linearPingPongCurveName)
-                    {
-                        return Core::MakeDelegate(&ParticlePropertyCurveFunctions::LinearPingPong);
-                    }
-                    else if (nameLower == k_easeInQuadPingPongCurveName)
-                    {
-                        return Core::MakeDelegate(&ParticlePropertyCurveFunctions::EaseInQuadPingPong);
-                    }
-                    else if (nameLower == k_easeOutQuadPingPongCurveName)
-                    {
-                        return Core::MakeDelegate(&ParticlePropertyCurveFunctions::EaseOutQuadPingPong);
-                    }
-                    else if (nameLower == k_smoothStepPingPongCurveName)
-                    {
-                        return Core::MakeDelegate(&ParticlePropertyCurveFunctions::SmoothStepPingPong);
-                    }
-                    
-                    CS_LOG_FATAL("Invalid curve function: " + in_curveName);
-                    return nullptr;
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> u32 ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseU32(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> s32 ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseS32(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> u64 ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseU64(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> s64 ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseS64(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> f32 ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseF32(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> Core::Vector2 ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseVector2(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> Core::Vector3 ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseVector3(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> Core::Vector4 ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseVector4(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> Core::Matrix3 ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseMatrix3(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> Core::Matrix4 ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseMatrix4(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> Core::Quaternion ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseQuaternion(in_value);
-                }
-                //------------------------------------------------------------------------------
-                //------------------------------------------------------------------------------
-                template <> Core::Colour ParseValue(const std::string& in_value)
-                {
-                    return Core::ParseColour(in_value);
-                }
+                return ParseU32(in_value);
             }
-		}
-	}
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> s32 ParseValue(const std::string& in_value)
+            {
+                return ParseS32(in_value);
+            }
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> u64 ParseValue(const std::string& in_value)
+            {
+                return ParseU64(in_value);
+            }
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> s64 ParseValue(const std::string& in_value)
+            {
+                return ParseS64(in_value);
+            }
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> f32 ParseValue(const std::string& in_value)
+            {
+                return ParseF32(in_value);
+            }
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> Vector2 ParseValue(const std::string& in_value)
+            {
+                return ParseVector2(in_value);
+            }
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> Vector3 ParseValue(const std::string& in_value)
+            {
+                return ParseVector3(in_value);
+            }
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> Vector4 ParseValue(const std::string& in_value)
+            {
+                return ParseVector4(in_value);
+            }
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> Matrix3 ParseValue(const std::string& in_value)
+            {
+                return ParseMatrix3(in_value);
+            }
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> Matrix4 ParseValue(const std::string& in_value)
+            {
+                return ParseMatrix4(in_value);
+            }
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> Quaternion ParseValue(const std::string& in_value)
+            {
+                return ParseQuaternion(in_value);
+            }
+            //------------------------------------------------------------------------------
+            //------------------------------------------------------------------------------
+            template <> Colour ParseValue(const std::string& in_value)
+            {
+                return ParseColour(in_value);
+            }
+        }
+    }
 }

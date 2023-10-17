@@ -1,6 +1,6 @@
 //
 //  JsonUtils.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 24/11/2014.
 //
 //  The MIT License (MIT)
@@ -36,58 +36,70 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    namespace JsonUtils
     {
-        namespace JsonUtils
+        //---------------------------------------------------------------
+        //---------------------------------------------------------------
+        Json::Value ParseJson(const std::string& in_jsonString) noexcept
         {
-            //---------------------------------------------------------------
-            //---------------------------------------------------------------
-            Json::Value ParseJson(const std::string& in_jsonString)
+            Json::Value output;
+            
+            Json::Reader jsonReader;
+            if (jsonReader.parse(in_jsonString, output) == false)
             {
-                Json::Value output;
-                
-                Json::Reader jsonReader;
-                if (jsonReader.parse(in_jsonString, output) == false)
-                {
-                    CS_LOG_FATAL("Could not parse json from string due to errors: \n" + jsonReader.getFormatedErrorMessages());
-                }
-                
-                if (output.isNull())
-                {
-                    CS_LOG_FATAL("Could not parse json from string.");
-                }
-                
-                return output;
+                CS_LOG_FATAL("Could not parse json from string due to errors: \n" + jsonReader.getFormattedErrorMessages());
             }
-            //---------------------------------------------------------------
-            //---------------------------------------------------------------
-            bool ReadJson(Core::StorageLocation in_storageLocation, const std::string& in_filePath, Json::Value& out_jsonValue)
+            
+            if (output.isNull())
             {
-                Core::FileStreamSPtr fileStream = Core::Application::Get()->GetFileSystem()->CreateFileStream(in_storageLocation, in_filePath, Core::FileMode::k_read);
-                
-                if (fileStream == nullptr || fileStream->IsOpen() == false || fileStream->IsBad() == true)
-                {
-                    CS_LOG_ERROR("Could not open json file: " + in_filePath);
-                    return false;
-                }
-                
-                std::string fileContents;
-                fileStream->GetAll(fileContents);
-                fileStream->Close();
-                
-                Json::Reader jsonReader;
-                if (jsonReader.parse(fileContents, out_jsonValue) == false)
-                {
-                    CS_LOG_FATAL("Could not parse json file '" + in_filePath + "' due to errors: \n" + jsonReader.getFormatedErrorMessages());
-                }
-                
-                if (out_jsonValue.isNull())
-                {
-                    CS_LOG_FATAL("Could not parse json file: " + in_filePath);
-                }
-                
-                return true;
+                CS_LOG_FATAL("Could not parse json from string.");
             }
+            
+            return output;
+        }
+        //---------------------------------------------------------------
+        //---------------------------------------------------------------
+        bool ReadJson(StorageLocation in_storageLocation, const std::string& in_filePath, Json::Value& out_jsonValue) noexcept
+        {
+            auto fileStream = Application::Get()->GetFileSystem()->CreateTextInputStream(in_storageLocation, in_filePath);
+            
+            if (fileStream == nullptr)
+            {
+                CS_LOG_ERROR("Could not open json file: " + in_filePath);
+                return false;
+            }
+            
+            std::string fileContents = fileStream->ReadAll();
+            fileStream.reset();
+            
+            Json::Reader jsonReader;
+            if (jsonReader.parse(fileContents, out_jsonValue) == false)
+            {
+                CS_LOG_FATAL("Could not parse json file '" + in_filePath + "' due to errors: \n" + jsonReader.getFormattedErrorMessages());
+            }
+            
+            if (out_jsonValue.isNull())
+            {
+                CS_LOG_FATAL("Could not parse json file: " + in_filePath);
+            }
+            
+            return true;
+        }
+        
+        //---------------------------------------------------------------
+        bool WriteJson(StorageLocation storageLocation, const std::string& filePath, const Json::Value& jsonValue) noexcept
+        {
+            auto fileStream = Application::Get()->GetFileSystem()->CreateTextOutputStream(storageLocation, filePath);
+            
+            if (fileStream == nullptr || fileStream->IsValid() == false)
+            {
+                CS_LOG_ERROR("Could not open/create json file: " + filePath);
+                return false;
+            }
+            
+            fileStream->Write(jsonValue.toStyledString());
+
+            return true;
         }
     }
 }

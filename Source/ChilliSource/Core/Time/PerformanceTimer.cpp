@@ -1,6 +1,6 @@
 //
 //  PerformanceTimer.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 04/09/2012.
 //
 //  The MIT License (MIT)
@@ -38,58 +38,55 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    PerformanceTimer::PerformanceTimer()
+        : m_lastDurationMicroS(0.0)
     {
-		PerformanceTimer::PerformanceTimer()
-			: m_lastDurationMicroS(0.0)
-		{
 #ifdef CS_TARGETPLATFORM_WINDOWS
-			LARGE_INTEGER frequency;
-			QueryPerformanceFrequency(&frequency);
-			m_frequency = frequency.QuadPart;
-			m_startTime = 0;
+        LARGE_INTEGER frequency;
+        QueryPerformanceFrequency(&frequency);
+        m_frequency = frequency.QuadPart;
+        m_startTime = 0;
 #endif
-		}
+    }
 
-        void PerformanceTimer::Start()
-        {
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_LINUX   
-			gettimeofday(&m_startTime, 0);
+    void PerformanceTimer::Start()
+    {
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGET_PLATFORM_RPI || defined CS_TARGETPLATFORM_LINUX    
+        gettimeofday(&m_startTime, 0);
 #elif defined CS_TARGETPLATFORM_WINDOWS
-			LARGE_INTEGER startTime;
-			QueryPerformanceCounter(&startTime);
-			m_startTime = startTime.QuadPart;
+        LARGE_INTEGER startTime;
+        QueryPerformanceCounter(&startTime);
+        m_startTime = startTime.QuadPart;
 #endif
-        }
+    }
         
-        void PerformanceTimer::Stop()
-        {
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_LINUX  
-            timeval stopTime;
-			gettimeofday(&stopTime, 0);
-			f64 startTimeMicro = (m_startTime.tv_sec * 1000000.0) + m_startTime.tv_usec;
-			f64 stopTimeMicro = (stopTime.tv_sec * 1000000.0) + stopTime.tv_usec;
-			m_lastDurationMicroS = stopTimeMicro - startTimeMicro;
+    void PerformanceTimer::Stop()
+    {
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGET_PLATFORM_RPI || defined CS_TARGETPLATFORM_LINUX
+        timeval stopTime;
+        gettimeofday(&stopTime, 0);
+        f64 startTimeMicro = (m_startTime.tv_sec * 1000000.0) + m_startTime.tv_usec;
+        f64 stopTimeMicro = (stopTime.tv_sec * 1000000.0) + stopTime.tv_usec;
+        m_lastDurationMicroS = stopTimeMicro - startTimeMicro;
 #elif defined CS_TARGETPLATFORM_WINDOWS
-			LARGE_INTEGER end;
-			QueryPerformanceCounter(&end);
-			m_lastDurationMicroS = (static_cast<f64>(end.QuadPart - m_startTime) / m_frequency) * 1000000.0;
+        LARGE_INTEGER end;
+        QueryPerformanceCounter(&end);
+        m_lastDurationMicroS = (static_cast<f64>(end.QuadPart - m_startTime) / m_frequency) * 1000000.0;
 #endif
-        }
-        
-        f64 PerformanceTimer::GetTimeTakenS() const
-        {
-            return m_lastDurationMicroS * 0.000001;
-        }
-        
-        f64 PerformanceTimer::GetTimeTakenMS() const
-        {
-			return m_lastDurationMicroS * 0.001;
-        }
-        
-        f64 PerformanceTimer::GetTimeTakenMicroS() const
-        {
-			return m_lastDurationMicroS;
-        }
+    }
+    
+    f64 PerformanceTimer::GetTimeTakenS() const
+    {
+        return m_lastDurationMicroS * 0.000001;
+    }
+    
+    f64 PerformanceTimer::GetTimeTakenMS() const
+    {
+        return m_lastDurationMicroS * 0.001;
+    }
+    
+    f64 PerformanceTimer::GetTimeTakenMicroS() const
+    {
+        return m_lastDurationMicroS;
     }
 }

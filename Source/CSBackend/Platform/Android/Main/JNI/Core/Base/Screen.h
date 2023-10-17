@@ -1,6 +1,6 @@
 //
 //  Screen.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 28/04/2014.
 //
 //  The MIT License (MIT)
@@ -34,6 +34,7 @@
 #include <ChilliSource/ChilliSource.h>
 #include <CSBackend/Platform/Android/Main/JNI/ForwardDeclarations.h>
 #include <ChilliSource/Core/Base/Screen.h>
+#include <ChilliSource/Core/Base/ScreenInfo.h>
 #include <ChilliSource/Core/Event/Event.h>
 
 namespace CSBackend
@@ -46,7 +47,7 @@ namespace CSBackend
         ///
         /// @author Ian Copland
         //----------------------------------------------------------------
-		class Screen final : public CSCore::Screen
+		class Screen final : public ChilliSource::Screen
 		{
 		public:
             CS_DECLARE_NAMEDTYPE(Screen);
@@ -59,7 +60,7 @@ namespace CSBackend
 			/// @param The interface Id.
 			/// @param Whether system is of given type.
 			//-------------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+			bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
 			//-----------------------------------------------------------
 			/// @author Ian Copland
 			///
@@ -68,7 +69,7 @@ namespace CSBackend
             /// this will be the current size of the window. For a mobile
             /// application this will be full size of the screen.
 			//-----------------------------------------------------------
-			const CSCore::Vector2& GetResolution() const override;
+			const ChilliSource::Vector2& GetResolution() const override;
             //-----------------------------------------------------------
             /// The density scale factor as reported by the device. What
             /// this factor relates to is platform dependant. On iOS it
@@ -94,14 +95,14 @@ namespace CSBackend
 			/// @return An event that is called when the screen resolution
             /// changes.
 			//-----------------------------------------------------------
-            CSCore::IConnectableEvent<ResolutionChangedDelegate>& GetResolutionChangedEvent() override;
+            ChilliSource::IConnectableEvent<ResolutionChangedDelegate>& GetResolutionChangedEvent() override;
             //-----------------------------------------------------------
             /// @author S Downie
 			///
 			/// @return An event that is called when the screen display
             /// mode changes.
 			//-----------------------------------------------------------
-            CSCore::IConnectableEvent<DisplayModeChangedDelegate>& GetDisplayModeChangedEvent() override;
+            ChilliSource::IConnectableEvent<DisplayModeChangedDelegate>& GetDisplayModeChangedEvent() override;
             //----------------------------------------------------------
             /// Does nothing on Android due to fixed screen size
             ///
@@ -109,7 +110,7 @@ namespace CSBackend
             ///
 			/// @param Screen size in pixels
 			//----------------------------------------------------------
-			void SetResolution(const CSCore::Integer2& in_size) override;
+			void SetResolution(const ChilliSource::Integer2& in_size) override;
             //----------------------------------------------------------
             /// Does nothing on Android due to fixed screen state
             ///
@@ -121,7 +122,7 @@ namespace CSBackend
             ///
             /// @return A list of resolutions supported by the display
             //----------------------------------------------------------
-            std::vector<CSCore::Integer2> GetSupportedResolutions() const override;
+            std::vector<ChilliSource::Integer2> GetSupportedFullscreenResolutions() const override;
             //-----------------------------------------------------------
             /// Called when the screen resolution changes. This will update
             /// the screen resolution and notify listeners that the resolution
@@ -132,23 +133,22 @@ namespace CSBackend
             ///
             /// @param The new resolution.
 			//------------------------------------------------------------
-			void OnResolutionChanged(const CSCore::Vector2& in_resolution);
+			void OnResolutionChanged(const ChilliSource::Vector2& in_resolution);
         private:
-            friend CSCore::ScreenUPtr CSCore::Screen::Create();
+            friend ChilliSource::ScreenUPtr ChilliSource::Screen::Create(const ChilliSource::ScreenInfo& screenInfo);
             //-------------------------------------------------------
 			/// Private constructor to force the use of the Create()
             /// factory method.
 			///
             /// @author Ian Copland
 			//-------------------------------------------------------
-			Screen();
-            
-			std::vector<CSCore::Integer2> m_supportedResolutions;
-            CSCore::Vector2 m_resolution;
-            f32 m_densityScale;
-            f32 m_invDensityScale;
-            CSCore::Event<ResolutionChangedDelegate> m_resolutionChangedEvent;
-            CSCore::Event<DisplayModeChangedDelegate> m_displayModeChangedEvent;
+			Screen(const ChilliSource::ScreenInfo& screenInfo);
+
+            ChilliSource::ScreenInfo m_screenInfo;
+            ChilliSource::Vector2 m_resolution;
+
+            ChilliSource::Event<ResolutionChangedDelegate> m_resolutionChangedEvent;
+            ChilliSource::Event<DisplayModeChangedDelegate> m_displayModeChangedEvent;
         };
     }
 }

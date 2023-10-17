@@ -1,6 +1,6 @@
 //
 //  FileSystem.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 25/03/2011.
 //
 //  The MIT License (MIT)
@@ -33,6 +33,10 @@
 
 #include <ChilliSource/ChilliSource.h>
 #include <CSBackend/Platform/iOS/ForwardDeclarations.h>
+#include <ChilliSource/Core/File/FileStream/BinaryInputStream.h>
+#include <ChilliSource/Core/File/FileStream/BinaryOutputStream.h>
+#include <ChilliSource/Core/File/FileStream/TextInputStream.h>
+#include <ChilliSource/Core/File/FileStream/TextOutputStream.h>
 #include <ChilliSource/Core/File/FileSystem.h>
 
 #include <string>
@@ -46,7 +50,7 @@ namespace CSBackend
         ///
         /// @author Ian Copland
 		//-------------------------------------------------------------------
-		class FileSystem final : public CSCore::FileSystem
+		class FileSystem final : public ChilliSource::FileSystem
 		{
 		public:
             CS_DECLARE_NAMEDTYPE(FileSystem);
@@ -60,34 +64,69 @@ namespace CSBackend
             ///
 			/// @return Whether or not the interface is implemented.
 			//----------------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
-            //--------------------------------------------------------------
-            /// Creates a new file stream to the given file in the given
-            /// storage location.
+			bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
+            //------------------------------------------------------------------------------
+            /// Creates a new input text stream to the given file in the given storage location.
             ///
-            /// @author Ian Copland
+            /// @author HMcLaughlin
             ///
-            /// @param The storage location.
-            /// @param The file path.
-            /// @param The file mode.
+            /// @param in_storageLocation - The storage location.
+            /// @param in_filePath - The file path.
             ///
-            /// @return The new file stream.
+            /// @return The new file stream. If the stream cannot be created or is invalid,
+            /// null be returned.
+            //------------------------------------------------------------------------------
+            ChilliSource::ITextInputStreamUPtr CreateTextInputStream(ChilliSource::StorageLocation in_storageLocation, const std::string& in_filePath) const override;
+            //------------------------------------------------------------------------------
+            /// Creates a new input binary stream to the given file in the given storage location.
+            ///
+            /// @author HMcLaughlin
+            ///
+            /// @param in_storageLocation - The storage location.
+            /// @param in_filePath - The file path.
+            ///
+            /// @return The new file stream. If the stream cannot be created or is invalid,
+            /// null be returned.
+            //------------------------------------------------------------------------------
+            ChilliSource::IBinaryInputStreamUPtr CreateBinaryInputStream(ChilliSource::StorageLocation in_storageLocation, const std::string& in_filePath) const override;
+            //------------------------------------------------------------------------------
+            /// Creates a new output text stream to the given file in the given storage location.
+            ///
+            /// @author HMcLaughlin
+            ///
+            /// @param in_storageLocation - The storage location.
+            /// @param in_filePath - The file path.
+            ///
+            /// @return The new file stream. If the stream cannot be created or is invalid,
+            /// null be returned.
+            //------------------------------------------------------------------------------
+            ChilliSource::TextOutputStreamUPtr CreateTextOutputStream(ChilliSource::StorageLocation in_storageLocation, const std::string& in_filePath, ChilliSource::FileWriteMode in_fileMode) const override;
+            //------------------------------------------------------------------------------
+            /// Creates a new output binary stream to the given file in the given storage location.
+            ///
+            /// @author HMcLaughlin
+            ///
+            /// @param in_storageLocation - The storage location.
+            /// @param in_filePath - The file path.
+            ///
+            /// @return The new file stream. If the stream cannot be created or is invalid,
+            /// null be returned.
+            //------------------------------------------------------------------------------
+            ChilliSource::BinaryOutputStreamUPtr CreateBinaryOutputStream(ChilliSource::StorageLocation in_storageLocation, const std::string& in_filePath, ChilliSource::FileWriteMode in_fileMode) const override;
             //--------------------------------------------------------------
-            CSCore::FileStreamUPtr CreateFileStream(CSCore::StorageLocation in_storageLocation, const std::string& in_filePath, CSCore::FileMode in_fileMode) const override;
-            //--------------------------------------------------------------
-            /// Creates the given directory. The full directory hierarchy will
-            /// be created.
+            /// Creates the given directory. The full directory hierarchy
+            /// will be created.
             ///
             /// @author Ian Copland
             ///
             /// @param The Storage Location
             /// @param The directory path.
             ///
-            /// @return Returns whether or not this was successful. Failure to
+            /// @return Whether or not this was successful. Failure to
             /// create the directory because it already exists is considered
             /// a success.
             //--------------------------------------------------------------
-            bool CreateDirectoryPath(CSCore::StorageLocation in_storageLocation, const std::string& in_directoryPath) const override;
+            bool CreateDirectoryPath(ChilliSource::StorageLocation in_storageLocation, const std::string& in_directoryPath) const override;
             //--------------------------------------------------------------
             /// Copies a file from one location to another.
             ///
@@ -100,8 +139,8 @@ namespace CSBackend
             ///
             /// @return Whether or not the file was successfully copied.
             //--------------------------------------------------------------
-            bool CopyFile(CSCore::StorageLocation in_sourceStorageLocation, const std::string& in_sourceFilePath,
-                          CSCore::StorageLocation in_destinationStorageLocation, const std::string& in_destinationFilePath) const override;
+            bool CopyFile(ChilliSource::StorageLocation in_sourceStorageLocation, const std::string& in_sourceFilePath,
+                          ChilliSource::StorageLocation in_destinationStorageLocation, const std::string& in_destinationFilePath) const override;
             //--------------------------------------------------------------
             /// Copies a directory from one location to another. If the
             /// destination directory does not exist, it will be created.
@@ -115,8 +154,8 @@ namespace CSBackend
             ///
             /// @return Whether or not the files were successfully copied.
             //--------------------------------------------------------------
-            bool CopyDirectory(CSCore::StorageLocation in_sourceStorageLocation, const std::string& in_sourceDirectoryPath,
-                               CSCore::StorageLocation in_destinationStorageLocation, const std::string& in_destinationDirectoryPath) const override;
+            bool CopyDirectory(ChilliSource::StorageLocation in_sourceStorageLocation, const std::string& in_sourceDirectoryPath,
+                               ChilliSource::StorageLocation in_destinationStorageLocation, const std::string& in_destinationDirectoryPath) const override;
             //--------------------------------------------------------------
             /// Deletes the specified file.
             ///
@@ -127,7 +166,7 @@ namespace CSBackend
             ///
             /// @return Whether or not the file was successfully deleted.
             //--------------------------------------------------------------
-            bool DeleteFile(CSCore::StorageLocation in_storageLocation, const std::string& in_filepath) const override;
+            bool DeleteFile(ChilliSource::StorageLocation in_storageLocation, const std::string& in_filepath) const override;
             //--------------------------------------------------------------
             /// Deletes a directory and all its contents.
             ///
@@ -138,7 +177,7 @@ namespace CSBackend
             ///
             /// @return Whether or not the directory was successfully deleted.
             //--------------------------------------------------------------
-            bool DeleteDirectory(CSCore::StorageLocation in_storageLocation, const std::string& in_directoryPath) const override;
+            bool DeleteDirectory(ChilliSource::StorageLocation in_storageLocation, const std::string& in_directoryPath) const override;
             //--------------------------------------------------------------
             /// Creates a dynamic array containing the filenames of each file
             /// in the given directory. File paths will be relative to the
@@ -153,7 +192,7 @@ namespace CSBackend
             ///
             /// @return dynamic array containing the filenames.
             //--------------------------------------------------------------
-            std::vector<std::string> GetFilePaths(CSCore::StorageLocation in_storageLocation, const std::string& in_directoryPath,  bool in_recursive) const override;
+            std::vector<std::string> GetFilePaths(ChilliSource::StorageLocation in_storageLocation, const std::string& in_directoryPath,  bool in_recursive) const override;
             //--------------------------------------------------------------
             /// Creates a dynamic array containing the names of each directory
             /// in the given directory. Directory paths will be relative to
@@ -168,7 +207,7 @@ namespace CSBackend
             ///
             /// @return Output dynamic array containing the dir names.
             //--------------------------------------------------------------
-            std::vector<std::string> GetDirectoryPaths(CSCore::StorageLocation in_storageLocation, const std::string& in_directoryPath,  bool in_recursive) const override;
+            std::vector<std::string> GetDirectoryPaths(ChilliSource::StorageLocation in_storageLocation, const std::string& in_directoryPath,  bool in_recursive) const override;
             //--------------------------------------------------------------
             /// returns whether or not the given file exists.
             ///
@@ -179,7 +218,7 @@ namespace CSBackend
             ///
             /// @return Whether or not it exists.
             //--------------------------------------------------------------
-            bool DoesFileExist(CSCore::StorageLocation in_storageLocation, const std::string& in_filePath) const override;
+            bool DoesFileExist(ChilliSource::StorageLocation in_storageLocation, const std::string& in_filePath) const override;
 			//--------------------------------------------------------------
 			/// Returns whether or not the file exists in the Cached DLC
             /// directory.
@@ -212,7 +251,29 @@ namespace CSBackend
             ///
             /// @return Whether or not it exists.
             //--------------------------------------------------------------
-            bool DoesDirectoryExist(CSCore::StorageLocation in_storageLocation, const std::string& in_directoryPath) const override;
+            bool DoesDirectoryExist(ChilliSource::StorageLocation in_storageLocation, const std::string& in_directoryPath) const override;
+            //--------------------------------------------------------------
+            /// Returns whether or not the directory exists in the Cached
+            /// DLC directory.
+            ///
+            /// @author Ian Copland
+            ///
+            /// @param in_directoryPath - The directory path.
+            ///
+            /// @return Whether or not it is in the cached DLC.
+            //--------------------------------------------------------------
+            bool DoesDirectoryExistInCachedDLC(const std::string& in_directoryPath) const override;
+            //--------------------------------------------------------------
+            /// Returns whether or not the directory exists in the package
+            /// DLC directory.
+            ///
+            /// @author Ian Copland
+            ///
+            /// @param in_directoryPath - The directory path.
+            ///
+            /// @return Whether or not it is in the package DLC.
+            //--------------------------------------------------------------
+            bool DoesDirectoryExistInPackageDLC(const std::string& in_directoryPath) const override;
 			//--------------------------------------------------------------
 			/// Returns the absolute path to the given storage location. The
             /// value this returns is platform specific and use of this
@@ -225,40 +286,10 @@ namespace CSBackend
 			/// @return The directory. returns an empty string if the location
 			/// is not available.
 			//--------------------------------------------------------------
-			std::string GetAbsolutePathToStorageLocation(CSCore::StorageLocation in_storageLocation) const override;
-            //--------------------------------------------------------------
-			/// Returns the absolute path to the file in the given storage
-            /// location. The file must exist otherwise an empty string
-            /// will be returned. The result of this is platform specific
-            /// so care should be taken when using this in cross platform
-            /// projects.
-            ///
-            /// @author S Downie
-			///
-            /// @param The storage location for the file.
-            /// @param The file path relative to the storage location.
-            ///
-			/// @return The full path to the file.
-			//--------------------------------------------------------------
-			std::string GetAbsolutePathToFile(CSCore::StorageLocation in_storageLocation, const std::string& in_path) const override;
-            //--------------------------------------------------------------
-			/// Returns the absolute path to the directory in the given storage
-            /// location. The directory must exist otherwise an empty string
-            /// will be returned. The result of this is platform specific
-            /// so care should be taken when using this in cross platform
-            /// projects.
-            ///
-            /// @author Ian Copland
-			///
-            /// @param The storage location for the directory.
-            /// @param The directory path relative to the storage location.
-            ///
-			/// @return The full path to the directory.
-			//--------------------------------------------------------------
-			std::string GetAbsolutePathToDirectory(CSCore::StorageLocation in_storageLocation, const std::string& in_path) const override;
+			std::string GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation in_storageLocation) const override;
 
 		private:
-            friend CSCore::FileSystemUPtr CSCore::FileSystem::Create();
+            friend ChilliSource::FileSystemUPtr ChilliSource::FileSystem::Create();
             //--------------------------------------------------------------
             /// A container for information on a single item in the package
             /// manifest.
@@ -342,7 +373,7 @@ namespace CSBackend
             ///
             /// @return All the paths for the given location
             //------------------------------------------------------------
-            std::vector<std::string> GetPossibleAbsoluteDirectoryPaths(CSCore::StorageLocation in_storageLocation, const std::string& in_directoryPath) const;
+            std::vector<std::string> GetPossibleAbsoluteDirectoryPaths(ChilliSource::StorageLocation in_storageLocation, const std::string& in_directoryPath) const;
             
             
 			std::string m_bundlePath;

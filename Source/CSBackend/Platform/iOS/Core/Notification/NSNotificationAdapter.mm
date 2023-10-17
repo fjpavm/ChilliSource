@@ -1,6 +1,6 @@
 //
 //  NSNotificationAdapter.mm
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 01/02/2011.
 //
 //  The MIT License (MIT)
@@ -99,7 +99,7 @@ NSNotificationAdapter* gpSharedInstance = nil;
 ///
 /// @return Event Object
 //-----------------------------------------------
--(CSCore::IConnectableEvent<NotificationEventDelegate>&) GetMPLoadStateChangeEvent
+-(ChilliSource::IConnectableEvent<NotificationEventDelegate>&) GetMPLoadStateChangeEvent
 {
     return mMPLoadStateChangeEvent;
 }
@@ -108,7 +108,7 @@ NSNotificationAdapter* gpSharedInstance = nil;
 ///
 /// @return Event Object
 //-----------------------------------------------
--(CSCore::IConnectableEvent<NotificationEventDelegate>&) GetMPPlaybackDidFinishEvent
+-(ChilliSource::IConnectableEvent<NotificationEventDelegate>&) GetMPPlaybackDidFinishEvent
 {
     return mMPPlaybackDidFinishEvent;
 }

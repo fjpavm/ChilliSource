@@ -1,6 +1,6 @@
 //
 //  ResourceProvider.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 30/09/2010.
 //
 //  The MIT License (MIT)
@@ -30,15 +30,12 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    CS_DEFINE_NAMEDTYPE(ResourceProvider);
+    
+    //----------------------------------------------------
+    //----------------------------------------------------
+    IResourceOptionsBaseCSPtr ResourceProvider::GetDefaultOptions() const
     {
-        CS_DEFINE_NAMEDTYPE(ResourceProvider);
-        
-        //----------------------------------------------------
-        //----------------------------------------------------
-        IResourceOptionsBaseCSPtr ResourceProvider::GetDefaultOptions() const
-        {
-            return nullptr;
-        }
+        return nullptr;
     }
 }

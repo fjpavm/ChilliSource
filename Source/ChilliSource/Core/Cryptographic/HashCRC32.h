@@ -1,6 +1,6 @@
 //
 //  HashCRC32.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 06/07/2011.
 //
 //  The MIT License (MIT)
@@ -33,33 +33,30 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    namespace HashCRC32
     {
-        namespace HashCRC32
-        {
-            //-------------------------------------------------------------
-            /// Generate Hash Code
-            ///
-            /// @param String to hash
-            /// @return CRC 32 hash code
-            //-------------------------------------------------------------
-            u32 GenerateHashCode(const std::string &instrVal);
-            //-------------------------------------------------------------
-            /// Generate Hash Code
-            ///
-            /// @param Null terminated string to hash
-            /// @return CRC 32 hash code
-            //-------------------------------------------------------------
-            u32 GenerateHashCode(const s8* instrVal);
-            //-------------------------------------------------------------
-            /// Generate Hash Code
-            ///
-            /// @param Data to hash
-            /// @param Size of data in bytes
-            /// @return CRC 32 hash code
-            //-------------------------------------------------------------
-            u32 GenerateHashCode(const s8* inbyVal, u32 inudwSizeInBytes);
-        }
+        //-------------------------------------------------------------
+        /// Generate Hash Code
+        ///
+        /// @param String to hash
+        /// @return CRC 32 hash code
+        //-------------------------------------------------------------
+        u32 GenerateHashCode(const std::string &instrVal);
+        //-------------------------------------------------------------
+        /// Generate Hash Code
+        ///
+        /// @param Null terminated string to hash
+        /// @return CRC 32 hash code
+        //-------------------------------------------------------------
+        u32 GenerateHashCode(const s8* instrVal);
+        //-------------------------------------------------------------
+        /// Generate Hash Code
+        ///
+        /// @param Data to hash
+        /// @param Size of data in bytes
+        /// @return CRC 32 hash code
+        //-------------------------------------------------------------
+        u32 GenerateHashCode(const s8* inbyVal, u32 inudwSizeInBytes);
     }
 }
 

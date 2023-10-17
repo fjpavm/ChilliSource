@@ -1,6 +1,6 @@
 //
 //  StateSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 11/06/2014.
 //
 //  The MIT License (MIT)
@@ -30,19 +30,16 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    //------------------------------------------------
+    //------------------------------------------------
+    State* StateSystem::GetState() const
     {
-        //------------------------------------------------
-        //------------------------------------------------
-        State* StateSystem::GetState() const
-        {
-            return m_state;
-        }
-        //------------------------------------------------
-        //------------------------------------------------
-        void StateSystem::SetState(State* in_state)
-        {
-            m_state = in_state;
-        }
+        return m_state;
+    }
+    //------------------------------------------------
+    //------------------------------------------------
+    void StateSystem::SetState(State* in_state)
+    {
+        m_state = in_state;
     }
 }

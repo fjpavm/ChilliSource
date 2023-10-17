@@ -1,6 +1,6 @@
 //
 //  AngularAccelerationParticleAffector.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 03/11/2014.
 //
 //  The MIT License (MIT)
@@ -35,60 +35,57 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		//---------------------------------------------------------------------
-		/// A particle affector which will change the angular velocity of a
-		/// particle over time.
-		///
-		/// @author Ian Copland
-		//---------------------------------------------------------------------
-		class AngularAccelerationParticleAffector final : public ParticleAffector
-		{
-		public:
-			//----------------------------------------------------------------
-			/// Generates a new angular acceleration from the property for
-			/// the activated particle.
-			///
-			/// @author Ian Copland
-            ///
-            /// @param The index of the particle to activate.
-            /// @param The current normalised (0.0 to 1.0) progress through
-            /// playback of the particle effect.
-			//----------------------------------------------------------------
-			void ActivateParticle(u32 in_index, f32 in_effectProgress) override;
-			//----------------------------------------------------------------
-			/// Angularly accelerates each active particle.
-			///
-			/// @author Ian Copland
-            ///
-            /// @param The delta time.
-            /// @param The current normalised (0.0 to 1.0) progress through
-            /// playback of the particle effect.
-			//----------------------------------------------------------------
-			void AffectParticles(f32 in_deltaTime, f32 in_effectProgress) override;
-			//----------------------------------------------------------------
-			/// Destructor
-			///
-			/// @author Ian Copland
-			//----------------------------------------------------------------
-			virtual ~AngularAccelerationParticleAffector() {};
-		private:
-			friend class AngularAccelerationParticleAffectorDef;
-			//----------------------------------------------------------------
-			/// Constructor.
-			///
-			/// @author Ian Copland
-			///
-			/// @param The particle affector definition.
-			/// @param The particle array.
-			//----------------------------------------------------------------
-			AngularAccelerationParticleAffector(const ParticleAffectorDef* in_affectorDef, Core::dynamic_array<Particle>* in_particleArray);
+    //---------------------------------------------------------------------
+    /// A particle affector which will change the angular velocity of a
+    /// particle over time.
+    ///
+    /// @author Ian Copland
+    //---------------------------------------------------------------------
+    class AngularAccelerationParticleAffector final : public ParticleAffector
+    {
+    public:
+        //----------------------------------------------------------------
+        /// Generates a new angular acceleration from the property for
+        /// the activated particle.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The index of the particle to activate.
+        /// @param The current normalised (0.0 to 1.0) progress through
+        /// playback of the particle effect.
+        //----------------------------------------------------------------
+        void ActivateParticle(u32 in_index, f32 in_effectProgress) override;
+        //----------------------------------------------------------------
+        /// Angularly accelerates each active particle.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The delta time.
+        /// @param The current normalised (0.0 to 1.0) progress through
+        /// playback of the particle effect.
+        //----------------------------------------------------------------
+        void AffectParticles(f32 in_deltaTime, f32 in_effectProgress) override;
+        //----------------------------------------------------------------
+        /// Destructor
+        ///
+        /// @author Ian Copland
+        //----------------------------------------------------------------
+        virtual ~AngularAccelerationParticleAffector() {};
+    private:
+        friend class AngularAccelerationParticleAffectorDef;
+        //----------------------------------------------------------------
+        /// Constructor.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The particle affector definition.
+        /// @param The particle array.
+        //----------------------------------------------------------------
+        AngularAccelerationParticleAffector(const ParticleAffectorDef* in_affectorDef, dynamic_array<Particle>* in_particleArray);
 
-			const AngularAccelerationParticleAffectorDef* m_angularAccelerationAffectorDef = nullptr;
-			Core::dynamic_array<f32> m_particleAngularAcceleration;
-		};
-	}
+        const AngularAccelerationParticleAffectorDef* m_angularAccelerationAffectorDef = nullptr;
+        dynamic_array<f32> m_particleAngularAcceleration;
+    };
 }
 
 #endif

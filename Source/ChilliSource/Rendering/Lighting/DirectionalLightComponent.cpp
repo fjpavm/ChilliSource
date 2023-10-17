@@ -1,8 +1,4 @@
 //
-//  DirectionalLightComponent.cpp
-//  Chilli Source
-//  Created by Scott Downie on 31/01/2014.
-//
 //  The MIT License (MIT)
 //
 //  Copyright (c) 2014 Tag Games Limited
@@ -25,6 +21,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
+
 #include <ChilliSource/Rendering/Lighting/DirectionalLightComponent.h>
 
 #include <ChilliSource/Core/Base/Application.h>
@@ -35,179 +32,166 @@
 #include <ChilliSource/Core/Entity/Entity.h>
 #include <ChilliSource/Core/Resource/ResourcePool.h>
 #include <ChilliSource/Rendering/Base/RenderCapabilities.h>
+#include <ChilliSource/Rendering/Base/RenderSnapshot.h>
+#include <ChilliSource/Rendering/Target/RenderTargetGroupManager.h>
 #include <ChilliSource/Rendering/Texture/Texture.h>
+#include <ChilliSource/Rendering/Texture/TextureDesc.h>
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-        namespace
-        {
-            u32 g_nextShadowMapId = 0;
-        }
+    namespace
+    {
+        constexpr f32 k_defaultShadowTolerance = 0.005f;
+        constexpr f32 k_defaultShadowVolumeWidth = 50.0f;
+        constexpr f32 k_defaultShadowVolumeHeight = 50.0f;
+        constexpr f32 k_defaultShadowVolumeNear = 5.0f;
+        constexpr f32 k_defaultShadowVolumeFar = 50.0f;
         
-		CS_DEFINE_NAMEDTYPE(DirectionalLightComponent);
+        u32 g_nextShadowMapId = 0;
         
-        //----------------------------------------------------------
-        /// Constructor
-        //----------------------------------------------------------
-        DirectionalLightComponent::DirectionalLightComponent(u32 in_shadowMapRes)
-            : m_shadowMapRes(in_shadowMapRes), mfShadowTolerance(0.0f) , mbMatrixCacheValid(false)
-		{
-            m_shadowMapId = g_nextShadowMapId;
-            ++g_nextShadowMapId;
-            
-            m_renderCapabilities = Core::Application::Get()->GetSystem<RenderCapabilities>();
-            
-            CreateShadowMapTextures();
-		}
-		//----------------------------------------------------------
-		/// Is A
-		//----------------------------------------------------------
-		bool DirectionalLightComponent::IsA(CSCore::InterfaceIDType inInterfaceID) const
-		{
-			return inInterfaceID == LightComponent::InterfaceID || inInterfaceID == DirectionalLightComponent::InterfaceID;
-		}
-        //----------------------------------------------------------
-        /// Set Shadow Volume
-        //----------------------------------------------------------
-        void DirectionalLightComponent::SetShadowVolume(f32 infWidth, f32 infHeight, f32 infNear, f32 infFar)
+        /// Gets the shadow map resolution for the given ShadowQuality.
+        ///
+        /// @param shadowQuality
+        ///     The quality of the shadows.
+        ///
+        /// @return The resolution.
+        ///
+        Integer2 GetShadowMapResolution(DirectionalLightComponent::ShadowQuality shadowQuality) noexcept
         {
-			mmatProj = Core::Matrix4::CreateOrthographicProjectionLH(infWidth, infHeight, infNear, infFar);
-            
-            mbCacheValid = false;
-        }
-        //----------------------------------------------------------
-        /// Get Direction
-        //----------------------------------------------------------
-        Core::Vector3 DirectionalLightComponent::GetDirection() const
-        {
-            if(GetEntity() != nullptr)
+            switch (shadowQuality)
             {
-				return Core::Vector3::Rotate(Core::Vector3::k_unitPositiveZ, GetEntity()->GetTransform().GetWorldOrientation());
-            }
-            else
-            {
-				return Core::Vector3::k_unitPositiveZ;
+                case DirectionalLightComponent::ShadowQuality::k_low:
+                    return Integer2(512, 512);
+                case DirectionalLightComponent::ShadowQuality::k_medium:
+                    return Integer2(1024, 1024);
+                case DirectionalLightComponent::ShadowQuality::k_high:
+                    return Integer2(2048, 2048);
+                default:
+                    CS_LOG_FATAL("Invalid shadow quality.");
+                    return Integer2::k_zero;
             }
         }
-        //----------------------------------------------------------
-        /// Get Light Matrix
-        //----------------------------------------------------------
-        const Core::Matrix4& DirectionalLightComponent::GetLightMatrix() const
+    }
+    
+    CS_DEFINE_NAMEDTYPE(DirectionalLightComponent);
+    
+    //------------------------------------------------------------------------------
+    DirectionalLightComponent::DirectionalLightComponent(const Colour& colour, f32 intensity) noexcept
+        : m_colour(colour), m_intensity(intensity)
+    {
+    }
+    
+    //------------------------------------------------------------------------------
+    DirectionalLightComponent::DirectionalLightComponent(ShadowQuality shadowQuality, const Colour& colour, f32 intensity) noexcept
+        : m_colour(colour), m_intensity(intensity)
+    {
+        auto renderCapabilities = Application::Get()->GetSystem<RenderCapabilities>();
+        if (renderCapabilities->IsShadowMappingSupported())
         {
-            //The matrix is a view projection
-            if(mbMatrixCacheValid == false && GetEntity() != nullptr)
-            {
-                Core::Matrix4 matView = Core::Matrix4::Inverse(GetEntity()->GetTransform().GetWorldTransform());
-				mmatLight = matView * mmatProj;
-                mbMatrixCacheValid = true;
-            }
+            m_shadowMapId = ++g_nextShadowMapId;
+            m_shadowMapResolution = GetShadowMapResolution(shadowQuality);
+            m_shadowTolerance = k_defaultShadowTolerance;
             
-            return mmatLight;
-        }
-        //----------------------------------------------------------
-        /// Get Shadow Tolerance
-        //----------------------------------------------------------
-        f32 DirectionalLightComponent::GetShadowTolerance() const
-        {
-            return mfShadowTolerance;
-        }
-        //----------------------------------------------------------
-        /// Set Shadow Tolerance
-        //----------------------------------------------------------
-        void DirectionalLightComponent::SetShadowTolerance(f32 infTolerance)
-        {
-            mfShadowTolerance = infTolerance;
+            SetShadowVolume(k_defaultShadowVolumeWidth, k_defaultShadowVolumeHeight, k_defaultShadowVolumeNear, k_defaultShadowVolumeFar);
             
-            mbCacheValid = false;
+            TryCreateShadowMapTarget();
         }
-        //----------------------------------------------------------
-        /// Get Shadow Map Ptr
-        //----------------------------------------------------------
-        const TextureSPtr& DirectionalLightComponent::GetShadowMapPtr() const
-        {
-            return m_shadowMap;
-        }
-        //----------------------------------------------------------
-        /// Get Shadow Map Debug Ptr
-        //----------------------------------------------------------
-        const TextureSPtr& DirectionalLightComponent::GetShadowMapDebugPtr() const
-        {
-            return m_shadowMapDebug;
-        }
-        //----------------------------------------------------
-        //----------------------------------------------------
-        void DirectionalLightComponent::OnAddedToScene()
-        {
-            m_transformChangedConnection = GetEntity()->GetTransform().GetTransformChangedEvent().OpenConnection(Core::MakeDelegate(this, &DirectionalLightComponent::OnEntityTransformChanged));
-        }
-        //----------------------------------------------------
-        //----------------------------------------------------
-        void DirectionalLightComponent::OnRemovedFromScene()
-        {
-            m_transformChangedConnection = nullptr;
-        }
-        //----------------------------------------------------
-        /// On Entity Transform Changed
-        //----------------------------------------------------
-        void DirectionalLightComponent::OnEntityTransformChanged()
-        {
-            mbMatrixCacheValid = false;
-            mbCacheValid = false;
-        }
-        //----------------------------------------------------
-        //----------------------------------------------------
-        void DirectionalLightComponent::CreateShadowMapTextures()
-        {
-            if(m_shadowMap == nullptr && m_renderCapabilities->IsShadowMappingSupported() == true && m_shadowMapRes > 0)
-            {
-                m_shadowMap = Core::Application::Get()->GetResourcePool()->CreateResource<Rendering::Texture>("_ShadowMap" + Core::ToString(m_shadowMapId));
-                Texture::Descriptor desc;
-                desc.m_width = m_shadowMapRes;
-                desc.m_height = m_shadowMapRes;
-                desc.m_format = Core::ImageFormat::k_Depth16;
-                desc.m_compression = Core::ImageCompression::k_none;
-                desc.m_dataSize = 0;
-                m_shadowMap->Build(desc, nullptr, false, false);
-                
-#ifdef CS_ENABLE_DEBUGSHADOW
-                m_shadowMapDebug = Core::Application::Get()->GetResourcePool()->CreateResource<Rendering::Texture>("_ShadowMapDebug" + Core::ToString(m_shadowMapId));
-                desc.m_width = m_shadowMapRes;
-                desc.m_height = m_shadowMapRes;
-                desc.m_format = Core::ImageFormat::k_RGB888;
-                desc.m_compression = Core::ImageCompression::k_none;
-                desc.m_dataSize = 0;
-                m_shadowMapDebug->Build(desc, nullptr, false, false);
-#endif
-            }
-        }
-        //----------------------------------------------------
-        //----------------------------------------------------
-        void DirectionalLightComponent::DestroyShadowMapTextures()
-        {
-            Core::ResourcePool* resourcePool = Core::Application::Get()->GetResourcePool();
-            
-            if(m_shadowMap != nullptr)
-            {
-                Texture* release = m_shadowMap.get();
-                m_shadowMap.reset();
-                resourcePool->Release(release);
-            }
+    }
+    
+    //------------------------------------------------------------------------------
+    bool DirectionalLightComponent::IsA(InterfaceIDType interfaceId) const noexcept
+    {
+        return (DirectionalLightComponent::InterfaceID == interfaceId);
+    }
+    
+    //------------------------------------------------------------------------------
+    void DirectionalLightComponent::SetShadowVolume(f32 width, f32 height, f32 near, f32 far) noexcept
+    {
+        m_lightProjection = Matrix4::CreateOrthographicProjectionLH(width, height, near, far);
+    }
+    
+    //------------------------------------------------------------------------------
+    void DirectionalLightComponent::TryCreateShadowMapTarget() noexcept
+    {
+        CS_ASSERT(!m_shadowMap, "Shadow map already exists.");
+        CS_ASSERT(!m_shadowMapTarget, "Shadow map target already exists.");
 
-            if(m_shadowMapDebug != nullptr)
-            {
-                Texture* release = m_shadowMapDebug.get();
-                m_shadowMapDebug.reset();
-                resourcePool->Release(release);
-            }
-        }
-        //----------------------------------------------------------
-        //----------------------------------------------------------
-        DirectionalLightComponent::~DirectionalLightComponent()
+        if(m_shadowMapResolution.x > 0 && m_shadowMapResolution.y > 0)
         {
-            DestroyShadowMapTextures();
+            auto mutableShadowMap = Application::Get()->GetResourcePool()->CreateResource<Texture>("_DirectionalLightShadowMap" + ToString(m_shadowMapId));
+            
+            TextureDesc desc(m_shadowMapResolution, ImageFormat::k_Depth16, ImageCompression::k_none, false);
+            mutableShadowMap->Build(nullptr, 0, desc);
+            mutableShadowMap->SetLoadState(Resource::LoadState::k_loaded);
+            
+            m_shadowMap = mutableShadowMap;
+            
+            m_shadowMapTarget = TargetGroup::CreateDepthTargetGroup(m_shadowMap);
         }
-	}
+    }
+    
+    //------------------------------------------------------------------------------
+    void DirectionalLightComponent::TryDestroyShadowMapTarget() noexcept
+    {
+        if (m_shadowMapTarget)
+        {
+            m_shadowMapTarget.reset();
+        }
+        
+        if (m_shadowMap)
+        {
+            auto resourcePool = Application::Get()->GetResourcePool();
+            
+            auto release = m_shadowMap.get();
+            m_shadowMap.reset();
+            resourcePool->Release(release);
+        }
+    }
+    
+    //------------------------------------------------------------------------------
+    void DirectionalLightComponent::OnAddedToScene() noexcept
+    {
+        auto& transform = GetEntity()->GetTransform();
+        
+        m_direction = Vector3::Rotate(Vector3::k_unitPositiveZ, transform.GetWorldOrientation());
+        
+        m_transformChangedConnection = transform.GetTransformChangedEvent().OpenConnection(MakeDelegate(this, &DirectionalLightComponent::OnEntityTransformChanged));
+    }
+    
+    //------------------------------------------------------------------------------
+    void DirectionalLightComponent::OnEntityTransformChanged() noexcept
+    {
+        auto& transform = GetEntity()->GetTransform();
+        
+        m_direction = Vector3::Rotate(Vector3::k_unitPositiveZ, transform.GetWorldOrientation());
+    }
+    
+    //------------------------------------------------------------------------------
+    void DirectionalLightComponent::OnRenderSnapshot(RenderSnapshot& renderSnapshot, IAllocator* frameAllocator) noexcept
+    {
+        if (m_shadowMap)
+        {
+            const auto& transform = GetEntity()->GetTransform();
+            auto worldMatrix = transform.GetWorldTransform();
+            auto orientation = transform.GetWorldOrientation();
+            renderSnapshot.AddDirectionalRenderLight(DirectionalRenderLight(GetFinalColour(), m_direction, worldMatrix, m_lightProjection, orientation, m_shadowTolerance, m_shadowMapTarget->GetRenderTargetGroup()));
+        }
+        else
+        {
+            renderSnapshot.AddDirectionalRenderLight(DirectionalRenderLight(GetFinalColour(), m_direction));
+        }
+    }
+    
+    //------------------------------------------------------------------------------
+    void DirectionalLightComponent::OnRemovedFromScene() noexcept
+    {
+        m_transformChangedConnection.reset();
+    }
+    
+    //------------------------------------------------------------------------------
+    DirectionalLightComponent::~DirectionalLightComponent() noexcept
+    {
+        TryDestroyShadowMapTarget();
+    }
 }
 

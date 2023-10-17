@@ -1,6 +1,6 @@
 //
 //  HashSHA1.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 09/06/2014.
 //
 //  The MIT License (MIT)
@@ -37,33 +37,32 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    namespace HashSHA1
     {
-        namespace HashSHA1
+        //------------------------------------------------
+        //------------------------------------------------
+        std::string GenerateHexHashCode(const s8* in_data, u32 in_size)
         {
-            //------------------------------------------------
-            //------------------------------------------------
-            std::string GenerateHexHashCode(const s8* in_data, u32 in_size)
-            {
-                const u32 k_sha1Length = 80;
-                
-                CSHA1 hash;
-                hash.Reset();
-                hash.Update(reinterpret_cast<const u8*>(in_data), in_size);
-                hash.Final();
-                
+            const u32 k_sha1Length = 80;
+            
+            CS_LOG_WARNING("SHA-1 is deprecated, and no longer secure. Please use SHA-2 (SHA-256) or better.");
+            
+            CSHA1 hash;
+            hash.Reset();
+            hash.Update(reinterpret_cast<const u8*>(in_data), in_size);
+            hash.Final();
+            
 #ifdef CS_TARGETPLATFORM_WINDOWS
-                TCHAR cHash[k_sha1Length];
-                memset(cHash, 0, k_sha1Length);
-                hash.ReportHash(cHash, CSHA1::REPORT_HEX_SHORT);
-				return CSBackend::Windows::WindowsStringUtils::UTF16ToUTF8(std::wstring(cHash));
+            TCHAR cHash[k_sha1Length];
+            memset(cHash, 0, k_sha1Length);
+            hash.ReportHash(cHash, CSHA1::REPORT_HEX_SHORT);
+            return CSBackend::Windows::WindowsStringUtils::UTF16ToUTF8(std::wstring(cHash));
 #else
-				s8 cHash[k_sha1Length];
-				memset(cHash, 0, k_sha1Length);
-				hash.ReportHash(cHash, CSHA1::REPORT_HEX_SHORT);
-				return std::string(cHash);
+            s8 cHash[k_sha1Length];
+            memset(cHash, 0, k_sha1Length);
+            hash.ReportHash(cHash, CSHA1::REPORT_HEX_SHORT);
+            return std::string(cHash);
 #endif
-            }
         }
     }
 }

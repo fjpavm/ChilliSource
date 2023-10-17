@@ -1,6 +1,6 @@
 //
 //  IPropertyType.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 03/12/2014.
 //
 //  The MIT License (MIT)
@@ -32,43 +32,40 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    //------------------------------------------------------------------------
+    /// A container for information on a specific type of property. The
+    /// specific property type is described by the implementing class. This
+    /// is typically used for type erasure so that a series of heterogeneous
+    /// property types can be stored in the same container. This allows
+    /// creation of instances of the property described without knowing the
+    /// specific type.
+    ///
+    /// Properties retain a pointer to the Property Type that created them
+    /// which means the property type must outlive any properties created
+    /// through it. Typically Property Types are allocated statically to
+    /// guarantee this.
+    ///
+    /// @author Ian Copland
+    //------------------------------------------------------------------------
+    class IPropertyType
     {
-        //------------------------------------------------------------------------
-        /// A container for information on a specific type of property. The
-        /// specific property type is described by the implementing class. This
-        /// is typically used for type erasure so that a series of heterogeneous
-        /// property types can be stored in the same container. This allows
-        /// creation of instances of the property described without knowing the
-        /// specific type.
-        ///
-        /// Properties retain a pointer to the Property Type that created them
-        /// which means the property type must outlive any properties created
-        /// through it. Typically Property Types are allocated statically to
-        /// guarantee this.
+    public:
+        //-----------------------------------------------------------------
+        /// Creates a new instance of the described property type. This
+        /// does not require knowledge of the specific property type.
         ///
         /// @author Ian Copland
-        //------------------------------------------------------------------------
-        class IPropertyType
-        {
-        public:
-            //-----------------------------------------------------------------
-            /// Creates a new instance of the described property type. This
-            /// does not require knowledge of the specific property type.
-            ///
-            /// @author Ian Copland
-            ///
-            /// @return The string name of the underlying type.
-            //-----------------------------------------------------------------
-            virtual IPropertyUPtr CreateProperty() const = 0;
-            //-----------------------------------------------------------------
-            /// Virtual destructor.
-            ///
-            /// @author Ian Copland
-            //-----------------------------------------------------------------
-            virtual ~IPropertyType() {};
-        };
-    }
+        ///
+        /// @return The string name of the underlying type.
+        //-----------------------------------------------------------------
+        virtual IPropertyUPtr CreateProperty() const = 0;
+        //-----------------------------------------------------------------
+        /// Virtual destructor.
+        ///
+        /// @author Ian Copland
+        //-----------------------------------------------------------------
+        virtual ~IPropertyType() {};
+    };
 }
 
 #endif

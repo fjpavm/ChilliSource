@@ -1,6 +1,6 @@
 //
 //  Device.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 03/05/2011.
 //
 //  The MIT License (MIT)
@@ -27,43 +27,75 @@
 //
 
 #include <ChilliSource/Core/Base/Device.h>
-
-#ifdef CS_TARGETPLATFORM_ANDROID
-#include <CSBackend/Platform/Android/Main/JNI/Core/Base/Device.h>
-#endif
-
-#ifdef CS_TARGETPLATFORM_IOS
-#import <CSBackend/Platform/iOS/Core/Base/Device.h>
-#endif
-
-#ifdef CS_TARGETPLATFORM_WINDOWS
-#include <CSBackend/Platform/Windows/Core/Base/Device.h>
-#endif
-
-#ifdef CS_TARGETPLATFORM_LINUX
-#include <CSBackend/Platform/Linux/Core/Base/Device.h>
-#endif
+#include <ChilliSource/Core/Base/DeviceInfo.h>
 
 namespace ChilliSource
 {
-    namespace Core
+    CS_DEFINE_NAMEDTYPE(Device);
+    //--------------------------------------------------
+    DeviceUPtr Device::Create(const ChilliSource::DeviceInfo& deviceInfo)
     {
-        CS_DEFINE_NAMEDTYPE(Device);
-        //--------------------------------------------------
-        //--------------------------------------------------
-        DeviceUPtr Device::Create()
-        {
-#if defined CS_TARGETPLATFORM_ANDROID
-            return DeviceUPtr(new CSBackend::Android::Device());
-#elif defined CS_TARGETPLATFORM_IOS
-            return DeviceUPtr(new CSBackend::iOS::Device());
-#elif defined CS_TARGETPLATFORM_WINDOWS
-            return DeviceUPtr(new CSBackend::Windows::Device());
-#elif defined CS_TARGETPLATFORM_LINUX
-			return DeviceUPtr(new CSBackend::Linux::Device());
-#else
-            return nullptr;
-#endif
-        }
+        return DeviceUPtr(new Device(deviceInfo));
     }
+    //----------------------------------------------------
+    //----------------------------------------------------
+    Device::Device(const ChilliSource::DeviceInfo& deviceInfo) noexcept
+        : m_deviceInfo(deviceInfo)
+    {
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    bool Device::IsA(ChilliSource::InterfaceIDType in_interfaceId) const noexcept
+    {
+        return (Device::InterfaceID == in_interfaceId);
+    }
+    //---------------------------------------------------
+    //---------------------------------------------------
+    const std::string& Device::GetModel() const noexcept
+    {
+        return m_deviceInfo.GetModel();
+    }
+    //---------------------------------------------------
+    //---------------------------------------------------
+    const std::string& Device::GetModelType() const noexcept
+    {
+        return m_deviceInfo.GetModelType();
+    }
+    //---------------------------------------------------
+    //---------------------------------------------------
+    const std::string& Device::GetManufacturer() const noexcept
+    {
+        return m_deviceInfo.GetManufacturer();
+    }
+    //---------------------------------------------------
+    //---------------------------------------------------
+    const std::string& Device::GetLocale() const noexcept
+    {
+        return m_deviceInfo.GetLocale();
+    }
+    //---------------------------------------------------
+    //---------------------------------------------------
+    const std::string& Device::GetLanguage() const noexcept
+    {
+        return m_deviceInfo.GetLanguage();
+    }
+    //---------------------------------------------------
+    //---------------------------------------------------
+    const std::string& Device::GetOSVersion() const noexcept
+    {
+        return m_deviceInfo.GetOSVersion();
+    }
+    //---------------------------------------------------
+    //---------------------------------------------------
+    const std::string& Device::GetUDID() const noexcept
+    {
+        return m_deviceInfo.GetUDID();
+    }
+    //---------------------------------------------------
+    //---------------------------------------------------
+    u32 Device::GetNumberOfCPUCores() const noexcept
+    {
+        return m_deviceInfo.GetNumCPUCores();
+    }
+
 }

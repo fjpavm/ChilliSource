@@ -1,6 +1,6 @@
 /**
  * HashSHA256.java
- * Chilli Source
+ * ChilliSource
  * Created by Ian Copland on 16/12/2014.
  * 
  * The MIT License (MIT)
@@ -57,7 +57,7 @@ public class HashSHA256
 	    }
 	    catch (Exception e)
 	    {
-	    	Logging.logError(ExceptionUtils.ConvertToString(e));
+	    	Logging.logError(ExceptionUtils.convertToString(e));
 	    }
 	    
 	    return abyOutput;

@@ -1,6 +1,6 @@
 //
 //  Notification.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 10/03/2014.
 //
 //  The MIT License (MIT)
@@ -35,32 +35,29 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    //------------------------------------------------------------
+    /// A notification that can be used by any of the notification
+    /// systems.
+    //------------------------------------------------------------
+    struct Notification
     {
-        //------------------------------------------------------------
-        /// A notification that can be used by any of the notification
-        /// systems.
-        //------------------------------------------------------------
-        struct Notification
+        //----------------------------------------------------
+        /// An enum describing the priority of a notification.
+        //----------------------------------------------------
+        enum class Priority
         {
-            //----------------------------------------------------
-            /// An enum describing the priority of a notification.
-            //----------------------------------------------------
-            enum class Priority
-            {
-                k_standard,
-                k_high
-            };
-            //----------------------------------------------------
-            /// Typedefs
-            //----------------------------------------------------
-            typedef u32 ID;
-
-            ID m_id;
-            ParamDictionary m_params;
-            Priority m_priority;
+            k_standard,
+            k_high
         };
-    }
+        //----------------------------------------------------
+        /// Typedefs
+        //----------------------------------------------------
+        typedef u32 ID;
+
+        ID m_id;
+        ParamDictionary m_params;
+        Priority m_priority;
+    };
 }
 
 #endif

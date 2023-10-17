@@ -1,6 +1,6 @@
 //
 //  BaseEncoding.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 06/07/2011.
 //
 //  The MIT License (MIT)
@@ -33,42 +33,38 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    //-------------------------------------------------------------
+    /// A collection of methods for working with Base 64 encoding.
+    ///
+    /// @author S Downie
+    //-------------------------------------------------------------
+    namespace BaseEncoding
     {
-        //-------------------------------------------------------------
-        /// A collection of methods for working with Base 64 encoding.
-        ///
+        //-------------------------------------------------------
         /// @author S Downie
-        //-------------------------------------------------------------
-        namespace BaseEncoding
-        {
-            //-------------------------------------------------------
-            /// @author S Downie
-            ///
-            /// @param String to encode
-            ///
-            /// @return Base 64 encoded string
-            //-------------------------------------------------------
-            std::string Base64Encode(const std::string& in_value);
-            //-------------------------------------------------------
-            /// @author S Downie
-            ///
-            /// @param Data to encode
-            /// @param Size of data in bytes
-            ///
-            /// @return Base 64 encoded string
-            //-------------------------------------------------------
-            std::string Base64Encode(const s8* in_data, u32 in_size);
-            //-------------------------------------------------------
-            /// @author S Downie
-            ///
-            /// @param Base 64 encoded string
-            ///
-            /// @return Decoded string
-            //-------------------------------------------------------
-            std::string Base64Decode(const std::string& in_value);
-
-        }
+        ///
+        /// @param String to encode
+        ///
+        /// @return Base 64 encoded string
+        //-------------------------------------------------------
+        std::string Base64Encode(const std::string& in_value);
+        //-------------------------------------------------------
+        /// @author S Downie
+        ///
+        /// @param Data to encode
+        /// @param Size of data in bytes
+        ///
+        /// @return Base 64 encoded string
+        //-------------------------------------------------------
+        std::string Base64Encode(const s8* in_data, u32 in_size);
+        //-------------------------------------------------------
+        /// @author S Downie
+        ///
+        /// @param Base 64 encoded string
+        ///
+        /// @return Decoded string
+        //-------------------------------------------------------
+        std::string Base64Decode(const std::string& in_value);
     }
 }
 

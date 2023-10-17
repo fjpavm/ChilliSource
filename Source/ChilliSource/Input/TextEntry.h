@@ -1,6 +1,6 @@
 //
 //  TextEntry.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 08/07/2014.
 //
 //  The MIT License (MIT)
@@ -32,5 +32,7 @@
 
 #include <ChilliSource/ChilliSource.h>
 #include <ChilliSource/Input/TextEntry/TextEntry.h>
+#include <ChilliSource/Input/TextEntry/TextEntryCapitalisation.h>
+#include <ChilliSource/Input/TextEntry/TextEntryType.h>
 
 #endif

@@ -1,6 +1,6 @@
 //
 //  PropertyLink.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 24/11/2014.
 //
 //  The MIT License (MIT)
@@ -30,31 +30,28 @@
 
 namespace ChilliSource
 {
-    namespace UI
+    //------------------------------------------------------------------
+    //------------------------------------------------------------------
+    PropertyLink::PropertyLink(const std::string& in_linkName, const std::string& in_linkedOwner, const std::string& in_linkedProperty)
+        : m_linkName(in_linkName), m_linkedOwner(in_linkedOwner), m_linkedProperty(in_linkedProperty)
     {
-        //------------------------------------------------------------------
-        //------------------------------------------------------------------
-        PropertyLink::PropertyLink(const std::string& in_linkName, const std::string& in_linkedOwner, const std::string& in_linkedProperty)
-            : m_linkName(in_linkName), m_linkedOwner(in_linkedOwner), m_linkedProperty(in_linkedProperty)
-        {
-        }
-        //------------------------------------------------------------------
-        //------------------------------------------------------------------
-        const std::string& PropertyLink::GetLinkName() const
-        {
-            return m_linkName;
-        }
-        //------------------------------------------------------------------
-        //------------------------------------------------------------------
-        const std::string& PropertyLink::GetLinkedOwner() const
-        {
-            return m_linkedOwner;
-        }
-        //------------------------------------------------------------------
-        //------------------------------------------------------------------
-        const std::string& PropertyLink::GetLinkedProperty() const
-        {
-            return m_linkedProperty;
-        }
+    }
+    //------------------------------------------------------------------
+    //------------------------------------------------------------------
+    const std::string& PropertyLink::GetLinkName() const
+    {
+        return m_linkName;
+    }
+    //------------------------------------------------------------------
+    //------------------------------------------------------------------
+    const std::string& PropertyLink::GetLinkedOwner() const
+    {
+        return m_linkedOwner;
+    }
+    //------------------------------------------------------------------
+    //------------------------------------------------------------------
+    const std::string& PropertyLink::GetLinkedProperty() const
+    {
+        return m_linkedProperty;
     }
 }

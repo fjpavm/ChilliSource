@@ -1,6 +1,6 @@
 //
 //  TextEntry.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 08/07/2014
 //
 //  The MIT License (MIT)
@@ -34,6 +34,10 @@
 #include <ChilliSource/ChilliSource.h>
 #include <CSBackend/Platform/iOS/ForwardDeclarations.h>
 #include <ChilliSource/Input/TextEntry/TextEntry.h>
+#include <ChilliSource/Input/TextEntry/TextEntryCapitalisation.h>
+#include <ChilliSource/Input/TextEntry/TextEntryType.h>
+
+#include <mutex>
 
 @class TextEntryDelegate;
 @class UITextField;
@@ -49,7 +53,7 @@ namespace CSBackend
         ///
         /// @author S Downie
         //----------------------------------------------------------------
-		class TextEntry final : public CSInput::TextEntry
+		class TextEntry final : public ChilliSource::TextEntry
 		{
 		public:
             
@@ -61,7 +65,7 @@ namespace CSBackend
             ///
             /// @return Whether this system implements the given inteface
             //-------------------------------------------------------
-            bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+            bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
             //-------------------------------------------------------
             /// The system will now receive text input. This will also
             /// show the virtual keyboard
@@ -74,7 +78,7 @@ namespace CSBackend
             /// @param Text changed delegate
             /// @param Deactivate delegate
             //-------------------------------------------------------
-            void Activate(const std::string& in_text, Type in_type, Capitalisation in_capitalisation, const TextBufferChangedDelegate& in_changeDelegate, const TextInputDeactivatedDelegate& in_deactivateDelegate) override;
+            void Activate(const std::string& in_text, ChilliSource::TextEntryType in_type, ChilliSource::TextEntryCapitalisation in_capitalisation, const TextBufferChangedDelegate& in_changeDelegate, const TextInputDeactivatedDelegate& in_deactivateDelegate) override;
             //-------------------------------------------------------
             /// The system will no longer receive text input. This
             /// will also hide the virtual keyboard
@@ -84,6 +88,8 @@ namespace CSBackend
             void Deactivate() override;
             //-------------------------------------------------------
             /// @author S Downie
+            ///
+            /// This should only be called from the main thread.
             ///
             /// @return Whether or not text input is currently
             /// enabled.
@@ -106,9 +112,8 @@ namespace CSBackend
             ///
             /// @author S Downie
             ///
-            /// @param The new text.
             //-------------------------------------------------------
-			bool OnTextUpdated(NSString* in_text);
+			void OnTextUpdated(NSString* in_text);
             //-------------------------------------------------------
             /// Destructor.
             ///
@@ -116,7 +121,7 @@ namespace CSBackend
             //-------------------------------------------------------
 			~TextEntry();
 		private:
-            friend CSInput::TextEntryUPtr CSInput::TextEntry::Create();
+            friend ChilliSource::TextEntryUPtr ChilliSource::TextEntry::Create();
         
             //-------------------------------------------------------
             /// Constructor. Declared private to force the use of the
@@ -136,7 +141,7 @@ namespace CSBackend
             ///
             /// @param The keyboard type
             //-------------------------------------------------------
-            void SetType(Type in_type);
+            void SetType(ChilliSource::TextEntryType in_type);
             //-------------------------------------------------------
             /// Sets capitalisation method to be used for text input.
             ///
@@ -144,15 +149,19 @@ namespace CSBackend
             ///
             /// @param The capitalisation method.
             //-------------------------------------------------------
-            void SetCapitalisation(Capitalisation in_capitalisation);
+            void SetCapitalisation(ChilliSource::TextEntryCapitalisation in_capitalisation);
             
-			UITextField* m_textView;
+            bool m_isActive = false;
+            bool m_isViewSetup = false;
+            
+            UITextField* m_textView;
             TextEntryDelegate* m_delegate;
             TextBufferChangedDelegate m_textBufferChangedDelegate;
             TextInputDeactivatedDelegate m_textInputDeactivatedDelegate;
             std::string m_text;
-		};
-	}
+            mutable std::mutex m_mutex;
+        };
+    }
 }
 
 #endif

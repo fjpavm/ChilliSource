@@ -1,6 +1,6 @@
 //
 //  HttpRequest.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 23/05/2011.
 //
 //  The MIT License (MIT)
@@ -36,6 +36,7 @@
 #include <ChilliSource/Networking/Http/HttpRequest.h>
 #include <ChilliSource/Networking/Http/HttpResponse.h>
 
+#include <atomic>
 #include <list>
 #include <mutex>
 
@@ -52,7 +53,7 @@ namespace CSBackend
 		///
 		/// @author S Downie
 		//----------------------------------------------------------------------------------------
-		class HttpRequest final : public CSNetworking::HttpRequest
+		class HttpRequest final : public ChilliSource::HttpRequest
 		{
 		public:
 			//----------------------------------------------------------------------------------------
@@ -78,13 +79,25 @@ namespace CSBackend
 			///
 			/// @return The original headers of the request as keys/values
 			//----------------------------------------------------------------------------------------
-			const CSCore::ParamDictionary& GetHeaders() const override;
+			const ChilliSource::ParamDictionary& GetHeaders() const override;
 			//----------------------------------------------------------------------------------------
 			/// Close the request. Note: The completion delegate is not invoked
 			///
 			/// @author S Downie
 			//----------------------------------------------------------------------------------------
 			void Cancel() override;
+			//----------------------------------------------------------------------------------------
+			/// @author HMcLaughlin
+			///
+			/// @return The expected total size of the request
+			//----------------------------------------------------------------------------------------
+			u64 GetExpectedSize() const override;
+			//----------------------------------------------------------------------------------------
+			/// @author HMcLaughlin
+			///
+			/// @return The current transferred size of the request
+			//----------------------------------------------------------------------------------------
+			u64 GetDownloadedBytes() const override;
 
 		private:
 			friend class HttpRequestSystem;
@@ -103,7 +116,7 @@ namespace CSBackend
 			/// @param Max buffer size before flush required
 			/// @param Completion delegate
 			//----------------------------------------------------------------------------------------
-			HttpRequest(Type in_type, const std::string& in_url, const std::string& in_body, const CSCore::ParamDictionary& in_headers, u32 in_timeoutSecs,
+			HttpRequest(Type in_type, const std::string& in_url, const std::string& in_body, const ChilliSource::ParamDictionary& in_headers, u32 in_timeoutSecs,
 				HINTERNET in_requestHandle, HINTERNET in_connectionHandle, u32 in_bufferFlushSize, const Delegate& in_delegate);
 			//----------------------------------------------------------------------------------------
 			/// Reads data from the open stream when it becomes available
@@ -148,22 +161,25 @@ namespace CSBackend
 			const Type m_type;
 			const std::string m_url;
 			const std::string m_body;
-			const CSCore::ParamDictionary m_headers;
+			const ChilliSource::ParamDictionary m_headers;
 			const Delegate m_completionDelegate;
 			const u32 m_bufferFlushSize;
 
 			std::string m_responseData;
 			u32 m_responseCode = 0;
-			CSNetworking::HttpResponse::Result m_requestResult = CSNetworking::HttpResponse::Result::k_failed;
+			ChilliSource::HttpResponse::Result m_requestResult = ChilliSource::HttpResponse::Result::k_failed;
 
-			u32 m_totalBytesRead = 0;
+			u64 m_totalBytesRead = 0;
+			u64 m_expectedSize = 0;
 			
 			bool m_shouldKillThread = false;
 			bool m_isPollingComplete = false;
 			bool m_isRequestComplete = false;
 			bool m_isRequestCancelled = false;
 
-			CSCore::TaskScheduler* m_taskScheduler;
+			std::atomic_int m_flushesPending = 0;
+
+			ChilliSource::TaskScheduler* m_taskScheduler;
 		};
 	}
 }

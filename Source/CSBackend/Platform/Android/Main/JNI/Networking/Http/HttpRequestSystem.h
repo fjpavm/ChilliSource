@@ -1,6 +1,6 @@
 //
 //  HttpRequestSystem.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 08/11/2011.
 //
 //  The MIT License (MIT)
@@ -31,6 +31,7 @@
 #ifndef _CSBACKEND_PLATFORM_ANDROID_HTTP_HTTPREQUESTSYSTEM_H_
 #define _CSBACKEND_PLATFORM_ANDROID_HTTP_HTTPREQUESTSYSTEM_H_
 
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaSystem.h>
 #include <CSBackend/Platform/Android/Main/JNI/ForwardDeclarations.h>
 #include <CSBackend/Platform/Android/Main/JNI/Networking/Http/HttpRequest.h>
 #include <ChilliSource/Networking/Http/HttpRequestSystem.h>
@@ -48,7 +49,7 @@ namespace CSBackend
 		///
 		/// @author Ian Copland
 		//--------------------------------------------------------------------------------------------------
-		class HttpRequestSystem final : public CSNetworking::HttpRequestSystem
+		class HttpRequestSystem final : public ChilliSource::HttpRequestSystem
 		{
 		public:
 
@@ -61,7 +62,7 @@ namespace CSBackend
             ///
 			/// @return Whether object if of argument type
 			//--------------------------------------------------------------------------------------------------
-            bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+            bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
             //--------------------------------------------------------------------------------------------------
             /// Causes the system to issue an Http GET request.
             ///
@@ -86,7 +87,7 @@ namespace CSBackend
             ///
             /// @return A pointer to the request. The system owns this pointer.
             //--------------------------------------------------------------------------------------------------
-            HttpRequest* MakeGetRequest(const std::string& in_url, const CSCore::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs = k_defaultTimeoutSecs) override;
+            HttpRequest* MakeGetRequest(const std::string& in_url, const ChilliSource::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs = k_defaultTimeoutSecs) override;
             //--------------------------------------------------------------------------------------------------
             /// Causes the system to issue an Http POST request with the given body.
             ///
@@ -113,7 +114,7 @@ namespace CSBackend
             ///
             /// @return A pointer to the request. The system owns this pointer.
             //--------------------------------------------------------------------------------------------------
-            HttpRequest* MakePostRequest(const std::string& in_url, const std::string& in_body, const CSCore::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs = k_defaultTimeoutSecs) override;
+            HttpRequest* MakePostRequest(const std::string& in_url, const std::string& in_body, const ChilliSource::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs = k_defaultTimeoutSecs) override;
 			//--------------------------------------------------------------------------------------------------
             /// Equivalent to calling cancel on every incomplete request in progress.
             ///
@@ -125,12 +126,12 @@ namespace CSBackend
             ///
             /// @author Ian Copland
             ///
-            /// @return Success if net available
+            /// @param Delegate to call when reachability is determined
             //--------------------------------------------------------------------------------------------------
-            bool CheckReachability() const override;
+            void CheckReachability(const ReachabilityResultDelegate& in_reachabilityDelegate) const override;
 
 		private:
-            friend CSNetworking::HttpRequestSystemUPtr CSNetworking::HttpRequestSystem::Create();
+            friend ChilliSource::HttpRequestSystemUPtr ChilliSource::HttpRequestSystem::Create();
             //--------------------------------------------------------------------------------------------------
             /// Private constructor to fore use of factory method
             ///
@@ -151,7 +152,13 @@ namespace CSBackend
             ///
             /// @return Request. Owned by the system.
             //------------------------------------------------------------------
-            HttpRequest* MakeRequest(HttpRequest::Type in_type, const std::string& in_url, const std::string& in_body, const CSCore::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs);
+            HttpRequest* MakeRequest(HttpRequest::Type in_type, const std::string& in_url, const std::string& in_body, const ChilliSource::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs);
+			//--------------------------------------------------------------------------------------------------
+            /// Sets up the java HttpRequestSystem
+            ///
+            /// @author HMcLaughlin
+            //--------------------------------------------------------------------------------------------------
+            void OnInit() override;
 			//--------------------------------------------------------------------------------------------------
             /// Poll the connection on active requests
             ///
@@ -170,6 +177,8 @@ namespace CSBackend
 		private:
 
 			std::vector<HttpRequest*> m_requests;
+
+            JavaSystemUPtr m_javaSystem;
 		};
 	}
 

@@ -1,6 +1,6 @@
 //
 //  SphereParticleEmitter.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 19/10/2014.
 //
 //  The MIT License (MIT)
@@ -34,48 +34,45 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		//-----------------------------------------------------------------------
-		/// A sphere particle emitter. This spawns particles either within a 
-		/// sphere or on the sphere's surface, with a random direction or moving
-		/// away from the centre of the sphere. 
-		///
-		/// Particle emitters will be updated as a background task and should not
-		/// be accessed from other threads.
-		///
-		/// @author Ian Copland
-		//-----------------------------------------------------------------------
-		class SphereParticleEmitter final : public ParticleEmitter
-		{
-		public:
-			//----------------------------------------------------------------
-			/// Generates the position and direction of a new emission. These 
-			/// values are in local space. This will be called as part of a 
-			/// background task.
-			///
-			/// @author Ian Copland
-			///
-			/// @param The normalised emission playback time.
-			/// @param [Out] The generated position in local space.
-			/// @param [Out] The generate direction in local space.
-			//----------------------------------------------------------------
-			void GenerateEmission(f32 in_normalisedEmissionTime, Core::Vector3& out_position, Core::Vector3& out_direction) override;
-		private:
-			friend class SphereParticleEmitterDef;
-			//----------------------------------------------------------------
-			/// Constructor.
-			///
-			/// @author Ian Copland
-			///
-			/// @param The particle emitter definition.
-			/// @param The particle array.
-			//----------------------------------------------------------------
-			SphereParticleEmitter(const ParticleEmitterDef* in_particleEmitter, Core::dynamic_array<Particle>* in_particleArray);
+    //-----------------------------------------------------------------------
+    /// A sphere particle emitter. This spawns particles either within a 
+    /// sphere or on the sphere's surface, with a random direction or moving
+    /// away from the centre of the sphere. 
+    ///
+    /// Particle emitters will be updated as a background task and should not
+    /// be accessed from other threads.
+    ///
+    /// @author Ian Copland
+    //-----------------------------------------------------------------------
+    class SphereParticleEmitter final : public ParticleEmitter
+    {
+    public:
+        //----------------------------------------------------------------
+        /// Generates the position and direction of a new emission. These 
+        /// values are in local space. This will be called as part of a 
+        /// background task.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The normalised emission playback time.
+        /// @param [Out] The generated position in local space.
+        /// @param [Out] The generate direction in local space.
+        //----------------------------------------------------------------
+        void GenerateEmission(f32 in_normalisedEmissionTime, Vector3& out_position, Vector3& out_direction) override;
+    private:
+        friend class SphereParticleEmitterDef;
+        //----------------------------------------------------------------
+        /// Constructor.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The particle emitter definition.
+        /// @param The particle array.
+        //----------------------------------------------------------------
+        SphereParticleEmitter(const ParticleEmitterDef* in_particleEmitter, dynamic_array<Particle>* in_particleArray);
 
-			const SphereParticleEmitterDef* m_sphereParticleEmitterDef = nullptr;
-		};
-	}
+        const SphereParticleEmitterDef* m_sphereParticleEmitterDef = nullptr;
+    };
 }
 
 #endif

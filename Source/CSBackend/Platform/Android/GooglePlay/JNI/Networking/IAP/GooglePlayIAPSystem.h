@@ -1,6 +1,6 @@
 //
 //  GooglePlayIAPSystem.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 14/06/2013.
 //
 //  The MIT License (MIT)
@@ -33,9 +33,12 @@
 #ifndef _CSBACKEND_PLATFORM_ANDROID_EXTENSIONS_GOOGLEPLAY_NETWORKING_GOOGLEPLAYIAPSYSTEM_H_
 #define _CSBACKEND_PLATFORM_ANDROID_EXTENSIONS_GOOGLEPLAY_NETWORKING_GOOGLEPLAYIAPSYSTEM_H_
 
+#include <ChilliSource/ChilliSource.h>
 #include <ChilliSource/Networking/IAP/IAPSystem.h>
 
+#include <CSBackend/Platform/Android/GooglePlay/JNI/ForwardDeclarations.h>
 #include <CSBackend/Platform/Android/GooglePlay/JNI/Networking/IAP/GooglePlayIAPJavaInterface.h>
+#include <CSBackend/Platform/Android/Main/JNI/ForwardDeclarations.h>
 
 namespace CSBackend
 {
@@ -53,11 +56,24 @@ namespace CSBackend
 		///
 		/// @author S Downie
 		//----------------------------------------------------------------------------------
-		class GooglePlayIAPSystem final : public CSNetworking::IAPSystem
+		class GooglePlayIAPSystem final : public ChilliSource::IAPSystem
 		{
 		public:
 
             CS_DECLARE_NAMEDTYPE(GooglePlayIAPSystem);
+
+            //---------------------------------------------------------------
+            /// This defines platform-specific extra product information.
+            ///
+            /// @author T Kane
+            //---------------------------------------------------------------
+            struct ExtraProductInfo final
+            {
+                std::string m_productId;            // Platform-specific product ID
+                std::string m_unformattedPrice;     // Unformatted price e.g. 1.00
+                std::string m_currencyCode;         // ISO 4217 currency code, e.g. GBP, USD
+            };
+
             //---------------------------------------------------------------
             /// @author S Downie
             ///
@@ -65,7 +81,7 @@ namespace CSBackend
             ///
             /// @return Whether the class is of the given type
             //---------------------------------------------------------------
-            bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+            bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
             //---------------------------------------------------------------
             /// Inform the system of which products are available for
             /// purchase and whether they are managed or unmanaged
@@ -84,9 +100,9 @@ namespace CSBackend
             //---------------------------------------------------------------
 			/// @author S Downie
 			///
-			/// @return Whether the purchasing is allowed by the device/OS
+            /// @param Purchasing enabled delegate
             //---------------------------------------------------------------
-            bool IsPurchasingEnabled() override;
+            void IsPurchasingEnabled(const PurchasingEnabledDelegate& in_delegate) override;
             //---------------------------------------------------------------
 			/// Calling this function will set the listener to which any
             /// transaction events are directed. This is not necessarily
@@ -158,9 +174,21 @@ namespace CSBackend
             /// @author S Downie
             //---------------------------------------------------------------
             void RestoreManagedPurchases() override;
+            //---------------------------------------------------------------
+            /// @author T Kane
+            ///
+            /// @return A vector of extra product information, particular to
+            /// this platform. Note that products must be requested from the
+            /// store via RequestProductDescriptions or
+            /// RequestProductDescriptions before being available so there is
+            /// no guarantee that a particular product will be available. It is
+            /// the application's responsibility to ensure the correct data
+            /// has been requested up-front.
+            //---------------------------------------------------------------
+            const std::vector<GooglePlayIAPSystem::ExtraProductInfo>& GetExtraProductInfo() const { return m_extraProductsInfo; }
 
 		private:
-            friend CSNetworking::IAPSystemUPtr CSNetworking::IAPSystem::Create(const CSCore::ParamDictionary&);
+            friend ChilliSource::IAPSystemUPtr ChilliSource::IAPSystem::Create(const ChilliSource::ParamDictionary&);
             //---------------------------------------------------------------
             /// Private constructor to force the use of the factory method
             ///
@@ -172,7 +200,7 @@ namespace CSBackend
             /// 	GooglePlayPublicKey  	The public key used for connecting
             ///								to the Google Play store.
             //---------------------------------------------------------------
-			GooglePlayIAPSystem(const CSCore::ParamDictionary& in_params);
+			GooglePlayIAPSystem(const ChilliSource::ParamDictionary& in_params);
             //-------------------------------------------------------
             /// Called when the system is created. Initialises
             /// the Java backend
@@ -192,7 +220,9 @@ namespace CSBackend
             std::vector<ProductRegInfo> m_productRegInfos;
 
             GooglePlayIAPJavaInterfaceSPtr m_javaInterface;
+
             std::string m_publicKey;
+		    std::vector<ExtraProductInfo> m_extraProductsInfo;
 		};
 	}
 }

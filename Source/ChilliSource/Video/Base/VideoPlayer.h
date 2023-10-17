@@ -1,6 +1,6 @@
 //
 //  VideoPlayer.h
-//  Chilli Source
+//  ChilliSource
 //  Created by S Downie on 12/05/2011.
 //
 //  The MIT License (MIT)
@@ -40,78 +40,82 @@
 
 namespace ChilliSource
 {
-    namespace Video
+    //--------------------------------------------------------------
+    /// A state system for cross platform playback of videos.
+    ///
+    /// @author S Downie
+    //--------------------------------------------------------------
+    class VideoPlayer : public StateSystem
     {
-        //--------------------------------------------------------------
-        /// A state system for cross platform playback of videos.
+    public:
+        CS_DECLARE_NAMEDTYPE(VideoPlayer);
+        //-------------------------------------------------------
+        /// A delegate called when the video finishes playback.
         ///
         /// @author S Downie
-        //--------------------------------------------------------------
-        class VideoPlayer : public Core::StateSystem
-        {
-        public:
-            CS_DECLARE_NAMEDTYPE(VideoPlayer);
-            //-------------------------------------------------------
-            /// A delegate called when the video finishes playback.
-            ///
-            /// @author S Downie
-            //-------------------------------------------------------
-            using VideoCompleteDelegate = Core::ConnectableDelegate<void()>;
-            //-------------------------------------------------------
-            /// Begin streaming the video from file
-            ///
-            /// @author S Downie
-            ///
-            /// @param The storage location of the video.
-            /// @param The video file name.
-            /// @param Connection to the completion delegate.
-            /// @param [Optional] Whether or not the video can be
-            /// dismissed by tapping. Defaults to true.
-            /// @param [Optional] The video background colour. Defaults
-            /// to black.
-            //--------------------------------------------------------
-            virtual void Present(Core::StorageLocation in_storageLocation, const std::string& in_fileName, VideoCompleteDelegate::Connection&& in_delegateConnection, bool in_dismissWithTap = true,
-                                 const Core::Colour& in_backgroundColour = Core::Colour::k_black) = 0;
-            //--------------------------------------------------------
-            /// Begin streaming the video from file with subtitles.
-            ///
-            /// @author Ian Copland
-            ///
-            /// @param The storage location of the video.
-            /// @param The video file name.
-            /// @param The subtitles resource.
-            /// @param Connection to the completion delegate.
-            /// @param [Optional] Whether or not the video can be
-            /// dismissed by tapping. Defaults to true.
-            /// @param [Optional] The video background colour. Defaults
-            /// to black.
-            //--------------------------------------------------------
-            virtual void PresentWithSubtitles(Core::StorageLocation in_storageLocation, const std::string& in_fileName, const SubtitlesCSPtr& in_subtitles, VideoCompleteDelegate::Connection&& in_delegateConnection,
-                                              bool in_dismissWithTap, const Core::Colour& in_backgroundColour = Core::Colour::k_black) = 0;
-            //--------------------------------------------------------
-            /// Destructor
-            ///
-            /// @author S Downie
-            //--------------------------------------------------------
-            virtual ~VideoPlayer(){}
-        protected:
-            friend class Core::State;
-            //-------------------------------------------------------
-            /// Create the platform dependent backend
-            ///
-            /// @author S Downie
-            ///
-            /// @return New backend instance
-            //-------------------------------------------------------
-            static VideoPlayerUPtr Create();
-            //-------------------------------------------------------
-            /// Private constructor to force use of factory method
-            ///
-            /// @author S Downie
-            //-------------------------------------------------------
-            VideoPlayer() = default;
-        };
-    }
+        //-------------------------------------------------------
+        using VideoCompleteDelegate = ConnectableDelegate<void()>;
+        //-------------------------------------------------------
+        /// Begin streaming the video from file
+        ///
+        /// @author S Downie
+        ///
+        /// @param The storage location of the video.
+        /// @param The video file name.
+        /// @param Connection to the completion delegate.
+        /// @param [Optional] Whether or not the video can be
+        /// dismissed by tapping. Defaults to true.
+        /// @param [Optional] The video background colour. Defaults
+        /// to black.
+        //--------------------------------------------------------
+        virtual void Present(StorageLocation in_storageLocation, const std::string& in_fileName, VideoCompleteDelegate::Connection&& in_delegateConnection, bool in_dismissWithTap = true,
+                             const Colour& in_backgroundColour = Colour::k_black) = 0;
+        //--------------------------------------------------------
+        /// Begin streaming the video from file with subtitles.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The storage location of the video.
+        /// @param The video file name.
+        /// @param The subtitles resource.
+        /// @param Connection to the completion delegate.
+        /// @param [Optional] Whether or not the video can be
+        /// dismissed by tapping. Defaults to true.
+        /// @param [Optional] The video background colour. Defaults
+        /// to black.
+        //--------------------------------------------------------
+        virtual void PresentWithSubtitles(StorageLocation in_storageLocation, const std::string& in_fileName, const SubtitlesCSPtr& in_subtitles, VideoCompleteDelegate::Connection&& in_delegateConnection,
+                                          bool in_dismissWithTap, const Colour& in_backgroundColour = Colour::k_black) = 0;
+        //-------------------------------------------------------
+        /// Returns whether or not the player is currently
+        /// presented.
+        ///
+        /// @author Jordan Brown
+        //-------------------------------------------------------
+        virtual bool IsPresented() const noexcept = 0;
+        //--------------------------------------------------------
+        /// Destructor
+        ///
+        /// @author S Downie
+        //--------------------------------------------------------
+        virtual ~VideoPlayer(){}
+    protected:
+        friend class State;
+        //-------------------------------------------------------
+        /// Create the platform dependent backend
+        ///
+        /// @author S Downie
+        ///
+        /// @return New backend instance
+        //-------------------------------------------------------
+        static VideoPlayerUPtr Create();
+        //-------------------------------------------------------
+        /// Private constructor to force use of factory method
+        ///
+        /// @author S Downie
+        //-------------------------------------------------------
+        VideoPlayer() = default;
+    };
 }
 
 #endif

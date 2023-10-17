@@ -1,6 +1,6 @@
 /**
  * CSModelConverter.java
- * Chilli Source
+ * ChilliSource
  * Created by Ian Copland on 15/01/2013.
  * 
  * The MIT License (MIT)
@@ -28,6 +28,7 @@
 
 package com.chilliworks.chillisource.colladatocsmodel;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -112,6 +113,9 @@ public class CSModelConverter
 	//-------------------------------------------------------------------
 	private void SetTexture(ColladaMaterial inMaterial, Collada inCollada, CSModelMesh outMesh)
 	{
+		if(inMaterial == null)
+			return;
+		
 		//get the image from the material
 		String effectName = inMaterial.mInstanceEffect.mstrUrl.substring(1);
 		ColladaEffect effect = inCollada.mLibraryEffects.get(effectName);
@@ -427,6 +431,9 @@ public class CSModelConverter
 	//-------------------------------------------------------------------
 	private void BuildMaterial(ColladaMaterial inMaterial, Collada inCollada, CSModelMesh inMesh)
 	{
+		if(inMaterial == null)
+			return;
+		
 		//get the effect for this geometry
 		String effectName = inMaterial.mInstanceEffect.mstrUrl.substring(1);
 		ColladaEffect effect = inCollada.mLibraryEffects.get(effectName);
@@ -499,8 +506,13 @@ public class CSModelConverter
 		//build the weight data
 		CSModelWeightIndexData weightData = BuildWeightIndexData(inController);
 		
+		int numVerts = inTriangles.mP.madwValues.length / inTriangles.mInputList.size();
+		
+		ArrayList<CSModelVertex> allVerts = new ArrayList<CSModelVertex>();
+		allVerts.ensureCapacity(numVerts);
+		
 		//use this to build the vertices
-		for (int i = 0; i < inTriangles.mP.madwValues.length / inTriangles.mInputList.size(); i++)
+		for (int i = 0; i < numVerts; i++)
 		{
 			int dwPositionIndex = -1;
 			int dwNormalIndex = -1;
@@ -538,8 +550,12 @@ public class CSModelConverter
 				}
 			}
 			
-			AddVertex(inMesh, BuildVertex(inGeometry, inController, inTriangles, inModel, weightData, dwPositionIndex, dwNormalIndex, dwTexCoordIndex, dwColourIndex, dwWeightDataIndex));
+			CSModelVertex vertex = BuildVertex(inGeometry, inController, inTriangles, inModel, weightData, dwPositionIndex, dwNormalIndex, dwTexCoordIndex, dwColourIndex, dwWeightDataIndex);
+			allVerts.add(vertex);
+			AddVertex(inMesh, vertex);
 		}
+		
+		AddTangentBasis(allVerts);
 	}
 	//-------------------------------------------------------------------
 	/// Build Weight Index Data
@@ -707,6 +723,38 @@ public class CSModelConverter
 			inVertex.mvNormal = Vector3.multiply(inVertex.mvNormal, normalWorldMatrix);
 			inVertex.mvNormal = Vector3.normalise(inVertex.mvNormal);
 		}
+	}
+	//-------------------------------------------------------------------
+	/// For all verts (operating on triangles) calculates the tangent and bitangents
+	///
+	//-------------------------------------------------------------------
+	private void AddTangentBasis(ArrayList<CSModelVertex> vertices)
+	{
+		assert(vertices.size() % 3 == 0) : "Vertices should be specified as triangles and total num be divisible by 3";
+
+		for(int i=0; i<vertices.size(); i+=3)
+		{
+			// Edges of the triangle : position delta
+			Vector3 deltaPos1 = Vector3.subtract(vertices.get(i+1).mvPosition, vertices.get(i+0).mvPosition);
+        	Vector3 deltaPos2 = Vector3.subtract(vertices.get(i+2).mvPosition, vertices.get(i+0).mvPosition);
+
+        	// UV delta
+        	Vector2 deltaUV1 = Vector2.subtract(vertices.get(i+1).mvTextureCoordinate, vertices.get(i+0).mvTextureCoordinate);
+        	Vector2 deltaUV2 = Vector2.subtract(vertices.get(i+2).mvTextureCoordinate, vertices.get(i+0).mvTextureCoordinate);
+        
+        	double r = 1.0 / (deltaUV1.getX() * deltaUV2.getY() - deltaUV1.getY() * deltaUV2.getX());
+        	Vector3 tangent = Vector3.multiply(Vector3.subtract( Vector3.multiply(deltaPos1, deltaUV2.getY()), Vector3.multiply(deltaPos2, deltaUV1.getY()) ), r);
+        	Vector3 bitangent = Vector3.multiply(Vector3.subtract( Vector3.multiply(deltaPos2, deltaUV1.getX()), Vector3.multiply(deltaPos1, deltaUV2.getX()) ), r);
+        	
+        	vertices.get(i+0).mvTangent = tangent;
+        	vertices.get(i+1).mvTangent = tangent;
+        	vertices.get(i+2).mvTangent = tangent;
+        	
+        	vertices.get(i+0).mvBitangent = bitangent;
+        	vertices.get(i+1).mvBitangent = bitangent;
+        	vertices.get(i+2).mvBitangent = bitangent;
+		}
+
 	}
 	//-------------------------------------------------------------------
 	/// Add Texture Coordinates

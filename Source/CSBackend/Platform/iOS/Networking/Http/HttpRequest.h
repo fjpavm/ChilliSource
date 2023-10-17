@@ -1,6 +1,6 @@
 //
 //  HttpRequest.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 23/05/2011.
 //
 //  The MIT License (MIT)
@@ -46,7 +46,7 @@ namespace CSBackend
         ///
         /// @author S Downie
         //-------------------------------------------------------------------------
-        class HttpRequest final : public CSNetworking::HttpRequest
+        class HttpRequest final : public ChilliSource::HttpRequest
         {
         public:
             //----------------------------------------------------------------------------------------
@@ -72,37 +72,25 @@ namespace CSBackend
             ///
             /// @return The original headers of the request as keys/values
             //----------------------------------------------------------------------------------------
-            const CSCore::ParamDictionary& GetHeaders() const override;
+            const ChilliSource::ParamDictionary& GetHeaders() const override;
+            //----------------------------------------------------------------------------------------
+            /// @author N Tanda
+            ///
+            /// @return The expected total size of the request
+            //----------------------------------------------------------------------------------------
+            u64 GetExpectedSize() const override;
+            //----------------------------------------------------------------------------------------
+            /// @author N Tanda
+            ///
+            /// @return The current transferred size of the request
+            //----------------------------------------------------------------------------------------
+            u64 GetDownloadedBytes() const override;
             //------------------------------------------------------------------
             /// Close the request. Note: The completion delegate is not invoked
             ///
             /// @author S Downie
             //------------------------------------------------------------------
             void Cancel() override;
-            //------------------------------------------------------------------
-            /// Called by the Http Delegate once the request has complete. This
-            /// is for internal use only and should not be called by the user.
-            ///
-            /// @author Ian Copland
-            ///
-            /// @param The result.
-            /// @param The response code.
-            /// @param The data in string form.
-            //------------------------------------------------------------------
-            void OnComplete(CSNetworking::HttpResponse::Result in_result, u32 in_responseCode, const std::string& in_data);
-            //------------------------------------------------------------------
-            /// Called by the Http Delegate when the max buffer size is exceeded
-            /// and it flushes the current data.
-            ///
-            /// This is for internal use only and should not be called by the user.
-            ///
-            /// @author S Downie
-            ///
-            /// @param The result.
-            /// @param The response code.
-            /// @param The partial data in string form.
-            //------------------------------------------------------------------
-            void OnFlushed(CSNetworking::HttpResponse::Result in_result, u32 in_responseCode, const std::string& in_data);
             //------------------------------------------------------------------
             /// Destructor.
             ///
@@ -126,20 +114,27 @@ namespace CSBackend
             /// @param Max buffer size in bytes
             /// @param Completion delegate
             //------------------------------------------------------------------
-            HttpRequest(Type in_type, const std::string& in_url, const std::string& in_body, const CSCore::ParamDictionary& in_headers, u32 in_timeoutSecs, u32 in_maxBufferSize, const Delegate& in_delegate);
+            HttpRequest(Type in_type, const std::string& in_url, const std::string& in_body, const ChilliSource::ParamDictionary& in_headers, u32 in_timeoutSecs, u32 in_maxBufferSize, const Delegate& in_delegate);
             
         private:
             
             const Type m_type;
             const std::string m_url;
             const std::string m_body;
-            const CSCore::ParamDictionary m_headers;
+            const ChilliSource::ParamDictionary m_headers;
             const Delegate m_completionDelegate;
             
-            bool m_complete = false;
+            //These need to be shared_ptr so we can access them in result lambdas if
+            //(*this) is destroyed, which may occur if a callback occurs while waiting to cancel a request
+            //on the system thread.
+            std::shared_ptr<bool> m_complete;
+            std::shared_ptr<bool> m_isCancelled;
             
             NSURLConnection* m_connection = nil;
             HttpDelegate* m_httpDelegate = nil;
+            
+            u64 m_downloadedBytes = 0;
+            u64 m_expectedSize = 0;
         };
 	}
 }

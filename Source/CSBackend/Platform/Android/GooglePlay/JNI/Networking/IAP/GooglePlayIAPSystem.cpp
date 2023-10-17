@@ -1,6 +1,6 @@
 //
 //  GooglePlayIAPSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 14/06/2013.
 //
 //  The MIT License (MIT)
@@ -32,7 +32,7 @@
 
 #include <CSBackend/Platform/Android/GooglePlay/JNI/Networking/IAP/GooglePlayIAPSystem.h>
 
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceManager.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterfaceManager.h>
 
 namespace CSBackend
 {
@@ -40,8 +40,6 @@ namespace CSBackend
 	{
 		namespace
 		{
-			const std::string k_playStorePublicKeyKey("GooglePlayPublicKey");
-
 			//---------------------------------------------------------------
 			/// Try and locate the product in the list and return its
 			/// type - managed or unmanaged
@@ -54,9 +52,9 @@ namespace CSBackend
 			///
 			/// @return Whether product was found
 			//---------------------------------------------------------------
-			bool TryGetProductType(const std::vector<CSNetworking::IAPSystem::ProductRegInfo>& in_productInfos, const std::string& in_productId, CSNetworking::IAPSystem::ProductRegInfo::Type& out_type)
+			bool TryGetProductType(const std::vector<ChilliSource::IAPSystem::ProductRegInfo>& in_productInfos, const std::string& in_productId, ChilliSource::IAPSystem::ProductRegInfo::Type& out_type)
 			{
-				for(std::vector<CSNetworking::IAPSystem::ProductRegInfo>::const_iterator it = in_productInfos.begin(); it != in_productInfos.end(); ++it)
+				for(std::vector<ChilliSource::IAPSystem::ProductRegInfo>::const_iterator it = in_productInfos.begin(); it != in_productInfos.end(); ++it)
 				{
 					if(it->m_id == in_productId)
 					{
@@ -73,16 +71,14 @@ namespace CSBackend
 
         //---------------------------------------------------------------
         //---------------------------------------------------------------
-		GooglePlayIAPSystem::GooglePlayIAPSystem(const CSCore::ParamDictionary& in_params)
+		GooglePlayIAPSystem::GooglePlayIAPSystem(const ChilliSource::ParamDictionary& in_params)
 		{
-			CS_ASSERT(in_params.HasKey(k_playStorePublicKeyKey) == true, "Cannot create GooglePlay IAP system without Play store public key - GooglePlayPublicKey");
-			m_publicKey = in_params.GetValue(k_playStorePublicKeyKey);
 		}
         //---------------------------------------------------------------
         //---------------------------------------------------------------
-        bool GooglePlayIAPSystem::IsA(CSCore::InterfaceIDType in_interfaceId) const
+        bool GooglePlayIAPSystem::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
         {
-            return in_interfaceId == CSNetworking::IAPSystem::InterfaceID || in_interfaceId == GooglePlayIAPSystem::InterfaceID;
+            return in_interfaceId == ChilliSource::IAPSystem::InterfaceID || in_interfaceId == GooglePlayIAPSystem::InterfaceID;
         }
         //---------------------------------------------------------------
         //---------------------------------------------------------------
@@ -91,7 +87,7 @@ namespace CSBackend
 			m_javaInterface = JavaInterfaceManager::GetSingletonPtr()->GetJavaInterface<GooglePlayIAPJavaInterface>();
 			if(m_javaInterface == nullptr)
 			{
-				m_javaInterface = GooglePlayIAPJavaInterfaceSPtr(new GooglePlayIAPJavaInterface(m_publicKey));
+				m_javaInterface = GooglePlayIAPJavaInterfaceSPtr(new GooglePlayIAPJavaInterface());
 				JavaInterfaceManager::GetSingletonPtr()->AddJavaInterface(m_javaInterface);
 			}
 		}
@@ -110,9 +106,10 @@ namespace CSBackend
 		}
         //---------------------------------------------------------------
         //---------------------------------------------------------------
-        bool GooglePlayIAPSystem::IsPurchasingEnabled()
+        void GooglePlayIAPSystem::IsPurchasingEnabled(const PurchasingEnabledDelegate& in_delegate)
         {
-        	return m_javaInterface->IsPurchasingEnabled();
+            CS_ASSERT(in_delegate, "Cannot have empty delegate");
+        	in_delegate(m_javaInterface->IsPurchasingEnabled());
         }
         //---------------------------------------------------------------
         //---------------------------------------------------------------
@@ -134,7 +131,26 @@ namespace CSBackend
             CS_ASSERT(in_productIds.empty() == false, "Cannot request no product descriptions");
             CS_ASSERT(in_delegate != nullptr, "Cannot have null product description delegate");
 
-        	m_javaInterface->RequestProductDescriptions(in_productIds, in_delegate);
+        	m_javaInterface->RequestProductDescriptions(in_productIds, [=](const std::vector<ChilliSource::IAPSystem::ProductDesc>& in_products, const std::vector<std::string>& in_currencyCodes, const std::vector<std::string>& in_unformattedPrices)
+        	{
+        	    CS_ASSERT(in_products.size() == in_currencyCodes.size() && in_products.size() == in_unformattedPrices.size(), "Disparity betewen list sizes.");
+
+                // Construct the extra products information from the supplied lists
+            	m_extraProductsInfo.clear();
+        	    for (u32 i = 0; i < (u32)in_products.size(); ++i)
+        	    {
+        	        ExtraProductInfo extraProductInfo;
+        	        extraProductInfo.m_productId = in_products[i].m_id;
+        	        extraProductInfo.m_currencyCode = in_currencyCodes[i];
+        	        extraProductInfo.m_unformattedPrice = in_unformattedPrices[i];
+        	        m_extraProductsInfo.push_back(extraProductInfo);
+        	    }
+
+        	    if (in_delegate)
+        	    {
+            	    in_delegate(in_products);
+        	    }
+        	});
         }
         //---------------------------------------------------------------
         //---------------------------------------------------------------

@@ -1,6 +1,6 @@
 //
 //  ForwardDeclarations.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 25/01/2012.
 //
 //  The MIT License (MIT)
@@ -40,21 +40,41 @@ namespace CSBackend
         //----------------------------------------------------
         /// Base
         //----------------------------------------------------
-        CS_FORWARDDECLARE_CLASS(MeshBuffer);
+        CS_FORWARDDECLARE_CLASS(ContextState);
+        CS_FORWARDDECLARE_CLASS(GLContextRestorer);
+
         CS_FORWARDDECLARE_CLASS(RenderCapabilities);
-        CS_FORWARDDECLARE_CLASS(RenderSystem);
-        CS_FORWARDDECLARE_CLASS(RenderTarget);
+        CS_FORWARDDECLARE_CLASS(RenderCommandProcessor);
+        //----------------------------------------------------
+        /// Camera
+        //----------------------------------------------------
+        CS_FORWARDDECLARE_CLASS(GLCamera);
+        //----------------------------------------------------
+        /// Lighting
+        //----------------------------------------------------
+        CS_FORWARDDECLARE_CLASS(GLAmbientLight);
+        CS_FORWARDDECLARE_CLASS(GLDirectionalLight);
+        CS_FORWARDDECLARE_CLASS(GLLight);
+        CS_FORWARDDECLARE_CLASS(GLPointLight);
+        //----------------------------------------------------
+        /// Model
+        //----------------------------------------------------
+        CS_FORWARDDECLARE_CLASS(GLMesh);
+        CS_FORWARDDECLARE_CLASS(GLDynamicMesh);
         //----------------------------------------------------
         /// Shader
         //----------------------------------------------------
-        CS_FORWARDDECLARE_CLASS(Shader);
-        CS_FORWARDDECLARE_CLASS(GLSLShaderProvider);
+        CS_FORWARDDECLARE_CLASS(GLShader);
+        //----------------------------------------------------
+        /// Target
+        //----------------------------------------------------
+        CS_FORWARDDECLARE_CLASS(GLTargetGroup);
         //----------------------------------------------------
         /// Texture
         //----------------------------------------------------
-        CS_FORWARDDECLARE_CLASS(Cubemap);
-        CS_FORWARDDECLARE_CLASS(Texture);
-        CS_FORWARDDECLARE_CLASS(TextureUnitSystem);
+        CS_FORWARDDECLARE_CLASS(GLCubemap);
+        CS_FORWARDDECLARE_CLASS(GLTexture);
+        CS_FORWARDDECLARE_CLASS(GLTextureUnitManager);
     }
 }
 

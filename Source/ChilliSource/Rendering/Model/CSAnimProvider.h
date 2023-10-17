@@ -1,6 +1,6 @@
 //
 //  CSAnimProvider.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 17/10/2011.
 //
 //  The MIT License (MIT)
@@ -34,88 +34,85 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		//-------------------------------------------------------------------------
-        /// Loads CS Anim files into a SkinnedAnimation resource
+    //-------------------------------------------------------------------------
+    /// Loads CS Anim files into a SkinnedAnimation resource
+    ///
+    /// @author Ian Copland
+    //-------------------------------------------------------------------------
+    class CSAnimProvider final : public ResourceProvider
+    {
+    public:
+        
+        CS_DECLARE_NAMEDTYPE(CSAnimProvider);
+        
+        //-------------------------------------------------------------------------
+        /// Factory method for creating new anim loader
         ///
         /// @author Ian Copland
-		//-------------------------------------------------------------------------
-		class CSAnimProvider final : public Core::ResourceProvider
-		{
-		public:
-            
-            CS_DECLARE_NAMEDTYPE(CSAnimProvider);
-            
-            //-------------------------------------------------------------------------
-            /// Factory method for creating new anim loader
-            ///
-            /// @author Ian Copland
-            //-------------------------------------------------------------------------
-            static CSAnimProviderUPtr Create();
-			//-------------------------------------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @param Interface to compare
-            ///
-			/// @return Whether the object implements the given interface
-			//-------------------------------------------------------------------------
-			bool IsA(Core::InterfaceIDType in_interfaceId) const override;
-            //----------------------------------------------------
-            /// @author S Downie
-            ///
-            /// @return The resource type this provider can create
-            //----------------------------------------------------
-            Core::InterfaceIDType GetResourceType() const override;
-			//----------------------------------------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @param Extension to compare
-            ///
-			/// @return Whether the object can create a resource with the given extension
-			//----------------------------------------------------------------------------
-			bool CanCreateResourceWithFileExtension(const std::string& in_extension) const override;
+        //-------------------------------------------------------------------------
+        static CSAnimProviderUPtr Create();
+        //-------------------------------------------------------------------------
+        /// @author Ian Copland
+        ///
+        /// @param Interface to compare
+        ///
+        /// @return Whether the object implements the given interface
+        //-------------------------------------------------------------------------
+        bool IsA(InterfaceIDType in_interfaceId) const override;
+        //----------------------------------------------------
+        /// @author S Downie
+        ///
+        /// @return The resource type this provider can create
+        //----------------------------------------------------
+        InterfaceIDType GetResourceType() const override;
+        //----------------------------------------------------------------------------
+        /// @author Ian Copland
+        ///
+        /// @param Extension to compare
+        ///
+        /// @return Whether the object can create a resource with the given extension
+        //----------------------------------------------------------------------------
+        bool CanCreateResourceWithFileExtension(const std::string& in_extension) const override;
 
-		private:
-			//----------------------------------------------------------------------------
-			/// Load a skinned animation from the given CSAnim file. Check the load state of the
-            /// resource for success or failure.
-            ///
-            /// @author Ian Copland
-			///
-            /// @param The storage location to load from
-			/// @param File path
-            /// @param Options to customise the creation
-			/// @param [Out] the output resource pointer
-			//----------------------------------------------------------------------------
-			void CreateResourceFromFile(Core::StorageLocation in_location, const std::string& in_filePath, const Core::IResourceOptionsBaseCSPtr& in_options, const Core::ResourceSPtr& out_resource) override;
-			//----------------------------------------------------------------------------
-			/// Load a skinned animation from the given CSAnim file on a background
-            /// thread. Delegate is called on completion. Check the load state of the
-            /// resource for success or failure
-            ///
-            /// @author Ian Copland
-			///
-            /// @param The storage location to load from
-			/// @param File path
-            /// @param Options to customise the creation
-            /// @param Delegate
-			/// @param [Out] the output resource pointer
-			//----------------------------------------------------------------------------
-			void CreateResourceFromFileAsync(Core::StorageLocation in_location, const std::string& in_filePath, const Core::IResourceOptionsBaseCSPtr& in_options, const Core::ResourceProvider::AsyncLoadDelegate& in_delegate, const Core::ResourceSPtr& out_resource) override;
-			//----------------------------------------------------------------------------
-			/// Loads an anim file into a SkinnedAnimation.
-            ///
-            /// @author Ian Copland
-			///
-            /// @param The storage location to load from
-			/// @param File path
-            /// @param Completion delegate
-			/// @param [Out] the output resource pointer
-			//----------------------------------------------------------------------------
-			void ReadSkinnedAnimationFromFile(Core::StorageLocation in_location, const std::string& in_filePath, const Core::ResourceProvider::AsyncLoadDelegate& in_delegate, const SkinnedAnimationSPtr& out_resource) const;
-		};
-	}
+    private:
+        //----------------------------------------------------------------------------
+        /// Load a skinned animation from the given CSAnim file. Check the load state of the
+        /// resource for success or failure.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The storage location to load from
+        /// @param File path
+        /// @param Options to customise the creation
+        /// @param [Out] the output resource pointer
+        //----------------------------------------------------------------------------
+        void CreateResourceFromFile(StorageLocation in_location, const std::string& in_filePath, const IResourceOptionsBaseCSPtr& in_options, const ResourceSPtr& out_resource) override;
+        //----------------------------------------------------------------------------
+        /// Load a skinned animation from the given CSAnim file on a background
+        /// thread. Delegate is called on completion. Check the load state of the
+        /// resource for success or failure
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The storage location to load from
+        /// @param File path
+        /// @param Options to customise the creation
+        /// @param Delegate
+        /// @param [Out] the output resource pointer
+        //----------------------------------------------------------------------------
+        void CreateResourceFromFileAsync(StorageLocation in_location, const std::string& in_filePath, const IResourceOptionsBaseCSPtr& in_options, const ResourceProvider::AsyncLoadDelegate& in_delegate, const ResourceSPtr& out_resource) override;
+        //----------------------------------------------------------------------------
+        /// Loads an anim file into a SkinnedAnimation.
+        ///
+        /// @author Ian Copland
+        ///
+        /// @param The storage location to load from
+        /// @param File path
+        /// @param Completion delegate
+        /// @param [Out] the output resource pointer
+        //----------------------------------------------------------------------------
+        void ReadSkinnedAnimationFromFile(StorageLocation in_location, const std::string& in_filePath, const ResourceProvider::AsyncLoadDelegate& in_delegate, const SkinnedAnimationSPtr& out_resource) const;
+    };
 }
 
 #endif

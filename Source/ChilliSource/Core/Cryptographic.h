@@ -1,6 +1,6 @@
 //
 //  Cryptographic.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 07/07/2014.
 //
 //  The MIT License (MIT)
@@ -36,5 +36,6 @@
 #include <ChilliSource/Core/Cryptographic/HashMD5.h>
 #include <ChilliSource/Core/Cryptographic/HashSHA1.h>
 #include <ChilliSource/Core/Cryptographic/OAuth.h>
+#include <ChilliSource/Core/Cryptographic/HashSHA256.h>
 
 #endif

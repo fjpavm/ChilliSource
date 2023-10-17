@@ -1,8 +1,4 @@
 //
-//  Texture.cpp
-//  Chilli Source
-//  Created by Scott Downie on 01/10/2010.
-//
 //  The MIT License (MIT)
 //
 //  Copyright (c) 2010 Tag Games Limited
@@ -28,25 +24,137 @@
 
 #include <ChilliSource/Rendering/Texture/Texture.h>
 
-#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS) || defined(CS_TARGETPLATFORM_LINUX)
-#include <CSBackend/Rendering/OpenGL/Texture/Texture.h>
-#endif
+#include <ChilliSource/Core/Base/Application.h>
+#include <ChilliSource/Rendering/Texture/RenderTexture.h>
+#include <ChilliSource/Rendering/Texture/RenderTextureManager.h>
+#include <ChilliSource/Rendering/Texture/TextureDesc.h>
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-        CS_DEFINE_NAMEDTYPE(Texture);
+    CS_DEFINE_NAMEDTYPE(Texture);
+
+    //------------------------------------------------------------------------------
+    TextureUPtr Texture::Create() noexcept
+    {
+        return TextureUPtr(new Texture());
+    }
+    
+    //------------------------------------------------------------------------------
+    bool Texture::IsA(InterfaceIDType interfaceId) const noexcept
+    {
+        return (Texture::InterfaceID == interfaceId);
+    }
+
+    //------------------------------------------------------------------------------
+    void Texture::Build(DataUPtr textureData, u32 textureDataSize, const TextureDesc& textureDesc) noexcept
+    {
+        DestroyRenderTexture();
         
-        //--------------------------------------------------------------
-        //--------------------------------------------------------------
-        TextureUPtr Texture::Create()
+        auto renderTextureManager = Application::Get()->GetSystem<RenderTextureManager>();
+        CS_ASSERT(renderTextureManager, "RenderTextureManager must exist.");
+        
+        m_restoreTextureDataEnabled = textureDesc.IsRestoreTextureDataEnabled();
+        
+        m_renderTexture = renderTextureManager->CreateTexture2D(std::move(textureData), textureDataSize, textureDesc.GetDimensions(), textureDesc.GetImageFormat(), textureDesc.GetImageCompression(),
+                                                                    textureDesc.GetFilterMode(), textureDesc.GetWrapModeS(), textureDesc.GetWrapModeT(), textureDesc.IsMipmappingEnabled(), m_restoreTextureDataEnabled);
+    }
+
+    //------------------------------------------------------------------------------
+    const Integer2& Texture::GetDimensions() const noexcept
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loaded, "Cannot access texture before it is loaded.");
+        CS_ASSERT(m_renderTexture, "Cannot access texture which has not been built.");
+        
+        return m_renderTexture->GetDimensions();
+    }
+
+    //------------------------------------------------------------------------------
+    ImageFormat Texture::GetImageFormat() const noexcept
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loaded, "Cannot access texture before it is loaded.");
+        CS_ASSERT(m_renderTexture, "Cannot access texture which has not been built.");
+        
+        return m_renderTexture->GetImageFormat();
+    }
+
+    //------------------------------------------------------------------------------
+    ImageCompression Texture::GetImageCompression() const noexcept
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loaded, "Cannot access texture before it is loaded.");
+        CS_ASSERT(m_renderTexture, "Cannot access texture which has not been built.");
+        
+        return m_renderTexture->GetImageCompression();
+    }
+    
+    //------------------------------------------------------------------------------
+    TextureFilterMode Texture::GetFilterMode() const noexcept
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loaded, "Cannot access texture before it is loaded.");
+        CS_ASSERT(m_renderTexture, "Cannot access texture which has not been built.");
+        
+        return m_renderTexture->GetFilterMode();
+    }
+
+    //------------------------------------------------------------------------------
+    TextureWrapMode Texture::GetWrapModeS() const noexcept
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loaded, "Cannot access texture before it is loaded.");
+        CS_ASSERT(m_renderTexture, "Cannot access texture which has not been built.");
+        
+        return m_renderTexture->GetWrapModeS();
+    }
+
+    //------------------------------------------------------------------------------
+    TextureWrapMode Texture::GetWrapModeT() const noexcept
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loaded, "Cannot access texture before it is loaded.");
+        CS_ASSERT(m_renderTexture, "Cannot access texture which has not been built.");
+        
+        return m_renderTexture->GetWrapModeT();
+    }
+
+    //------------------------------------------------------------------------------
+    bool Texture::IsMipmappingEnabled() const noexcept
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loaded, "Cannot access texture before it is loaded.");
+        CS_ASSERT(m_renderTexture, "Cannot access texture which has not been built.");
+        
+        return m_renderTexture->IsMipmapped();
+    }
+
+    //------------------------------------------------------------------------------
+    bool Texture::IsRestoreTextureDataEnabled() const noexcept
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loaded, "Cannot access texture before it is loaded.");
+        CS_ASSERT(m_renderTexture, "Cannot access texture which has not been built.");
+        
+        return m_restoreTextureDataEnabled;
+    }
+
+    //------------------------------------------------------------------------------
+    const RenderTexture* Texture::GetRenderTexture() const noexcept
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loaded, "Cannot access texture before it is loaded.");
+        CS_ASSERT(m_renderTexture, "Cannot access texture which has not been built.");
+        
+        return m_renderTexture.get();
+    }
+    
+    //------------------------------------------------------------------------------
+    void Texture::DestroyRenderTexture() noexcept
+    {
+        if (m_renderTexture)
         {
-#if defined(CS_TARGETPLATFORM_ANDROID) || defined(CS_TARGETPLATFORM_IOS) || defined(CS_TARGETPLATFORM_WINDOWS) || defined(CS_TARGETPLATFORM_LINUX)
-            return TextureUPtr(new CSBackend::OpenGL::Texture());
-#else
-            return nullptr;
-#endif
+            auto renderTextureManager = Application::Get()->GetSystem<RenderTextureManager>();
+            CS_ASSERT(renderTextureManager, "RenderTextureManager must exist.");
+            
+            renderTextureManager->DestroyRenderTexture2D(std::move(m_renderTexture));
         }
-	}
+    }
+    
+    //------------------------------------------------------------------------------
+    Texture::~Texture() noexcept
+    {
+        DestroyRenderTexture();
+    }
 }

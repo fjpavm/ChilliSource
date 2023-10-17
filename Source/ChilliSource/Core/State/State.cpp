@@ -1,6 +1,6 @@
 //
 //  State.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 21/09/2010.
 //
 //  The MIT License (MIT)
@@ -32,164 +32,203 @@
 #include <ChilliSource/Core/State/StateManager.h>
 #include <ChilliSource/Core/Base/Application.h>
 #include <ChilliSource/Input/Gesture/GestureSystem.h>
+#include <ChilliSource/Rendering/Base/TargetType.h>
+#include <ChilliSource/Rendering/Target/TargetGroup.h>
 #include <ChilliSource/UI/Base/Canvas.h>
 
 namespace ChilliSource
 {
-	namespace Core 
-	{
-        //-----------------------------------------
-        //-----------------------------------------
-        void State::Init()
+    //-----------------------------------------
+    //-----------------------------------------
+    void State::Init()
+    {
+        m_canAddSystems = true;
+        
+        //Create the default systems and main scene
+        CreateSystem<Scene>(nullptr);
+        m_canvas = CreateSystem<Canvas>();
+        CreateSystem<GestureSystem>();
+        
+        //create user systems.
+        CreateSystems();
+        
+        m_canAddSystems = false;
+        
+        for(auto& system : m_systems)
         {
-            m_canAddSystems = true;
-            
-            //Create the default systems
-            m_scene = CreateSystem<Scene>();
-            m_canvas = CreateSystem<UI::Canvas>();
-            CreateSystem<CSInput::GestureSystem>();
-            
-            //create user systems.
-            CreateSystems();
-            
-            m_canAddSystems = false;
-            
-            for(auto& system : m_systems)
-            {
-                system->OnInit();
-            }
-            
-            OnInit();
+           if(system->IsA<Scene>())
+           {
+               m_scenes.push_back(static_cast<Scene*>(system.get()));
+           }
         }
-        //-----------------------------------------
-        //-----------------------------------------
-        void State::Resume()
+        
+        for(auto& system : m_systems)
         {
-            for(auto& system : m_systems)
-            {
-                system->OnResume();
-            }
-            
-            m_scene->ResumeEntities();
-            
-            OnResume();
+            system->OnInit();
         }
-        //-----------------------------------------
-        //-----------------------------------------
-        void State::Foreground()
+        
+        OnInit();
+    }
+    //-----------------------------------------
+    //-----------------------------------------
+    void State::Resume()
+    {
+        for(auto& system : m_systems)
         {
-            for(auto& system : m_systems)
-            {
-                system->OnForeground();
-            }
-            
-            m_scene->ForegroundEntities();
-            
-            OnForeground();
+            system->OnResume();
         }
-        //-----------------------------------------
-        //-----------------------------------------
-        void State::Update(f32 in_timeSinceLastUpdate)
+        
+        for(auto scene : m_scenes)
         {
-            for(auto& system : m_systems)
-            {
-                system->OnUpdate(in_timeSinceLastUpdate);
-            }
-            
-            m_scene->UpdateEntities(in_timeSinceLastUpdate);
-            
-            OnUpdate(in_timeSinceLastUpdate);
+            scene->ResumeEntities();
         }
-        //-----------------------------------------
-        //-----------------------------------------
-        void State::FixedUpdate(f32 in_fixedTimeSinceLastUpdate)
+        
+        OnResume();
+    }
+    //-----------------------------------------
+    //-----------------------------------------
+    void State::Foreground()
+    {
+        for(auto& system : m_systems)
         {
-            for(auto& system : m_systems)
-            {
-                system->OnFixedUpdate(in_fixedTimeSinceLastUpdate);
-            }
-            
-            m_scene->FixedUpdateEntities(in_fixedTimeSinceLastUpdate);
-            
-            OnFixedUpdate(in_fixedTimeSinceLastUpdate);
+            system->OnForeground();
         }
-        //-----------------------------------------
-        //-----------------------------------------
-        void State::Background()
+        
+        for(auto scene : m_scenes)
         {
-            OnBackground();
-            
-            m_scene->BackgroundEntities();
-            
-            for (auto it = m_systems.rbegin(); it != m_systems.rend(); ++it)
-            {
-                (*it)->OnBackground();
-            }
+            scene->ForegroundEntities();
         }
-        //-----------------------------------------
-        //-----------------------------------------
-        void State::Suspend()
+        
+        OnForeground();
+    }
+    //-----------------------------------------
+    //-----------------------------------------
+    void State::Update(f32 in_timeSinceLastUpdate)
+    {
+        for(auto& system : m_systems)
         {
-            OnSuspend();
-            
-            m_scene->SuspendEntities();
-            
-            for(auto it = m_systems.rbegin(); it != m_systems.rend(); ++it)
-            {
-                (*it)->OnSuspend();
-            }
+            system->OnUpdate(in_timeSinceLastUpdate);
         }
-        //-----------------------------------------
-        //-----------------------------------------
-        void State::Destroy()
+        
+        for(auto scene : m_scenes)
         {
-            OnDestroy();
-            
-            m_scene->RemoveAllEntities();
-            
-            for(auto it = m_systems.rbegin(); it != m_systems.rend(); ++it)
-            {
-                (*it)->OnDestroy();
-            }
+            scene->UpdateEntities(in_timeSinceLastUpdate);
         }
-        //------------------------------------------------
-        //------------------------------------------------
-        void State::MemoryWarning()
+        
+        OnUpdate(in_timeSinceLastUpdate);
+    }
+    //-----------------------------------------
+    //-----------------------------------------
+    void State::FixedUpdate(f32 in_fixedTimeSinceLastUpdate)
+    {
+        for(auto& system : m_systems)
         {
-            for(auto& system : m_systems)
-            {
-                system->OnMemoryWarning();
-            }
+            system->OnFixedUpdate(in_fixedTimeSinceLastUpdate);
         }
-        //------------------------------------------
-        //------------------------------------------
-        Scene* State::GetScene()
+        
+        for(auto scene : m_scenes)
         {
-            return m_scene;
+            scene->FixedUpdateEntities(in_fixedTimeSinceLastUpdate);
         }
-        //------------------------------------------
-        //------------------------------------------
-        const Scene* State::GetScene() const
+        
+        OnFixedUpdate(in_fixedTimeSinceLastUpdate);
+    }
+    //-----------------------------------------
+    //-----------------------------------------
+    void State::RenderSnapshot(TargetType targetType, class RenderSnapshot& renderSnapshot, IAllocator* frameAllocator) noexcept
+    {
+        for(auto& system : m_systems)
         {
-            return m_scene;
+            system->OnRenderSnapshot(targetType, renderSnapshot, frameAllocator);
         }
-        //------------------------------------------
-        //------------------------------------------
-        UI::Canvas* State::GetUICanvas()
+        
+        OnRenderSnapshot(targetType, renderSnapshot, frameAllocator);
+    }
+    //-----------------------------------------
+    //-----------------------------------------
+    void State::Background()
+    {
+        OnBackground();
+        
+        for (auto it = m_scenes.rbegin(); it != m_scenes.rend(); ++it)
         {
-            return m_canvas;
+            (*it)->BackgroundEntities();
         }
-        //------------------------------------------
-        //------------------------------------------
-        const UI::Canvas* State::GetUICanvas() const
+        
+        for (auto it = m_systems.rbegin(); it != m_systems.rend(); ++it)
         {
-            return m_canvas;
+            (*it)->OnBackground();
         }
-        //------------------------------------------
-        //------------------------------------------
-		bool State::IsActiveState() const 
-        { 
-			return Application::Get()->GetStateManager()->GetActiveState().get() == this;
-		}
-	}
+    }
+    //-----------------------------------------
+    //-----------------------------------------
+    void State::Suspend()
+    {
+        OnSuspend();
+        
+        for (auto it = m_scenes.rbegin(); it != m_scenes.rend(); ++it)
+        {
+            (*it)->SuspendEntities();
+        }
+        
+        for(auto it = m_systems.rbegin(); it != m_systems.rend(); ++it)
+        {
+            (*it)->OnSuspend();
+        }
+    }
+    //-----------------------------------------
+    //-----------------------------------------
+    void State::Destroy()
+    {
+        OnDestroy();
+        
+        for (auto it = m_scenes.rbegin(); it != m_scenes.rend(); ++it)
+        {
+            (*it)->RemoveAllEntities();
+        }
+        
+        for(auto it = m_systems.rbegin(); it != m_systems.rend(); ++it)
+        {
+            (*it)->OnDestroy();
+        }
+    }
+    //------------------------------------------------
+    //------------------------------------------------
+    void State::MemoryWarning()
+    {
+        for(auto& system : m_systems)
+        {
+            system->OnMemoryWarning();
+        }
+    }
+    //------------------------------------------
+    //------------------------------------------
+    Scene* State::GetMainScene() noexcept
+    {
+        return m_scenes[0];
+    }
+    //------------------------------------------
+    //------------------------------------------
+    const Scene* State::GetMainScene() const noexcept
+    {
+        return m_scenes[0];
+    }
+    //------------------------------------------
+    //------------------------------------------
+    Canvas* State::GetUICanvas()
+    {
+        return m_canvas;
+    }
+    //------------------------------------------
+    //------------------------------------------
+    const Canvas* State::GetUICanvas() const
+    {
+        return m_canvas;
+    }
+    //------------------------------------------
+    //------------------------------------------
+    bool State::IsActiveState() const 
+    { 
+        return Application::Get()->GetStateManager()->GetActiveState().get() == this;
+    }
 }

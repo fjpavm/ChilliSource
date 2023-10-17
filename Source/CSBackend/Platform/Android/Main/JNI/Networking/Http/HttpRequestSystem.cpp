@@ -1,6 +1,6 @@
 //
 //  HttpRequestSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 08/11/2011.
 //
 //  The MIT License (MIT)
@@ -30,7 +30,6 @@
 
 #include <CSBackend/Platform/Android/Main/JNI/Networking/Http/HttpRequestSystem.h>
 
-#include <CSBackend/Platform/Android/Main/JNI/Networking/Http/HttpRequestJavaInterface.h>
 #include <ChilliSource/Core/Base/Application.h>
 #include <ChilliSource/Core/Threading/TaskScheduler.h>
 
@@ -42,19 +41,19 @@ namespace CSBackend
 
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------
-		bool HttpRequestSystem::IsA(CSCore::InterfaceIDType in_interfaceId) const
+		bool HttpRequestSystem::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
 		{
-			return in_interfaceId == CSNetworking::HttpRequestSystem::InterfaceID || in_interfaceId == HttpRequestSystem::InterfaceID;
+			return in_interfaceId == ChilliSource::HttpRequestSystem::InterfaceID || in_interfaceId == HttpRequestSystem::InterfaceID;
 		}
         //--------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------
         HttpRequest* HttpRequestSystem::MakeGetRequest(const std::string& in_url, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
         {
-            return MakeRequest(HttpRequest::Type::k_get, in_url, "", CSCore::ParamDictionary(), in_delegate, in_timeoutSecs);
+            return MakeRequest(HttpRequest::Type::k_get, in_url, "", ChilliSource::ParamDictionary(), in_delegate, in_timeoutSecs);
         }
         //--------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------
-        HttpRequest* HttpRequestSystem::MakeGetRequest(const std::string& in_url, const CSCore::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
+        HttpRequest* HttpRequestSystem::MakeGetRequest(const std::string& in_url, const ChilliSource::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
         {
             return MakeRequest(HttpRequest::Type::k_get, in_url, "", in_headers, in_delegate, in_timeoutSecs);
         }
@@ -62,19 +61,19 @@ namespace CSBackend
         //--------------------------------------------------------------------------------------------------
         HttpRequest* HttpRequestSystem::MakePostRequest(const std::string& in_url, const std::string& in_body, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
         {
-            return MakeRequest(HttpRequest::Type::k_post, in_url, in_body, CSCore::ParamDictionary(), in_delegate, in_timeoutSecs);
+            return MakeRequest(HttpRequest::Type::k_post, in_url, in_body, ChilliSource::ParamDictionary(), in_delegate, in_timeoutSecs);
         }
         //--------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------
-        HttpRequest* HttpRequestSystem::MakePostRequest(const std::string& in_url, const std::string& in_body, const CSCore::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
+        HttpRequest* HttpRequestSystem::MakePostRequest(const std::string& in_url, const std::string& in_body, const ChilliSource::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
         {
             return MakeRequest(HttpRequest::Type::k_post, in_url, in_body, in_headers, in_delegate, in_timeoutSecs);
         }
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------
-        HttpRequest* HttpRequestSystem::MakeRequest(HttpRequest::Type in_type, const std::string& in_url, const std::string& in_body, const CSCore::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
+        HttpRequest* HttpRequestSystem::MakeRequest(HttpRequest::Type in_type, const std::string& in_url, const std::string& in_body, const ChilliSource::ParamDictionary& in_headers, const HttpRequest::Delegate& in_delegate, u32 in_timeoutSecs)
         {
-        	CS_ASSERT(CSCore::Application::Get()->GetTaskScheduler()->IsMainThread() == true, "Http requests can currently only be made on the main thread");
+        	CS_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread() == true, "Http requests can currently only be made on the main thread");
         	CS_ASSERT(in_delegate != nullptr, "Cannot make an http request with a null delegate");
 			CS_ASSERT(in_url.empty() == false, "Cannot make an http request to a blank url");
 
@@ -87,7 +86,7 @@ namespace CSBackend
 		//--------------------------------------------------------------------------------------------------
 		void HttpRequestSystem::CancelAllRequests()
         {
-			CS_ASSERT(CSCore::Application::Get()->GetTaskScheduler()->IsMainThread() == true, "Http requests can currently only be made on the main thread");
+			CS_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread() == true, "Http requests can currently only be made on the main thread");
 
 			for(u32 nRequest=0; nRequest<m_requests.size(); ++nRequest)
             {
@@ -96,20 +95,24 @@ namespace CSBackend
 		}
         //--------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------
-        bool HttpRequestSystem::CheckReachability() const
+        void HttpRequestSystem::CheckReachability(const ReachabilityResultDelegate& in_reachabilityDelegate) const
         {
-            return HttpRequestJavaInterface::IsConnected();
+            CS_ASSERT(in_reachabilityDelegate, "The reachability delegate should not be null.");
+            in_reachabilityDelegate(m_javaSystem->CallBoolMethod("isConnected"));
+        }
+		//--------------------------------------------------------------------------------------------------
+		//--------------------------------------------------------------------------------------------------
+        void HttpRequestSystem::OnInit()
+        {
+            JavaClassDef classDef("com/chilliworks/chillisource/networking/HttpRequestSystem");
+            classDef.AddMethod("isConnected", "()Z");
+
+            m_javaSystem = JavaSystemUPtr(new JavaSystem(classDef));
         }
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------
 		void HttpRequestSystem::OnUpdate(f32 in_timeSinceLastUpdate)
 		{
-            //We should do this in two loops incase anyone tries to insert into the requests from the completion callback
-			for(u32 i=0; i<m_requests.size(); ++i)
-            {
-                m_requests[i]->Update();
-            }
-
             for(auto it = m_requests.begin(); it != m_requests.end(); /*No increment*/)
             {
                 if((*it)->HasCompleted())
@@ -136,6 +139,8 @@ namespace CSBackend
 
             m_requests.clear();
             m_requests.shrink_to_fit();
+
+            m_javaSystem.reset();
         }
 	}
 }

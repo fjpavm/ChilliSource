@@ -1,6 +1,6 @@
 //
 //  ForwardDeclarations.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland 26/02/2014.
 //
 //  The MIT License (MIT)
@@ -33,30 +33,24 @@
 
 #include <memory>
 
-namespace ChilliSource 
+namespace ChilliSource
 {
-	namespace Networking 
-    {
-        //--------------------------------------------------
-        /// Cloud
-        //--------------------------------------------------
-        //--------------------------------------------------
-        /// Content Download
-        //--------------------------------------------------
-        CS_FORWARDDECLARE_CLASS(IContentDownloader);
-        CS_FORWARDDECLARE_CLASS(ContentManagementSystem);
-        CS_FORWARDDECLARE_CLASS(MoContentDownloader);
-        //--------------------------------------------------
-        /// Http
-        //--------------------------------------------------
-        CS_FORWARDDECLARE_CLASS(HttpRequestSystem);
-        CS_FORWARDDECLARE_CLASS(HttpRequest);
-        CS_FORWARDDECLARE_CLASS(HttpResponse);
-        //--------------------------------------------------
-        /// IAP
-        //--------------------------------------------------
-        CS_FORWARDDECLARE_CLASS(IAPSystem);
-	}
+    //--------------------------------------------------
+    /// Content Download
+    //--------------------------------------------------
+    CS_FORWARDDECLARE_CLASS(IContentDownloader);
+    CS_FORWARDDECLARE_CLASS(ContentManagementSystem);
+    CS_FORWARDDECLARE_CLASS(MoContentDownloader);
+    //--------------------------------------------------
+    /// Http
+    //--------------------------------------------------
+    CS_FORWARDDECLARE_CLASS(HttpRequestSystem);
+    CS_FORWARDDECLARE_CLASS(HttpRequest);
+    CS_FORWARDDECLARE_CLASS(HttpResponse);
+    //--------------------------------------------------
+    /// IAP
+    //--------------------------------------------------
+    CS_FORWARDDECLARE_CLASS(IAPSystem);
 }
 
 #endif

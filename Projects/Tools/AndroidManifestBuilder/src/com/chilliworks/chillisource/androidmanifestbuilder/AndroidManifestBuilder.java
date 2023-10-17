@@ -1,6 +1,6 @@
 /**
  * AndroidManifestGenerator.java
- * Chilli Source
+ * ChilliSource
  * Created by Ian Copland on 20/06/2014.
  * 
  * The MIT License (MIT)
@@ -42,7 +42,7 @@ import com.chilliworks.chillisource.coreutils.Logging;
 
 /**
  * Generates the android manifest containing all the required settings
- * for building Chilli Source as well as the extra settings requested
+ * for building ChilliSource as well as the extra settings requested
  * by the user.
  * 
  * @author Ian Copland
@@ -50,7 +50,7 @@ import com.chilliworks.chillisource.coreutils.Logging;
 public final class AndroidManifestBuilder
 {
 	/**
-	 * Generates the android manifest from the Chilli Source template
+	 * Generates the android manifest from the ChilliSource template
 	 * and the applications CS manifest.
 	 * 
 	 * @author Ian Copland
@@ -106,46 +106,22 @@ public final class AndroidManifestBuilder
 				output.m_package = packageName.getNodeValue();
 			}
 			
-			Node versionCodeNode = root.getAttributes().getNamedItem("versionCode");
-			if (versionCodeNode != null)
-			{
-				output.m_versionCode = versionCodeNode.getNodeValue();
-			}
-			
-			Node versionNameNode = root.getAttributes().getNamedItem("versionName");
-			if (versionNameNode != null)
-			{
-				output.m_versionName = versionNameNode.getNodeValue();
-			}
-			
-			Node minSdkVersionNode = root.getAttributes().getNamedItem("minSdkVersion");
-			if (minSdkVersionNode != null)
-			{
-				output.m_minSdkVersion = minSdkVersionNode.getNodeValue();
-			}
-			
-			Node targetSdkVersionNode = root.getAttributes().getNamedItem("targetSdkVersion");
-			if (targetSdkVersionNode != null)
-			{
-				output.m_targetSdkVersion = targetSdkVersionNode.getNodeValue();
-			}
-			
 			Node orientationNode = root.getAttributes().getNamedItem("screenOrientation");
 			if (orientationNode != null)
 			{
 				output.m_orientation = orientationNode.getNodeValue();
 			}
 			
-			Node facebookAppIdNode = root.getAttributes().getNamedItem("facebookAppId");
-			if (facebookAppIdNode != null)
+			Node apkExpansionDownloadViewNode = root.getAttributes().getNamedItem("apkExpansionDownloadView");
+			if (apkExpansionDownloadViewNode != null)
 			{
-				output.m_facebookAppId = facebookAppIdNode.getNodeValue();
+				output.m_apkExpansionDownloadView = apkExpansionDownloadViewNode.getNodeValue();
 			}
 			
-			Node googlePlayProjectIdNode = root.getAttributes().getNamedItem("googlePlayProjectId");
-			if (googlePlayProjectIdNode != null)
+			Node multiDexNode = root.getAttributes().getNamedItem("multi-dex-enabled");
+			if(multiDexNode != null)
 			{
-				output.m_googlePlayProjectId = googlePlayProjectIdNode.getNodeValue();
+				output.m_multiDexEnabled = multiDexNode.getNodeValue().equalsIgnoreCase("true");
 			}
 			
 			output.m_manifestExtra = getElementContentAsString(xmlString, "manifest-extra");
@@ -194,16 +170,14 @@ public final class AndroidManifestBuilder
 		String output = in_template;
 		
 		output = output.replace("[[PACKAGE]]", in_userData.m_package);
-		output = output.replace("[[VERSIONCODE]]", in_userData.m_versionCode);
-		output = output.replace("[[VERSIONNAME]]", in_userData.m_versionName);
-		output = output.replace("[[MINSDKVERSION]]", in_userData.m_minSdkVersion);
-		output = output.replace("[[TARGETSDKVERSION]]", in_userData.m_targetSdkVersion);
 		output = output.replace("[[ORIENTATION]]", in_userData.m_orientation);
-		output = output.replace("[[GOOGLEPLAYPROJECTID]]", in_userData.m_googlePlayProjectId);
-		output = output.replace("[[FACEBOOKAPPID]]", in_userData.m_facebookAppId);
+		output = output.replace("[[APKEXPANSIONDOWNLOADVIEW]]", in_userData.m_apkExpansionDownloadView);
 		output = output.replace("[[MANIFESTEXTRA]]", in_userData.m_manifestExtra);
 		output = output.replace("[[APPLICATIONEXTRA]]", in_userData.m_applicationExtra);
 		output = output.replace("[[PERMISSIONS]]", in_userData.m_permissions);
+		
+		String multiDex = in_userData.m_multiDexEnabled ? "android:name=\"android.support.multidex.MultiDexApplication\"" : "";
+		output = output.replace("[[MULTIDEXENABLED]]", multiDex);
 		
 		return output;
 	}

@@ -1,6 +1,6 @@
 //
-//  Drawable.h
-//  Chilli Source
+//  UIDrawable.h
+//  ChilliSource
 //  Created by Scott Downie on 25/07/2014.
 //
 //  The MIT License (MIT)
@@ -30,14 +30,14 @@
 #define _CHILLISOURCE_UI_DRAWABLE_H_
 
 #include <ChilliSource/ChilliSource.h>
-#include <ChilliSource/UI/Drawable/Drawable.h>
-#include <ChilliSource/UI/Drawable/DrawableComponent.h>
-#include <ChilliSource/UI/Drawable/DrawableDef.h>
-#include <ChilliSource/UI/Drawable/NinePatchDrawable.h>
-#include <ChilliSource/UI/Drawable/NinePatchDrawableDef.h>
-#include <ChilliSource/UI/Drawable/StandardDrawable.h>
-#include <ChilliSource/UI/Drawable/StandardDrawableDef.h>
-#include <ChilliSource/UI/Drawable/ThreePatchDrawable.h>
-#include <ChilliSource/UI/Drawable/ThreePatchDrawableDef.h>
+#include <ChilliSource/UI/Drawable/UIDrawable.h>
+#include <ChilliSource/UI/Drawable/DrawableUIComponent.h>
+#include <ChilliSource/UI/Drawable/UIDrawableDef.h>
+#include <ChilliSource/UI/Drawable/NinePatchUIDrawable.h>
+#include <ChilliSource/UI/Drawable/NinePatchUIDrawableDef.h>
+#include <ChilliSource/UI/Drawable/StandardUIDrawable.h>
+#include <ChilliSource/UI/Drawable/StandardUIDrawableDef.h>
+#include <ChilliSource/UI/Drawable/ThreePatchUIDrawable.h>
+#include <ChilliSource/UI/Drawable/ThreePatchUIDrawableDef.h>
 
 #endif

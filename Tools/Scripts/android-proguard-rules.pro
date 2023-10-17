@@ -1,6 +1,6 @@
 #
 #  android-proguard-rules.pro
-#  Chilli Source
+#  ChilliSource
 #  Created by Ian Copland on 24/03/2015.
 #
 #  The MIT License (MIT)
@@ -42,24 +42,32 @@
 -keep public class **.R { public *; }
 -keep public class **.R$* { public *; }
 
-#Keep all classes with public methods
+#Keep all classes with native methods
 -keepclasseswithmembers class * {
     native <methods>;
 }
 
-#Keep all Native Interfaces
--keep public class com.chilliworks.chillisource.core.INativeInterface { public *; }
--keep public class * extends com.chilliworks.chillisource.core.INativeInterface { public *; }
+#Keep all java systems as these are typically accessed from native
+-keep public class com.chilliworks.chillisource.core.System { public *; }
+-keep public class * extends com.chilliworks.chillisource.core.System { public *; }
+
+#Keep boxed pointers
+-keep public class com.chilliworks.chillisource.core.BoxedPointer { public *; }
 
 #also keep old-style Native Interfaces. This will be removed in the future
 -keep public class **NativeInterface { *; }
 
-#keep Local Notification, as it is accessed from native
--keep public class com.chilliworks.chillisource.core.LocalNotification { public *; }
+#keep anything which extends ApkExpansionDownloader, since reflection is used create them
+-keep public class * extends com.chilliworks.chillisource.networking.ApkExpansionDownloadView { public *; }
 
-#keep facebook
--keep class com.facebook.** { *; }
--keepattributes Signature
+#keep the following classes are they are accessed from native
+-keep public class com.chilliworks.chillisource.core.LocalNotification { public *; }
+-keep public class com.chilliworks.chillisource.core.ApkExpansionInfo { public *; }
+-keep public class com.chilliworks.chillisource.core.ApkExpansionContentProvider { public *; }
+-keep public class com.chilliworks.chillisource.networking.HttpRequest { public *; }
+
+#keep google play classes
+-keep class com.google.android.vending.expansion.downloader.impl.DownloadsDB
 
 #keep amazon classes
 -dontwarn com.amazon.**

@@ -1,6 +1,6 @@
 //
 //  Component.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Stuart McGaw on 28/09/2010.
 //
 //  The MIT License (MIT)
@@ -32,39 +32,36 @@
 
 namespace ChilliSource
 {
-	namespace Core
-	{
-        //----------------------------------------------------
-        //----------------------------------------------------
-		Component::Component()
-		: m_entity(nullptr)
-		{
-			
-		}
-		//----------------------------------------------------
-		//----------------------------------------------------
-		Entity * Component::GetEntity()
-		{
-			return m_entity;
-		}
-		//----------------------------------------------------
-		//----------------------------------------------------
-		const Entity * Component::GetEntity() const
-		{
-			return m_entity;
-		}
-		//----------------------------------------------------
-		//----------------------------------------------------
-		void Component::SetEntity(Entity* in_newOwner)
-		{
-			m_entity = in_newOwner;
-		}
-        //----------------------------------------------------
-        //----------------------------------------------------
-        void Component::RemoveFromEntity()
-        {
-            CS_ASSERT(m_entity != nullptr, "Must have an entity to remove from");
-            m_entity->RemoveComponent(this);
-        }
-	}
+    //----------------------------------------------------
+    //----------------------------------------------------
+    Component::Component()
+    : m_entity(nullptr)
+    {
+        
+    }
+    //----------------------------------------------------
+    //----------------------------------------------------
+    Entity * Component::GetEntity()
+    {
+        return m_entity;
+    }
+    //----------------------------------------------------
+    //----------------------------------------------------
+    const Entity * Component::GetEntity() const
+    {
+        return m_entity;
+    }
+    //----------------------------------------------------
+    //----------------------------------------------------
+    void Component::SetEntity(Entity* in_newOwner)
+    {
+        m_entity = in_newOwner;
+    }
+    //----------------------------------------------------
+    //----------------------------------------------------
+    void Component::RemoveFromEntity()
+    {
+        CS_ASSERT(m_entity != nullptr, "Must have an entity to remove from");
+        m_entity->RemoveComponent(this);
+    }
 }

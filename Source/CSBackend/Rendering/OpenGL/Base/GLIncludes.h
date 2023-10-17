@@ -1,6 +1,6 @@
 //
 //  GLIncludes.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 14/01/2011.
 //
 //  The MIT License (MIT)
@@ -36,27 +36,27 @@ typedef char GLchar;
 #endif
 
 #ifdef CS_TARGETPLATFORM_IOS
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
-#include <OpenGLES/EAGL.h>
-#include <OpenGLES/EAGLDrawable.h>
-#elif defined CS_TARGETPLATFORM_WINDOWS 
-#include <GL/glew.h>
-#include <SFML/OpenGL.hpp>
-#include <CSBackend/Platform/Windows/SFML/Base/SFMLWindow.h>
+#   include <OpenGLES/ES2/gl.h>
+#   include <OpenGLES/ES2/glext.h>
+#   include <OpenGLES/EAGL.h>
+#   include <OpenGLES/EAGLDrawable.h>
+#elif defined CS_TARGETPLATFORM_WINDOWS
+#   include <GL/glew.h>
+#   include <SFML/OpenGL.hpp>
+#   include <CSBackend/Platform/Windows/SFML/Base/SFMLWindow.h>
 #elif defined CS_TARGETPLATFORM_LINUX
-#include <GL/glew.h>
-#include <SFML/OpenGL.hpp>
-#include <CSBackend/Platform/Linux/SFML/Base/SFMLWindow.h>
+#   include <GL/glew.h>
+#   include <SFML/OpenGL.hpp>
+#   include <CSBackend/Platform/Linux/SFML/Base/SFMLWindow.h>
 #else
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+#   include <GLES2/gl2.h>
+#   include <GLES2/gl2ext.h>
 #endif
 
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID
-#define CS_OPENGLVERSION_ES
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGETPLATFORM_RPI
+#   define CS_OPENGLVERSION_ES
 #elif defined CS_TARGETPLATFORM_WINDOWS || defined CS_TARGETPLATFORM_LINUX
-#define CS_OPENGLVERSION_STANDARD
+#   define CS_OPENGLVERSION_STANDARD
 #endif
 
 #endif

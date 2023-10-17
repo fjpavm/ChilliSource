@@ -1,6 +1,6 @@
 //
 //  DeviceButtonSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 16/05/2014.
 //
 //  The MIT License (MIT)
@@ -46,24 +46,21 @@
 
 namespace ChilliSource
 {
-	namespace Input
-	{
-		CS_DEFINE_NAMEDTYPE(DeviceButtonSystem);
-        //----------------------------------------------------
-        //----------------------------------------------------
-        DeviceButtonSystemUPtr DeviceButtonSystem::Create()
-        {
+    CS_DEFINE_NAMEDTYPE(DeviceButtonSystem);
+    //----------------------------------------------------
+    //----------------------------------------------------
+    DeviceButtonSystemUPtr DeviceButtonSystem::Create()
+    {
 #if defined CS_TARGETPLATFORM_ANDROID
-            return DeviceButtonSystemUPtr(new CSBackend::Android::DeviceButtonSystem());
+        return DeviceButtonSystemUPtr(new CSBackend::Android::DeviceButtonSystem());
 #elif defined CS_TARGETPLATFORM_IOS
-            return DeviceButtonSystemUPtr(new CSBackend::iOS::DeviceButtonSystem());
+        return DeviceButtonSystemUPtr(new CSBackend::iOS::DeviceButtonSystem());
 #elif defined CS_TARGETPLATFORM_WINDOWS
-            return DeviceButtonSystemUPtr(new CSBackend::Windows::DeviceButtonSystem());
+        return DeviceButtonSystemUPtr(new CSBackend::Windows::DeviceButtonSystem());
 #elif defined CS_TARGETPLATFORM_LINUX
-			return DeviceButtonSystemUPtr(new CSBackend::Linux::DeviceButtonSystem());
+        return DeviceButtonSystemUPtr(new CSBackend::Linux::DeviceButtonSystem());
 #else
-            return nullptr;
+        return nullptr;
 #endif
-        }
-	}
+    }
 }

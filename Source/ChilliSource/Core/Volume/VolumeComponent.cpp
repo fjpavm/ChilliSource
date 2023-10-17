@@ -1,6 +1,6 @@
 //
 //  VolumeComponent.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 12/01/2012.
 //
 //  The MIT License (MIT)
@@ -30,8 +30,5 @@
 
 namespace ChilliSource
 {
-    namespace Core
-    {
-        CS_DEFINE_NAMEDTYPE(VolumeComponent);
-    }
+    CS_DEFINE_NAMEDTYPE(VolumeComponent);
 }

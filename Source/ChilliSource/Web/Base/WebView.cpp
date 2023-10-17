@@ -1,6 +1,6 @@
 //
 //  WebView.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 25/07/2011.
 //
 //  The MIT License (MIT)
@@ -38,22 +38,19 @@
 
 namespace ChilliSource
 {
-    namespace Web
+    CS_DEFINE_NAMEDTYPE(WebView);
+    
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    WebViewUPtr WebView::Create()
     {
-        CS_DEFINE_NAMEDTYPE(WebView);
-        
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        WebViewUPtr WebView::Create()
-        {
 #ifdef CS_TARGETPLATFORM_IOS
-            return WebViewUPtr(new CSBackend::iOS::WebView());
+        return WebViewUPtr(new CSBackend::iOS::WebView());
 #endif
 #ifdef CS_TARGETPLATFORM_ANDROID
-            return WebViewUPtr(new CSBackend::Android::WebView());
+        return WebViewUPtr(new CSBackend::Android::WebView());
 #endif
-            return nullptr;
-        }
+        return nullptr;
     }
 }
 

@@ -1,6 +1,6 @@
 //
 //  TextEntryJavaInterface.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 04/02/2014.
 //
 //  The MIT License (MIT)
@@ -30,8 +30,8 @@
 
 #include <CSBackend/Platform/Android/Main/JNI/Input/TextEntry/TextEntryJavaInterface.h>
 
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceManager.h>
-#include <CSBackend/Platform/Android/Main/JNI/Core/JNI/JavaInterfaceUtils.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaInterfaceManager.h>
+#include <CSBackend/Platform/Android/Main/JNI/Core/Java/JavaUtils.h>
 #include <ChilliSource/Core/Base/Application.h>
 #include <ChilliSource/Core/Threading/TaskScheduler.h>
 
@@ -69,9 +69,12 @@ void Java_com_chilliworks_chillisource_input_TextEntryNativeInterface_nativeOnTe
 	CSBackend::Android::TextEntryJavaInterfaceSPtr textEntryJI = CSBackend::Android::JavaInterfaceManager::GetSingletonPtr()->GetJavaInterface<CSBackend::Android::TextEntryJavaInterface>();
 	if (textEntryJI != nullptr)
 	{
-		std::string text = CSBackend::Android::JavaInterfaceUtils::CreateSTDStringFromJString(in_text);
-		auto task = std::bind(&CSBackend::Android::TextEntryJavaInterface::OnTextChanged, textEntryJI.get(), text);
-		CSCore::Application::Get()->GetTaskScheduler()->ScheduleMainThreadTask(task);
+		std::string text = CSBackend::Android::JavaUtils::CreateSTDStringFromJString(in_text);
+
+		ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_mainThread, [=](const ChilliSource::TaskContext&)
+		{
+			textEntryJI->OnTextChanged(text);
+		});
 	}
 	in_env->DeleteLocalRef(in_text);
 }
@@ -82,8 +85,10 @@ void Java_com_chilliworks_chillisource_input_TextEntryNativeInterface_nativeOnKe
 	CSBackend::Android::TextEntryJavaInterfaceSPtr textEntryJI = CSBackend::Android::JavaInterfaceManager::GetSingletonPtr()->GetJavaInterface<CSBackend::Android::TextEntryJavaInterface>();
 	if (textEntryJI != nullptr)
 	{
-		auto task = std::bind(&CSBackend::Android::TextEntryJavaInterface::OnKeyboardDismissed, textEntryJI.get());
-		CSCore::Application::Get()->GetTaskScheduler()->ScheduleMainThreadTask(task);
+		ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_mainThread, [=](const ChilliSource::TaskContext&)
+		{
+			textEntryJI->OnKeyboardDismissed();
+		});
 	}
 }
 
@@ -103,13 +108,13 @@ namespace CSBackend
 			/// @param The keyboard type to convert.
 			/// @return The keyboard type in integer form.
 			//-----------------------------------------------
-			s32 KeyboardTypeToInteger(CSInput::TextEntry::Type ineKeyboardType)
+			s32 KeyboardTypeToInteger(ChilliSource::TextEntryType ineKeyboardType)
 			{
 				switch (ineKeyboardType)
 				{
-				case CSInput::TextEntry::Type::k_text:
+				case ChilliSource::TextEntryType::k_text:
 					return 0;
-				case CSInput::TextEntry::Type::k_numeric:
+				case ChilliSource::TextEntryType::k_numeric:
 					return 1;
 				default:
 					CS_LOG_ERROR("Invalid keyboard type, cannot be converted.");
@@ -127,17 +132,17 @@ namespace CSBackend
 			/// @return The Keyboard Capitalisation in integer
 			/// form.
 			//-----------------------------------------------
-			s32 KeyboardCapitalisationToInteger(CSInput::TextEntry::Capitalisation ineKeyboardCapitalisation)
+			s32 KeyboardCapitalisationToInteger(ChilliSource::TextEntryCapitalisation ineKeyboardCapitalisation)
 			{
 				switch (ineKeyboardCapitalisation)
 				{
-				case CSInput::TextEntry::Capitalisation::k_none:
+				case ChilliSource::TextEntryCapitalisation::k_none:
 					return 0;
-				case CSInput::TextEntry::Capitalisation::k_sentences:
+				case ChilliSource::TextEntryCapitalisation::k_sentences:
 					return 1;
-				case CSInput::TextEntry::Capitalisation::k_words:
+				case ChilliSource::TextEntryCapitalisation::k_words:
 					return 2;
-				case CSInput::TextEntry::Capitalisation::k_all:
+				case ChilliSource::TextEntryCapitalisation::k_all:
 					return 3;
 				default:
 					CS_LOG_ERROR("Invalid keyboard capitalisation, cannot be converted.");
@@ -160,7 +165,7 @@ namespace CSBackend
 		}
 		//-----------------------------------------------
 		//-----------------------------------------------
-		bool TextEntryJavaInterface::IsA(CSCore::InterfaceIDType inInterfaceID) const
+		bool TextEntryJavaInterface::IsA(ChilliSource::InterfaceIDType inInterfaceID) const
 		{
 			return (TextEntryJavaInterface::InterfaceID == inInterfaceID);
 		}
@@ -195,13 +200,13 @@ namespace CSBackend
 		void TextEntryJavaInterface::SetTextBuffer(const std::string& in_text)
 		{
         	JNIEnv* env = JavaInterfaceManager::GetSingletonPtr()->GetJNIEnvironmentPtr();
-        	jstring text = JavaInterfaceUtils::CreateJStringFromSTDString(in_text);
+        	jstring text = JavaUtils::CreateJStringFromSTDString(in_text);
         	env->CallVoidMethod(GetJavaObject(), GetMethodID("setTextBuffer"), text);
         	env->DeleteLocalRef(text);
 		}
 		//-------------------------------------------
 		//-------------------------------------------
-        void TextEntryJavaInterface::SetKeyboardType(CSInput::TextEntry::Type ineKeyboardType)
+        void TextEntryJavaInterface::SetKeyboardType(ChilliSource::TextEntryType ineKeyboardType)
         {
         	JNIEnv* pEnv = JavaInterfaceManager::GetSingletonPtr()->GetJNIEnvironmentPtr();
         	s32 dwKeyboardType = KeyboardTypeToInteger(ineKeyboardType);
@@ -209,7 +214,7 @@ namespace CSBackend
         }
 		//-------------------------------------------
 		//-------------------------------------------
-        void TextEntryJavaInterface::SetCapitalisationMethod(CSInput::TextEntry::Capitalisation ineKeyboardCapitalisation)
+        void TextEntryJavaInterface::SetCapitalisationMethod(ChilliSource::TextEntryCapitalisation ineKeyboardCapitalisation)
         {
         	JNIEnv* pEnv = JavaInterfaceManager::GetSingletonPtr()->GetJNIEnvironmentPtr();
         	s32 dwKeyboardCapitalisation = KeyboardCapitalisationToInteger(ineKeyboardCapitalisation);

@@ -1,6 +1,6 @@
 //
 //  Screen.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 12/10/2010.
 //
 //  The MIT License (MIT)
@@ -40,31 +40,59 @@
 #include <CSBackend/Platform/Windows/Core/Base/Screen.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_RPI
+#include <CSBackend/Platform/RPi/Core/Base/Screen.h>
+#endif
+
 #ifdef CS_TARGETPLATFORM_LINUX
 #include <CSBackend/Platform/Linux/Core/Base/Screen.h>
 #endif
 
 namespace ChilliSource
 {
-	namespace Core
-	{
-        CS_DEFINE_NAMEDTYPE(Screen);
-        //-----------------------------------------------------------
-        //-----------------------------------------------------------
-        ScreenUPtr Screen::Create()
-        {
+    CS_DEFINE_NAMEDTYPE(Screen);
+    //-----------------------------------------------------------
+    //-----------------------------------------------------------
+    ScreenUPtr Screen::Create(const ScreenInfo& screenInfo)
+    {
 #if defined CS_TARGETPLATFORM_ANDROID
-            return ScreenUPtr(new CSBackend::Android::Screen());
+        return ScreenUPtr(new CSBackend::Android::Screen(screenInfo));
 #elif defined CS_TARGETPLATFORM_IOS
-            return ScreenUPtr(new CSBackend::iOS::Screen());
+        return ScreenUPtr(new CSBackend::iOS::Screen(screenInfo));
 #elif defined CS_TARGETPLATFORM_WINDOWS
-            return ScreenUPtr(new CSBackend::Windows::Screen());
+        return ScreenUPtr(new CSBackend::Windows::Screen(screenInfo));
+#elif defined CS_TARGETPLATFORM_RPI
+        return ScreenUPtr(new CSBackend::RPi::Screen(screenInfo));
 #elif defined CS_TARGETPLATFORM_LINUX
 			return ScreenUPtr(new CSBackend::Linux::Screen());
 #else
-            return nullptr;
+        return nullptr;
 #endif
+    }
+    
+    /// Case insensitive. Will assert if no valid conversion
+    ///
+    /// @param displayMode
+    ///     Display mode as a string
+    ///
+    /// @return Display mode as a hard type
+    ///
+    Screen::DisplayMode Screen::ParseDisplayMode(const std::string& displayMode) noexcept
+    {
+        std::string lowerCase = displayMode;
+        StringUtils::ToLowerCase(lowerCase);
+        
+        if(lowerCase == "windowed")
+        {
+            return DisplayMode::k_windowed;
         }
-	}
+        if(lowerCase == "fullscreen")
+        {
+            return DisplayMode::k_fullscreen;
+        }
+        
+        CS_LOG_FATAL("Cannot parse display mode: " + displayMode);
+        return DisplayMode::k_windowed;
+    }
 }
 

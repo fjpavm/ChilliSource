@@ -1,6 +1,6 @@
 /**
  * AESEncryption.java
- * Chilli Source
+ * ChilliSource
  * Created by Ian Copland on 07/01/2014.
  * 
  * The MIT License (MIT)
@@ -59,7 +59,7 @@ public class AESEncryption
 		}
 		catch (Exception e)
 		{
-			ExceptionUtils.ConvertToString(e);
+			ExceptionUtils.convertToString(e);
 		}
         return abyOutput;
 	}
@@ -84,7 +84,7 @@ public class AESEncryption
 		}
 		catch (Exception e)
 		{
-			ExceptionUtils.ConvertToString(e);
+			ExceptionUtils.convertToString(e);
 		}
         return abyOutput;
 	}

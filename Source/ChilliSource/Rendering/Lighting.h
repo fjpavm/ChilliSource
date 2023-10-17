@@ -1,6 +1,6 @@
 //
 //  Lighting.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 07/07/2014.
 //
 //  The MIT License (MIT)
@@ -33,7 +33,9 @@
 #include <ChilliSource/ChilliSource.h>
 #include <ChilliSource/Rendering/Lighting/AmbientLightComponent.h>
 #include <ChilliSource/Rendering/Lighting/DirectionalLightComponent.h>
-#include <ChilliSource/Rendering/Lighting/LightComponent.h>
 #include <ChilliSource/Rendering/Lighting/PointLightComponent.h>
+#include <ChilliSource/Rendering/Lighting/AmbientRenderLight.h>
+#include <ChilliSource/Rendering/Lighting/DirectionalRenderLight.h>
+#include <ChilliSource/Rendering/Lighting/PointRenderLight.h>
 
 #endif

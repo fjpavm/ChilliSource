@@ -1,6 +1,6 @@
 //
 //  ParticleAffectorDefFactory.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 08/11/2014.
 //
 //  The MIT License (MIT)
@@ -35,29 +35,26 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		CS_DEFINE_NAMEDTYPE(ParticleAffectorDefFactory);
-		//-----------------------------------------------------------------
-		//-----------------------------------------------------------------
-		ParticleAffectorDefFactoryUPtr ParticleAffectorDefFactory::Create()
-		{
-			return ParticleAffectorDefFactoryUPtr(new ParticleAffectorDefFactory());
-		}
-		//-----------------------------------------------------------------
-		//-----------------------------------------------------------------
-		bool ParticleAffectorDefFactory::IsA(Core::InterfaceIDType in_interfaceId) const
-		{
-			return (ParticleAffectorDefFactory::InterfaceID == in_interfaceId);
-		}
-		//-----------------------------------------------------------------
-		//-----------------------------------------------------------------
-		void ParticleAffectorDefFactory::RegisterDefaults()
-		{
-			Register<AccelerationParticleAffectorDef>("Acceleration");
-			Register<AngularAccelerationParticleAffectorDef>("AngularAcceleration");
-			Register<ColourOverLifetimeParticleAffectorDef>("ColourOverLifetime");
-			Register<ScaleOverLifetimeParticleAffectorDef>("ScaleOverLifetime");
-		}
-	}
+    CS_DEFINE_NAMEDTYPE(ParticleAffectorDefFactory);
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    ParticleAffectorDefFactoryUPtr ParticleAffectorDefFactory::Create()
+    {
+        return ParticleAffectorDefFactoryUPtr(new ParticleAffectorDefFactory());
+    }
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    bool ParticleAffectorDefFactory::IsA(InterfaceIDType in_interfaceId) const
+    {
+        return (ParticleAffectorDefFactory::InterfaceID == in_interfaceId);
+    }
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    void ParticleAffectorDefFactory::RegisterDefaults()
+    {
+        Register<AccelerationParticleAffectorDef>("Acceleration");
+        Register<AngularAccelerationParticleAffectorDef>("AngularAcceleration");
+        Register<ColourOverLifetimeParticleAffectorDef>("ColourOverLifetime");
+        Register<ScaleOverLifetimeParticleAffectorDef>("ScaleOverLifetime");
+    }
 }

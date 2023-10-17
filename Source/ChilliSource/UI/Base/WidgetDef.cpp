@@ -1,6 +1,6 @@
 //
 //  WidgetDef.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 25/07/2014.
 //
 //  The MIT License (MIT)
@@ -30,70 +30,67 @@
 
 namespace ChilliSource
 {
-    namespace UI
+    CS_DEFINE_NAMEDTYPE(WidgetDef);
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    WidgetDefUPtr WidgetDef::Create()
     {
-        CS_DEFINE_NAMEDTYPE(WidgetDef);
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        WidgetDefUPtr WidgetDef::Create()
-        {
-            return WidgetDefUPtr(new WidgetDef());
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        bool WidgetDef::IsA(Core::InterfaceIDType in_interfaceId) const
-        {
-            return in_interfaceId == WidgetDef::InterfaceID;
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        void WidgetDef::Build(const std::string& in_typeName, const Core::PropertyMap& in_defaultProperties, const std::vector<ComponentDesc>& in_componentDescs, const std::vector<PropertyLink>& in_componentPropertyLinks,
-                              const std::vector<WidgetDesc>& in_childDescs, const std::vector<PropertyLink>& in_childPropertyLinks)
-        {
-            CS_ASSERT(GetLoadState() == LoadState::k_loading, "A WidgetDef can only be built while in the loading state.");
-            
-            m_typeName = in_typeName;
-            m_defaultProperties = in_defaultProperties;
-            m_childDescs = in_childDescs;
-            m_childPropertyLinks = in_childPropertyLinks;
-            m_componentDescs = in_componentDescs;
-            m_componentPropertyLinks = in_componentPropertyLinks;
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        const std::string& WidgetDef::GetTypeName() const
-        {
-            return m_typeName;
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        const Core::PropertyMap& WidgetDef::GetDefaultProperties() const
-        {
-            return m_defaultProperties;
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        const std::vector<ComponentDesc>& WidgetDef::GetComponentDescs() const
-        {
-            return m_componentDescs;
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        const std::vector<PropertyLink>& WidgetDef::GetComponentPropertyLinks() const
-        {
-            return m_componentPropertyLinks;
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        const std::vector<WidgetDesc>& WidgetDef::GetChildDescs() const
-        {
-            return m_childDescs;
-        }
-        //-------------------------------------------------------
-        //-------------------------------------------------------
-        const std::vector<PropertyLink>& WidgetDef::GetChildPropertyLinks() const
-        {
-            return m_childPropertyLinks;
-        }
+        return WidgetDefUPtr(new WidgetDef());
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    bool WidgetDef::IsA(InterfaceIDType in_interfaceId) const
+    {
+        return in_interfaceId == WidgetDef::InterfaceID;
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    void WidgetDef::Build(const std::string& in_typeName, const PropertyMap& in_defaultProperties, const std::vector<UIComponentDesc>& in_componentDescs, const std::vector<PropertyLink>& in_componentPropertyLinks,
+                          const std::vector<WidgetDesc>& in_childDescs, const std::vector<PropertyLink>& in_childPropertyLinks)
+    {
+        CS_ASSERT(GetLoadState() == LoadState::k_loading, "A WidgetDef can only be built while in the loading state.");
+        
+        m_typeName = in_typeName;
+        m_defaultProperties = in_defaultProperties;
+        m_childDescs = in_childDescs;
+        m_childPropertyLinks = in_childPropertyLinks;
+        m_componentDescs = in_componentDescs;
+        m_componentPropertyLinks = in_componentPropertyLinks;
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    const std::string& WidgetDef::GetTypeName() const
+    {
+        return m_typeName;
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    const PropertyMap& WidgetDef::GetDefaultProperties() const
+    {
+        return m_defaultProperties;
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    const std::vector<UIComponentDesc>& WidgetDef::GetComponentDescs() const
+    {
+        return m_componentDescs;
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    const std::vector<PropertyLink>& WidgetDef::GetComponentPropertyLinks() const
+    {
+        return m_componentPropertyLinks;
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    const std::vector<WidgetDesc>& WidgetDef::GetChildDescs() const
+    {
+        return m_childDescs;
+    }
+    //-------------------------------------------------------
+    //-------------------------------------------------------
+    const std::vector<PropertyLink>& WidgetDef::GetChildPropertyLinks() const
+    {
+        return m_childPropertyLinks;
     }
 }

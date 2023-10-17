@@ -1,6 +1,6 @@
 //
 //  DialogueBoxSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 04/03/2014.
 //
 //  The MIT License (MIT)
@@ -46,29 +46,26 @@
 
 namespace ChilliSource
 {
-	namespace Core
-	{
-        CS_DEFINE_NAMEDTYPE(DialogueBoxSystem);
-        //----------------------------------------------------
-        //----------------------------------------------------
-        DialogueBoxSystemUPtr DialogueBoxSystem::Create()
-        {
+    CS_DEFINE_NAMEDTYPE(DialogueBoxSystem);
+    //----------------------------------------------------
+    //----------------------------------------------------
+    DialogueBoxSystemUPtr DialogueBoxSystem::Create()
+    {
 #ifdef CS_TARGETPLATFORM_IOS
-            return DialogueBoxSystemUPtr(new CSBackend::iOS::DialogueBoxSystem());
+        return DialogueBoxSystemUPtr(new CSBackend::iOS::DialogueBoxSystem());
 #elif defined CS_TARGETPLATFORM_ANDROID
-            return DialogueBoxSystemUPtr(new CSBackend::Android::DialogueBoxSystem());
+        return DialogueBoxSystemUPtr(new CSBackend::Android::DialogueBoxSystem());
 #elif defined CS_TARGETPLATFORM_WINDOWS
-            return DialogueBoxSystemUPtr(new CSBackend::Windows::DialogueBoxSystem());
+        return DialogueBoxSystemUPtr(new CSBackend::Windows::DialogueBoxSystem());
 #elif defined CS_TARGETPLATFORM_LINUX
 			return DialogueBoxSystemUPtr(new CSBackend::Linux::DialogueBoxSystem());
 #else
-            return nullptr;
+        return nullptr;
 #endif
-        }
-        //----------------------------------------------------
-        //----------------------------------------------------
-        DialogueBoxSystem::~DialogueBoxSystem()
-        {
-        }
-	}
+    }
+    //----------------------------------------------------
+    //----------------------------------------------------
+    DialogueBoxSystem::~DialogueBoxSystem()
+    {
+    }
 }

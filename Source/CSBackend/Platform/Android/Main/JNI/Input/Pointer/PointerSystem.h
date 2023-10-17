@@ -1,6 +1,6 @@
 //
 //  PointerSystem.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 27/03/2014.
 //
 //  The MIT License (MIT)
@@ -45,9 +45,12 @@ namespace CSBackend
         /// The Android backend for the pointer system. This provides
         /// access to touch events.
         ///
+        /// The methods in this class are not thread-safe and must be
+        /// accessed from the main thread.
+        ///
         /// @author Ian Copland
         //------------------------------------------------------------
-        class PointerSystem final : public CSInput::PointerSystem
+        class PointerSystem final : public ChilliSource::PointerSystem
         {
         public:
             CS_DECLARE_NAMEDTYPE(PointerSystem);
@@ -61,7 +64,7 @@ namespace CSBackend
             ///
 			/// @return Whether or not the interface is implemented.
 			//----------------------------------------------------
-            bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+            bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
             //----------------------------------------------------
 			/// Called when a touch down event is received.
             ///
@@ -70,7 +73,7 @@ namespace CSBackend
             /// @param The system Id of the touch.
             /// @param The touch location.
 			//----------------------------------------------------
-            void OnTouchDown(s32 in_systemId, const CSCore::Vector2& in_location);
+            void OnTouchDown(s32 in_systemId, const ChilliSource::Vector2& in_location);
             //----------------------------------------------------
 			/// Called when a touch moved event is received.
             ///
@@ -79,7 +82,7 @@ namespace CSBackend
             /// @param The system Id of the touch.
             /// @param The touch location.
 			//----------------------------------------------------
-			void OnTouchMoved(s32 in_systemId, const CSCore::Vector2& in_location);
+			void OnTouchMoved(s32 in_systemId, const ChilliSource::Vector2& in_location);
             //----------------------------------------------------
 			/// Called when a touch up event is received.
             ///
@@ -93,15 +96,15 @@ namespace CSBackend
             ///
             /// @author S Downie
             //----------------------------------------------------
-            void HideCursor() override {};
+            void HideSystemCursor() override {};
             //----------------------------------------------------
             /// Android has no cursor so this does nothing
             ///
             /// @author S Downie
             //----------------------------------------------------
-            void ShowCursor() override {};
+            void ShowSystemCursor() override {};
         private:
-            friend class CSInput::PointerSystem;
+            friend class ChilliSource::PointerSystem;
 
             //------------------------------------------------
             /// Default constructor. Declared private to force
@@ -130,8 +133,8 @@ namespace CSBackend
             //------------------------------------------------
             void OnDestroy() override;
 
-            CSCore::Screen* m_screen = nullptr;
-            std::unordered_map<s32, CSInput::Pointer::Id> m_systemIdToPointerIdMap;
+            ChilliSource::Screen* m_screen = nullptr;
+            std::unordered_map<s32, ChilliSource::Pointer::Id> m_systemIdToPointerIdMap;
         };
     }
 }

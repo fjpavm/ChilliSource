@@ -1,6 +1,6 @@
 //
 //  ParticleDrawableDefFactory.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 07/11/2014.
 //
 //  The MIT License (MIT)
@@ -32,26 +32,23 @@
 
 namespace ChilliSource
 {
-	namespace Rendering
-	{
-		CS_DEFINE_NAMEDTYPE(ParticleDrawableDefFactory);
-		//-----------------------------------------------------------------
-		//-----------------------------------------------------------------
-		ParticleDrawableDefFactoryUPtr ParticleDrawableDefFactory::Create()
-		{
-			return ParticleDrawableDefFactoryUPtr(new ParticleDrawableDefFactory());
-		}
-		//-----------------------------------------------------------------
-		//-----------------------------------------------------------------
-		bool ParticleDrawableDefFactory::IsA(Core::InterfaceIDType in_interfaceId) const
-		{
-			return (ParticleDrawableDefFactory::InterfaceID == in_interfaceId);
-		}
-		//-----------------------------------------------------------------
-		//-----------------------------------------------------------------
-		void ParticleDrawableDefFactory::RegisterDefaults()
-		{
-			Register<StaticBillboardParticleDrawableDef>("StaticBillboard");
-		}
-	}
+    CS_DEFINE_NAMEDTYPE(ParticleDrawableDefFactory);
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    ParticleDrawableDefFactoryUPtr ParticleDrawableDefFactory::Create()
+    {
+        return ParticleDrawableDefFactoryUPtr(new ParticleDrawableDefFactory());
+    }
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    bool ParticleDrawableDefFactory::IsA(InterfaceIDType in_interfaceId) const
+    {
+        return (ParticleDrawableDefFactory::InterfaceID == in_interfaceId);
+    }
+    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
+    void ParticleDrawableDefFactory::RegisterDefaults()
+    {
+        Register<StaticBillboardParticleDrawableDef>("StaticBillboard");
+    }
 }

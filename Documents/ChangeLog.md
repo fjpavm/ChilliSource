@@ -1,5 +1,196 @@
-Chilli Source Change Log
-========================
+ChilliSource Change Log
+=======================
+
+Version 2.2.3,
+-------------------------
+* Fixed: Crash when minimising window on Windows caused by OpenGL continuing to render. Fix is to suspend the application when it loses focus (SFML has no minimise event).
+
+Version 2.2.2, 2017-03-27
+-------------------------
+* Added: Parsing and ToString methods for Integer2, Integer3 and Integer4
+* Fixed: Some OpenGL analyser warnings caused by setting attributes when they don't exist in shaders
+* Fixed: Issues compiling under case-sensitive file system (i.e. Linux) caused by incorrectly cased includes.
+* Fixed: Typo in Label.csuidef which meant the default name "Label" was being ignored.
+
+Version 2.2.1, 2017-03-14
+-------------------------
+* HotFix: Fix for potential issue of the vertex attribute objects not being rebuilt when the context is lost on Android
+
+Version 2.2.0, 2017-03-14
+-------------------------
+* Removed: Render component factory. Just use the constructors of the render components instead (to replicate CreatePerspectiveCamera pass screenWidth/screenHeight for aspect ratio)
+* Deprecated: Support for SHA-1
+* Added: SHA-256 hashing support
+* Changed: ContentManagementSystem now uses SHA-256 unless compiler flag CS_USE_SHA1_CHECKSUMS is enabled for legacy applications.
+* Changed: Performance improvement on sprites and UI by using mapbuffer or orphaning buffers rather than a blocking subbuffer call.
+* Changed: GLMesh (static meshes) now use vertex array objects where the extension exists. On Android this requires linking against -lEgl
+* Fixed: Issue with suspending on Android in debug mode sometimes causing an assert
+
+Version 2.1.4, 2017-02-28
+-------------------------
+* HotFix: With shadows turned on the bound texture list in the renderer was expanding each frame and causing memory leaks and performance slowdown
+
+Version 2.1.3, 2017-02-27
+-------------------------
+* Added: Thread safe ObjectPoolAllocator that pre allocates objects of a specific type. Now using this within the renderer to reduce allocations.
+* Fix: Longstanding issue where "Shinniness" was reciprocated (i.e. 1/Shinniness) in Blinn shaders rather than just Shinniness. Note this will affect existing projects.
+* Fix: Crash in Collada to CSModel tool if the Collada file has no materials.
+* Fix: Issue with Sphere::Transform not considering orientation. This meant that mesh frustum culling was broken
+* Fix: Tweens which play more than once will now utilise the end-delay property every time the end of the tween is reached, instead of just once.
+* Fix: Default background colour is now black.
+* Fix: CS::UniquePtr<T> could not be moved into CS::UniquePtr<const T>
+* Fix: Issue where cull face was ignored in material and always set to back
+* Updated: SFML is now version 2.4.2, on Windows.
+* Updated: Cricket is now version 1.6.3. This now means that bitcode can be enabled on iOS (and is now enabled by default in newly generated projects).
+* Changed: Ray/Plane intersection test is no longer a member function of Plane, but now resides in ShapeIntersection along with the other intersection tests.
+* Changed: Where available the iOS dialogue system is backed by the newer UIAlertController rather than the deprecated UIAlertView
+* Changed: SetParentTransform, AddChildTransform, RemoveChildTransform and RemoveAllChildTransforms in Transform are now private and cannot be accessed outside of Entity.
+* Changed: iOS projects now have deployment target of iOS 8.0
+
+Version 2.1.2, 2017-01-26
+-------------------------
+
+* Added: Tangents and Bitangents to CSModel format. Accessible in shader vertex declaration as a_tangent and a_bitangent. Model version is now 13. Please rebuild all csmodel files.
+* Added: Skybox support via SkyboxComponent and new Skybox material type.
+* Added: Gyroscope support for iOS and Android using similar system to Accelerometer.
+* Fix: SendToBack in Widget not working properly.
+
+Version 2.1.1, 2017-01-19
+-------------------------
+
+* Added: Additional blend modes to materials for destCol and oneMinusDestCol
+
+Version 2.1.0, 2017-01-06
+-------------------------
+* Added: Support for Cubemaps. Accessed in shaders as u_cubemap[N]. This required changes to the material file formats Texture element to specify a type "Texture" or "Cubemap" and renaming of "image-name" to "file-name".
+* Added: Support for stencil buffer (introducing new framebuffer format).
+* Added: Support for masking in UI using the stencil buffer (this replaces scissor regions).
+* Added: Render to texture support
+* Added: New logging macros for formatted logs CS_LOG_XXX_FMT.
+* Improved: Added convenience distance method to vector classes.
+* Other minor fixes.
+
+Version 2.0.1, 2016-07-21
+-------------------------
+* Hotfix for issue in GLDynamicMesh where indices were not being assigned correctly on construction
+
+Version 2.0.0, 2016-07-15
+-------------------------
+* Added: A new multi-threaded renderer. The previous renderer has been completely stripped out and replaced with a brand new renderer which makes much better use of multi-core devices. The new renderer also allows us to add deferred rendering support in the future.
+* Added: Small mesh batching. This is a major optimisation which combines small meshes into a single draw call where possible. Currently this only supports dynamic sprites but other mesh types will be added in the future.
+* Added: New allocator types, which allow for very efficient allocation of memory.
+* Added: An editable label ui widget type.
+* Improved: As a result of the changes for the multi-threaded renderer, the main thread is no longer the same as the system/render thread. This thread is now solely for scene management and game logic.
+* Improved: The task scheduler has been completely overhauled. It now supports batching of tasks, task depedancies and a number of different task types.
+* Improved: The ChilliSource namespaces have been significantly simplified. The sub-namespaces (For example: ChilliSource::Rendering) have been removed and all classes are now located the ChilliSource namespace. An optional CS:: alias is available, and its use is recommened. As a result of this change, some classes have been renamed, for example CSUI::Drawable is now called CS::UIDrawable. 
+* Improved: Materials have been improved such that models with different vertex formats (for example static models and animated models) require different materials. The material type system has been simplified down to three types: Unlit, Blinn and Custom.
+* Improved: The FileStream API has been significantly improved.
+* Improved: Improved the API for manual creation of Textures and Meshes.
+* Improved: StaticMeshComponent and AnimatedMeshComponent have been renamed StaticModelComponent and AnimatedModelComponent, and have had their API improved.
+* Improved: Updated all systems to support the new threading model. Some minor API changes were required to make this work.
+* Improved: Key codes can now request a text description of the key the represent.
+* Fixed: Issues with local notifications on Android.
+* Fixed: Issues with video subtitles on both Android and iOS.
+* Fixed: A problem with keyboard presentation during text entry on Android.
+* Removed: Support for custom render sort predicates. This will be re-added in the future.
+* Removed: Cubemaps. These will be re-added in the future.
+* Removed: Scissor regions. These will be re-added in the future.
+* Removed: Render to texture support. This will be re-added soon.
+* Removed: Facebook support. This will be re-added soon.
+* Removed: Remote notifications on Android.
+* Removed: Mesh Batch.
+* And many other minor improvements and tweaks that would take too long to list.
+
+Version 1.6.0, 2016-04-01
+-------------------------
+
+* Added: 64-bit Android support. Both arm64-v8a and x86_64 can now be targetted.
+* Added: Support for building music and sound effect files to the default asset pipeline provided in generated projects.
+* Improved: Updated to Visual Studio 2015. Support for Visual Studio 2013 has been dropped, meaning we can now use additional C++11 features such as 'noexcept' and 'constexpr'.
+* Improved: Re-created the windows project with modern settings and improved the output build format.
+* Improved: Re-created the iOS projects with modern settings and fixed all warnings and errors in XCode 7.
+* Improved: Improved the python asset pipeline scripts provided in generated projects.
+* Improved: UI::Drawable properties are now accessbile.
+* Improved: Updated to the latest version of Cricket Audio.
+* Improved: Updated to a more up to date, and unmodified version of Minizip.
+* Improved: Updated to the latest version of SFML on windows.
+* Improved: Updated to the latest version of Glew on windows.
+* Improved: Minor updates to the Android project format.
+* Fixed: An issue where .DS_Store files were not being correctly omitted from the Android APK expansion file. Also added Thumbs.db ignore.
+* Fixed: A crash in the HTTP request system on Android.
+* Fixed: UI input events are no longer received for inactive states.
+* Fixed: Gesture input events are no longer received for inactive states.
+* Fixed: Android notifications are now cleared after they have been selected.
+* Fixed: The standardise path methods no longer break UNC paths.
+* Fixed: OS version is now correctly reported on Android.
+* Fixed: .pyc files are now correctly ignored in generated projects.
+* Fixed: An issue on Android where some libraries still depended on all build variants, resulting in long build times.
+
+Version 1.5.2, 2016-03-18
+-------------------------
+* Fixed: FileSystem::GetDirectoryPath() now correctly creates parent paths recursively on Windows. This fixes the issue where the Documents/ directory would not be created on start up in certain circumstances.
+
+Version 1.5.1, 2015-08-14
+-------------------------
+* Added: A new primitive shape model factory. This can be used to create boxes and planes in code.
+* Added: A new primitive shape entity factory. This creates new entities using shapes generated through the primitive shape model factory.
+* Added: Support for "multi-dex" applications on Android. This is needed if your application exceeds to 65k method limit.
+* Added: A new way of handling JNI callbacks from Java to Native on Android. The method should now provide a BoxedPointer, which can be used to retreive a pointer to the target native object
+* Improved: The Change Over Lifetime particle affector now supports 'intermediate colours', meaning it can fade through a series of different colours over the lifetime
+* Improved: It is now possible to get the expected size and current progress of a download using the Http Request System
+* Improved: Reimplemented Http Request on Android. It will no longer block the background task queue if several requests are made at the same time.
+* Improved: It is now possible to get the jobject from a JavaClass.
+* Fixed: Row and column major ordering is now the correct way round in a Grid Layout
+* Fixed: Materials used by the Canvas Renderer and now correctly relinquished at the end of each frame, fixing the issue where the textures could not be manually released
+* Fixed: An issue with the minus operator in all math vectors where the vector itself was modified rather than a copy, leading the following returning true: b = -a; return (a == b);
+* Fixed: Vector2::Angle now returns an absolute angle to be consistent with how Vector3::Angle() works
+* Fixed: A crash bug that would occur under certain conditions when using Application::Quit() on Android
+* Fixed: System dialogue boxes now correctly display on Windows
+* Fixed: The main thead id is now correctly updated during the OnDestroy() life cycle event on Android
+* Fixed: An issue where pushing an Apk Expansion file to device would fail becuase a directory doesn't exist.
+* Fixed: A crash related to WebView in Android release builds.
+* Fixed: An issue with clear() in the Java class DynamicByteBuffer
+
+Version 1.5.0, 2015-07-10
+-------------------------
+* Added: The android build pipeline now includes gradle tasks for packaging resources in the Apk Expansion file and pushing it to device.
+* Added: The APK expansion downloader screen can now be overridden by the user.
+* Added: Implemented a new, much easier to use system for handling JNI calls on Android. Native to Java calls are now all handled through JavaClass or JavaStaticClass. These include a number of sanity checks and provide more intuitive error messages. Java to Native still works as before.
+* Added: Implemented JavaSystem, similar to JavaClass, but specifically for andriod java classes which extend System.
+* Added: The android java class FileUtils now includes separate methods for reading and writing binary and text files.
+* Added: FileSystem now includes methods for checking if a directory exists in the cached or package DLC locations.
+* Added: The java tools ZipUtils now includes the ability to zip the contents of a directory.
+* Added: A new java tool for cross-platform zipping of directories.
+* Removed: The previous android expansion system has been removed.
+* Removed: The android Power Manager is now redundant and has been removed.
+* Removed: The GetAbsolutePathToFile() and GetAbsolutePathToDirectory() methods in FileSystem are no longer relevant with changes made to the system a while ago, and therefore have been removed.
+* Improved: Updated the android projects to Android Studio 1.2. This included updating to gradle 1.2.3, build tools version 22.0.1 and sdk version 22.
+* Improved: Support for Android Expansion files has been greatly improved. Google Play builds will now be automatically downloaded on startup if not already present. This occurs prior to any game code being executed so the user no longer need to handle the case where game assets do not yet exist. The downloaded expansion file is no longer unpacked meaning the app will be much smaller on disc, and a number of possible complications are avoided. A default downloader screen is provided by the engine.
+* Improved: The android file system implementation has been significantly overhauled. Google Play flavoured builds now refer to the main APK expansion file rather than the APK when the Package, ChilliSource or DLC storage locations are requested. Amazon builds still use the APK.
+* Improved: Significantly tidied up and improved the android gradle build scripts. 
+* Improved: Restructured the Android backend.
+* Improved: Renamed the android java class NativeInterface and changed it so that it follows the same lifecycle rules as systems in the native side of the engine.
+* Improved: Renamexd JavaInterfaceUtils to JavaUtils.
+* Improved: Simplified the creation and destruction of file streams. Calls to FileSystem::CreateFileStream() will now either return a valid ready to use stream, or null if it failed. A stream is no longer manually closed, instead it will be automatically cleaned up when it goes out of scope.
+* Improved: The LVL key for Android Google Play builds should now be provided once in App.cpp, rather than being provided to each system that needs it in different ways.
+* Improved: It is now possible to get access to the DrawableDef in a UI::DrawableComponent.
+* Improved: Refactored and improved the android java StringUtils class.
+* Improved: Refactored the android java class IQueryableInterface.
+* Improved: The TaggedPathResolver now returns the input path if the path doesn't exist. This means requests to ResourcePool will print more helpful error messages.
+* Improved: Refactored the android VideoPlayer backend so that it uses JavaSystem instead of JavaInterface. 
+* Improved: The android manifest builder has been updated to reflect the changes to the Android project structure. Added new option for specifying a custom APK expansion downloader view.
+* Improved: The project generator has been updated to include the new Android project structure changes.
+* Fixed: A number of inconsistencies and bugs in the Android and Windows FileSystem have been fixed.
+* Fixed: A FileStream referring to the Package, ChilliSource or packaged DLC storage locations on Android no longer allows write operations.
+* Fixed: A bug where tagged asset paths were incorrectly handled for CkBank resources has been resolved.
+* Deprecated: JavaInterface and _JavaInteface are both now deprecated and will be removed in the near future.
+
+Version 1.4.5, 2015-06-26
+-------------------------
+* Added: Additional data on IAPs can now be retreived through the Android and iOS backends for IAPSystem.
+* Fixed: Application and State no longer log a warning if a system couldn't be found using GetSystem<>()
+* Fixed: Fixed a number of fatal errors which were incorrectly reported in the PNG To CSImage tool.
+* Fixed: The Android build process will now correctly halt if there are compiler errors during the native build.
 
 Version 1.4.4, 2015-06-05
 -------------------------
@@ -126,11 +317,11 @@ Version 1.1.4, 2014-10-24
 
 Version 1.1.3, 2014-10-20
 -------------------------
-* Project generator will now error if the output directory is inside Chilli Source. This was causing recursive file copy issues when copying Chilli Source to the project directory.
+* Project generator will now error if the output directory is inside ChilliSource. This was causing recursive file copy issues when copying ChilliSource to the project directory.
 
 Version 1.1.2, 2014-10-16
 -------------------------
-* Added CSProjectGenerator, a tool for generating new Chilli Source project.
+* Added CSProjectGenerator, a tool for generating new ChilliSource project.
 
 Version 1.1.1, 2014-10-10
 -------------------------

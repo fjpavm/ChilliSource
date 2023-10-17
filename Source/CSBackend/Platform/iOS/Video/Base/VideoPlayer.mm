@@ -1,6 +1,6 @@
 //
 //  VideoPlayer.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by S Downie on 12/05/2011.
 //
 //  The MIT License (MIT)
@@ -41,6 +41,7 @@
 #import <ChilliSource/Core/Delegate/MakeDelegate.h>
 #import <ChilliSource/Core/Math/MathUtils.h>
 #import <ChilliSource/Core/String/StringUtils.h>
+#import <ChilliSource/Core/Threading/TaskScheduler.h>
 
 #import <AudioToolbox/AudioSession.h>
 #import <MediaPlayer/MediaPlayer.h>
@@ -88,30 +89,42 @@ namespace CSBackend
         //--------------------------------------------------------------
         //--------------------------------------------------------------
         VideoPlayer::VideoPlayer()
-            : m_moviePlayerController(nil), m_tapListener(nil), m_playing(false), m_dismissWithTap(false), m_videoOverlayView(nil), m_subtitlesRenderer(nil)
+            : m_moviePlayerController(nil), m_tapListener(nil), m_currentState(State::k_inactive), m_dismissWithTap(false), m_videoOverlayView(nil), m_subtitlesRenderer(nil)
         {
         }
 		//--------------------------------------------------------------
 		//--------------------------------------------------------------
-		bool VideoPlayer::IsA(CSCore::InterfaceIDType in_interfaceId) const
+		bool VideoPlayer::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
 		{
-			return (in_interfaceId == CSVideo::VideoPlayer::InterfaceID || in_interfaceId == VideoPlayer::InterfaceID);
+			return (in_interfaceId == ChilliSource::VideoPlayer::InterfaceID || in_interfaceId == VideoPlayer::InterfaceID);
 		}
         //--------------------------------------------------------------
         //--------------------------------------------------------------
-        void VideoPlayer::Present(CSCore::StorageLocation in_storageLocation, const std::string& in_fileName, VideoCompleteDelegate::Connection&& in_delegateConnection, bool in_dismissWithTap, const CSCore::Colour& in_backgroundColour)
+        void VideoPlayer::Present(ChilliSource::StorageLocation in_storageLocation, const std::string& in_fileName, VideoCompleteDelegate::Connection&& in_delegateConnection, bool in_dismissWithTap, const ChilliSource::Colour& in_backgroundColour)
         {
-            @autoreleasepool
+            CS_RELEASE_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread(), "Cannot present video on background thread.");
+            
+            auto previousState = m_currentState.exchange(State::k_loading);
+            CS_RELEASE_ASSERT(previousState == State::k_inactive, "Cannot present video while a video is already playing.");
+            
+            m_completionDelegateConnection = std::move(in_delegateConnection);
+            
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& taskContext)
             {
-                CS_ASSERT(m_playing == false, "Cannot present video while a video is already playing.");
-                
-                m_playing = true;
-                
-                m_completionDelegateConnection = std::move(in_delegateConnection);
                 m_backgroundColour = in_backgroundColour;
-                
-                std::string filePath = CSCore::Application::Get()->GetFileSystem()->GetAbsolutePathToFile(in_storageLocation, in_fileName);
-                
+                m_dismissWithTap = in_dismissWithTap;
+
+                auto fileSystem = ChilliSource::Application::Get()->GetFileSystem();
+                std::string filePath;
+                if (in_storageLocation == ChilliSource::StorageLocation::k_DLC && fileSystem->DoesFileExistInCachedDLC(in_fileName) == false)
+                {
+                    filePath = fileSystem->GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation::k_package) + fileSystem->GetPackageDLCPath() + in_fileName;
+                }
+                else
+                {
+                    filePath = fileSystem->GetAbsolutePathToStorageLocation(in_storageLocation) + in_fileName;
+                }
+
                 NSString* urlString = [NSStringUtils newNSStringWithUTF8String:filePath];
                 NSURL* pMovieURL = [NSURL fileURLWithPath:urlString];
                 [urlString release];
@@ -120,18 +133,17 @@ namespace CSBackend
                 
                 AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange, AudioRouteCallback, m_moviePlayerController);
                 
-                Prepare();
-                
-                m_dismissWithTap = in_dismissWithTap;
-                
                 ListenForMoviePlayerNotifications();
-            }
+                
+                Prepare();
+            });
         }
         //--------------------------------------------------------------
         //--------------------------------------------------------------
-        void VideoPlayer::PresentWithSubtitles(CSCore::StorageLocation in_storageLocation, const std::string& in_fileName, const CSVideo::SubtitlesCSPtr& in_subtitles, VideoCompleteDelegate::Connection&& in_delegateConnection,
-                                                     bool in_dismissWithTap, const CSCore::Colour& in_backgroundColour)
+        void VideoPlayer::PresentWithSubtitles(ChilliSource::StorageLocation in_storageLocation, const std::string& in_fileName, const ChilliSource::SubtitlesCSPtr& in_subtitles, VideoCompleteDelegate::Connection&& in_delegateConnection,
+                                                     bool in_dismissWithTap, const ChilliSource::Colour& in_backgroundColour)
         {
+            CS_RELEASE_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread(), "Cannot present video on background thread.");
             m_subtitles = in_subtitles;
             Present(in_storageLocation, in_fileName, std::move(in_delegateConnection), in_dismissWithTap);
         }
@@ -150,21 +162,30 @@ namespace CSBackend
         }
         //--------------------------------------------------------------
         //--------------------------------------------------------------
-        CSCore::Vector2 VideoPlayer::GetVideoDimensions() const
+        ChilliSource::Vector2 VideoPlayer::GetVideoDimensions() const
         {
-            return CSCore::Vector2(m_moviePlayerController.naturalSize.width, m_moviePlayerController.naturalSize.height);
+            return ChilliSource::Vector2(m_moviePlayerController.naturalSize.width, m_moviePlayerController.naturalSize.height);
+        }
+        //--------------------------------------------------------
+        //--------------------------------------------------------
+        bool VideoPlayer::IsPresented() const noexcept
+        {
+            return (m_currentState != State::k_inactive);
         }
         //--------------------------------------------------------
         //--------------------------------------------------------
         void VideoPlayer::OnInit()
         {
-            m_screen = CSCore::Application::Get()->GetSystem<CSCore::Screen>();
+            m_screen = ChilliSource::Application::Get()->GetSystem<ChilliSource::Screen>();
             m_tapListener = [[CVideoPlayerTapListener alloc] init];
         }
         //---------------------------------------------------------------
         //---------------------------------------------------------------
         void VideoPlayer::Prepare()
         {
+            auto previousState = m_currentState.exchange(State::k_ready);
+            CS_RELEASE_ASSERT(previousState == State::k_loading, "Video player not presented, cannot prepare to play video.");
+            
             [m_moviePlayerController setControlStyle:MPMovieControlStyleNone];
             [m_moviePlayerController setFullscreen:YES];
             [m_moviePlayerController setRepeatMode:MPMovieRepeatModeNone];
@@ -174,6 +195,9 @@ namespace CSBackend
         //---------------------------------------------------------------
         void VideoPlayer::Play()
         {
+            auto previousState = m_currentState.exchange(State::k_playing);
+            CS_RELEASE_ASSERT(previousState == State::k_ready, "Video player not prepared to play video yet, cannot play.");
+            
             CreateVideoOverlay();
             [m_moviePlayerController play];
         }
@@ -182,9 +206,9 @@ namespace CSBackend
         void VideoPlayer::ListenForMoviePlayerNotifications()
         {
             [[NSNotificationAdapter sharedInstance] BeginListeningForMPLoadStateChanged];
-            m_moviePlayerLoadStateChangedConnection = [[NSNotificationAdapter sharedInstance] GetMPLoadStateChangeEvent].OpenConnection(CSCore::MakeDelegate(this, &VideoPlayer::OnLoadStateChanged));
+            m_moviePlayerLoadStateChangedConnection = [[NSNotificationAdapter sharedInstance] GetMPLoadStateChangeEvent].OpenConnection(ChilliSource::MakeDelegate(this, &VideoPlayer::OnLoadStateChanged));
             [[NSNotificationAdapter sharedInstance] BeginListeningForMPPlaybackDidFinish];
-            m_moviePlayerPlaybackFinishedConnection = [[NSNotificationAdapter sharedInstance] GetMPPlaybackDidFinishEvent].OpenConnection(CSCore::MakeDelegate(this, &VideoPlayer::OnPlaybackFinished));
+            m_moviePlayerPlaybackFinishedConnection = [[NSNotificationAdapter sharedInstance] GetMPPlaybackDidFinishEvent].OpenConnection(ChilliSource::MakeDelegate(this, &VideoPlayer::OnPlaybackFinished));
         }
         //---------------------------------------------------------------
         //---------------------------------------------------------------
@@ -243,7 +267,8 @@ namespace CSBackend
         //---------------------------------------------------------------
         void VideoPlayer::OnPlaybackFinished()
         {
-            m_playing = false;
+            auto previousState = m_currentState.exchange(State::k_inactive);
+            CS_RELEASE_ASSERT(previousState == State::k_playing, "Playback finished should only happen once per playing video.");
             
             DeleteVideoOverlay();
             
@@ -262,24 +287,30 @@ namespace CSBackend
             [[NSNotificationAdapter sharedInstance] StopListeningForMPPlaybackDidFinish];
             m_moviePlayerPlaybackFinishedConnection = nullptr;
             
-            if (m_completionDelegateConnection != nullptr)
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_mainThread, [=](const ChilliSource::TaskContext& taskContext)
             {
-                auto delegateConnection = std::move(m_completionDelegateConnection);
-                m_completionDelegateConnection = nullptr;
-                delegateConnection->Call();
-            }
+                if (m_completionDelegateConnection != nullptr)
+                {
+                    auto delegateConnection = std::move(m_completionDelegateConnection);
+                    m_completionDelegateConnection = nullptr;
+                    delegateConnection->Call();
+                }
+            });
         }
         //---------------------------------------------------------------
         //---------------------------------------------------------------
         void VideoPlayer::OnResume()
         {
-            if (m_moviePlayerController != nil)
+            ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& taskContext)
             {
-                if (m_playing == true)
+                if (m_moviePlayerController != nil)
                 {
-                    [m_moviePlayerController play];
+                    if (m_currentState == State::k_playing || m_currentState == State::k_ready)
+                    {
+                        [m_moviePlayerController play];
+                    }
                 }
-            }
+            });
         }
         //---------------------------------------------------------------
         //---------------------------------------------------------------
@@ -297,7 +328,7 @@ namespace CSBackend
                 //setup the tap gesture if we can dismiss with tap
                 if (m_dismissWithTap && m_tapListener != nil)
                 {
-                    [m_tapListener SetupWithView: m_videoOverlayView AndDelegate:CSCore::MakeDelegate(this, &VideoPlayer::OnTapped)];
+                    [m_tapListener SetupWithView: m_videoOverlayView AndDelegate:ChilliSource::MakeDelegate(this, &VideoPlayer::OnTapped)];
                 }
                 
                 //create the subtitles renderer

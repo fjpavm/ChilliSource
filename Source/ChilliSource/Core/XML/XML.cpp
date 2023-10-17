@@ -1,6 +1,6 @@
 //
 //  XML.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 12/06/2014.
 //
 //  The MIT License (MIT)
@@ -29,19 +29,16 @@
 
 namespace ChilliSource
 {
-    namespace Core
+    //---------------------------------------------------------
+    //---------------------------------------------------------
+    XML::XML(std::unique_ptr<rapidxml::xml_document<>> in_document, std::unique_ptr<s8[]> in_data)
+        : m_document(std::move(in_document)), m_data(std::move(in_data))
     {
-        //---------------------------------------------------------
-        //---------------------------------------------------------
-        XML::XML(std::unique_ptr<rapidxml::xml_document<>> in_document, std::unique_ptr<s8[]> in_data)
-            : m_document(std::move(in_document)), m_data(std::move(in_data))
-        {
-        }
-        //---------------------------------------------------------
-        //---------------------------------------------------------
-        rapidxml::xml_document<>* XML::GetDocument() const
-        {
-            return m_document.get();
-        }
+    }
+    //---------------------------------------------------------
+    //---------------------------------------------------------
+    rapidxml::xml_document<>* XML::GetDocument() const
+    {
+        return m_document.get();
     }
 }

@@ -1,6 +1,6 @@
 //
 //  ForwardDeclarations.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 27/02/2014.
 //
 //  The MIT License (MIT)
@@ -33,19 +33,16 @@
 
 #include <memory>
 
-namespace ChilliSource 
+namespace ChilliSource
 {
-	namespace Audio
-	{
-		//------------------------------------------------------------------------------
-		/// Cricket Audio
-		//------------------------------------------------------------------------------
-		CS_FORWARDDECLARE_CLASS(CkSound);
-		CS_FORWARDDECLARE_CLASS(CkBank);
-		CS_FORWARDDECLARE_CLASS(CkBankProvider);
-		CS_FORWARDDECLARE_CLASS(CkAudioPlayer);
-		CS_FORWARDDECLARE_CLASS(CricketAudioSystem);
-	}
+    //------------------------------------------------------------------------------
+    /// Cricket Audio
+    //------------------------------------------------------------------------------
+    CS_FORWARDDECLARE_CLASS(CkSound);
+    CS_FORWARDDECLARE_CLASS(CkBank);
+    CS_FORWARDDECLARE_CLASS(CkBankProvider);
+    CS_FORWARDDECLARE_CLASS(CkAudioPlayer);
+    CS_FORWARDDECLARE_CLASS(CricketAudioSystem);
 }
 
 #endif
