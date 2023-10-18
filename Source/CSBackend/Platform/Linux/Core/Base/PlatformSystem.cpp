@@ -1,6 +1,6 @@
 //
 //  PlatformSystem.cpp
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 24/11/2010.
 //
 //  The MIT License (MIT)
@@ -30,9 +30,9 @@
 
 #include <CSBackend/Platform/Linux/Core/Base/PlatformSystem.h>
 #include <CSBackend/Platform/Linux/SFML/Base/SFMLWindow.h>
-#include <CSBackend/Rendering/OpenGL/Shader/GLSLShaderProvider.h>
-#include <CSBackend/Rendering/OpenGL/Texture/TextureUnitSystem.h>
 #include <ChilliSource/Core/Base/Application.h>
+#include <ChilliSource/Core/Threading/TaskScheduler.h>
+#include <ChilliSource/UI/Base/CursorSystem.h>
 
 #include <chrono>
 
@@ -48,40 +48,42 @@ namespace CSBackend
 		}
 		//--------------------------------------------------
 		//--------------------------------------------------
-		bool PlatformSystem::IsA(CSCore::InterfaceIDType in_interfaceId) const
+		bool PlatformSystem::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
 		{
-			return (CSCore::PlatformSystem::InterfaceID == in_interfaceId || PlatformSystem::InterfaceID == in_interfaceId);
+			return (ChilliSource::PlatformSystem::InterfaceID == in_interfaceId || PlatformSystem::InterfaceID == in_interfaceId);
 		}
 		//-------------------------------------------------
 		//-------------------------------------------------
-		void PlatformSystem::CreateDefaultSystems(CSCore::Application* in_application)
+		void PlatformSystem::CreateDefaultSystems(ChilliSource::Application* in_application)
 		{
-			in_application->CreateSystem<CSBackend::OpenGL::GLSLShaderProvider>();
-			in_application->CreateSystem<CSBackend::OpenGL::TextureUnitSystem>();
+			in_application->CreateSystem<ChilliSource::CursorSystem>();
 		}
 		//-------------------------------------------------
 		//-------------------------------------------------
 		void PlatformSystem::SetPreferredFPS(u32 in_fps)
 		{
-			SFMLWindow::Get()->SetPreferredFPS(in_fps);
+			ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& in_taskContext)
+			{
+				SFMLWindow::Get()->SetPreferredFPS(in_fps);
+			});
 		}
 		//---------------------------------------------------
 		//---------------------------------------------------
 		void PlatformSystem::SetVSyncEnabled(bool in_enabled)
 		{
-			SFMLWindow::Get()->SetVSyncEnabled(in_enabled);
+			ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& in_taskContext)
+			{
+				SFMLWindow::Get()->SetVSyncEnabled(in_enabled);
+			});
 		}
 		//--------------------------------------------
 		//--------------------------------------------
 		void PlatformSystem::Quit()
 		{
-			SFMLWindow::Get()->Quit();
-		}
-		//-------------------------------------------------
-		//-------------------------------------------------
-		std::string PlatformSystem::GetAppVersion() const
-		{
-			return ""; 
+			ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& in_taskContext)
+			{
+				SFMLWindow::Get()->Quit();
+			});
 		}
 		//--------------------------------------------------
 		//--------------------------------------------------

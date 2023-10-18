@@ -1,6 +1,6 @@
 //
 //  ForwardDeclarations.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 03/03/2014.
 //
 //  The MIT License (MIT)
@@ -46,12 +46,12 @@ namespace CSBackend
 		CS_FORWARDDECLARE_CLASS(FileSystem);
 		CS_FORWARDDECLARE_CLASS(PNGImageProvider);
 		CS_FORWARDDECLARE_CLASS(PngImage);
-		CS_FORWARDDECLARE_CLASS(Device);
 		CS_FORWARDDECLARE_CLASS(Screen);
 		//------------------------------------------------------
 		/// Input
 		//------------------------------------------------------
 		CS_FORWARDDECLARE_CLASS(DeviceButtonSystem);
+		CS_FORWARDDECLARE_CLASS(GamepadSystem);
 		CS_FORWARDDECLARE_CLASS(Keyboard);
 		CS_FORWARDDECLARE_CLASS(PointerSystem);
 		CS_FORWARDDECLARE_CLASS(TextEntry);

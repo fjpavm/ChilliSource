@@ -1,11 +1,6 @@
-//
-//  DeviceButtonSystem.cpp
-//  ChilliSource
-//  Created by Ian Copland on 16/05/2014.
-//
 //  The MIT License (MIT)
 //
-//  Copyright (c) 2014 Tag Games Limited
+//  Copyright (c) 2016 Tag Games Limited
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -28,26 +23,25 @@
 
 #ifdef CS_TARGETPLATFORM_LINUX
 
-#include <CSBackend/Platform/Linux/Input/DeviceButtons/DeviceButtonSystem.h>
+#include <ChilliSource/ChilliSource.h>
+#include <ChilliSource/Core/Base/SystemInfo.h>
+#include <CSBackend/Platform/Linux/ForwardDeclarations.h>
 
 namespace CSBackend
 {
-	namespace Linux
-	{
-        CS_DEFINE_NAMEDTYPE(DeviceButtonSystem);
-        //----------------------------------------------------
-        //----------------------------------------------------
-        bool DeviceButtonSystem::IsA(ChilliSource::InterfaceIDType in_interfaceID) const
+    namespace Linux
+    {
+        /// A factory for creating new instances of SystemInfo. This will query the Windows
+        /// API to gather information about the device.
+        ///
+        namespace SystemInfoFactory
         {
-            return (in_interfaceID == ChilliSource::DeviceButtonSystem::InterfaceID || in_interfaceID == DeviceButtonSystem::InterfaceID);
+            /// This function creates the new SystemInfo instance.
+            /// @return The new instance.
+            ///
+            ChilliSource::SystemInfoCUPtr CreateSystemInfo() noexcept;
         }
-        //----------------------------------------------------
-        //----------------------------------------------------
-        ChilliSource::IConnectableEvent<DeviceButtonSystem::TriggeredDelegate>& DeviceButtonSystem::GetTriggeredEvent()
-        {
-            return m_triggeredEvent;
-        }
-	}
+    }
 }
 
 #endif

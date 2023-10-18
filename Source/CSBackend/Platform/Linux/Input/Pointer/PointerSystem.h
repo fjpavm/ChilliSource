@@ -1,6 +1,6 @@
 //
 //  PointerSystem.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Ian Copland on 27/03/2014.
 //
 //  The MIT License (MIT)
@@ -45,10 +45,13 @@ namespace CSBackend
 		//------------------------------------------------------------
 		/// The Linux backend for the pointer system. This provides
 		/// access to touch events.
+///
+        /// The methods in this class are not thread-safe and must be
+        /// accessed from the main thread.
 		///
 		/// @author Ian Copland
 		//------------------------------------------------------------
-		class PointerSystem final : public CSInput::PointerSystem
+		class PointerSystem final : public ChilliSource::PointerSystem
 		{
 		public:
 			CS_DECLARE_NAMEDTYPE(PointerSystem);
@@ -62,22 +65,22 @@ namespace CSBackend
 			///
 			/// @return Whether or not the interface is implemented.
 			//----------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+			bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
 			//----------------------------------------------------
 			/// Hide the window cursor
 			///
 			/// @author S Downie
 			//----------------------------------------------------
-			void HideCursor() override;
+			void HideSystemCursor() override;
 			//----------------------------------------------------
 			/// Show the window cursor
 			///
 			/// @author S Downie
 			//----------------------------------------------------
-			void ShowCursor() override;
+			void ShowSystemCursor() override;
 
 		private:
-			friend class CSInput::PointerSystem;
+			friend class ChilliSource::PointerSystem;
 			//----------------------------------------------
 			/// Triggered by SFML when the cursor moves
 			///
@@ -134,12 +137,8 @@ namespace CSBackend
 			//------------------------------------------------
 			void OnDestroy() override;
 
-			CSCore::Screen* m_screen;
-			CSInput::Pointer::Id m_pointerId;
-
-			CSCore::EventConnectionUPtr m_mouseButtonConnection;
-			CSCore::EventConnectionUPtr m_mouseMovedConnection;
-			CSCore::EventConnectionUPtr m_mouseWheelConnection;
+			ChilliSource::Screen* m_screen;
+			ChilliSource::Pointer::Id m_pointerId;
 		};
 	}
 }

@@ -1,6 +1,6 @@
 //
 //  TextEntry.h
-//  Chilli Source
+//  ChilliSource
 //  Created by Scott Downie on 08/07/2014
 //
 //  The MIT License (MIT)
@@ -35,19 +35,29 @@
 #include <ChilliSource/Core/Event/EventConnection.h>
 #include <ChilliSource/Core/String/UTF8StringUtils.h>
 #include <ChilliSource/Input/TextEntry/TextEntry.h>
+#include <ChilliSource/Input/TextEntry/TextEntryCapitalisation.h>
+#include <ChilliSource/Input/TextEntry/TextEntryType.h>
 #include <CSBackend/Platform/Linux/ForwardDeclarations.h>
+
+#include <mutex>
+
 
 namespace CSBackend
 {
 	namespace Linux
 	{
         //----------------------------------------------------------------
-        /// The iOS backend to the text entry system. This provides access
-        /// to the iOS virtual keyboard functionality via a text buffer
+        /// The Linux backend to the text entry system. Using SFML
+		/// text entry events this class builds a buffer of input text.
+		///
+		/// NOTE: This class ignores the capitalisation policies.
+        ///
+        /// The methods in this class are not thread-safe and must be called
+        /// from the main thread.
         ///
         /// @author S Downie
         //----------------------------------------------------------------
-		class TextEntry final : public CSInput::TextEntry
+		class TextEntry final : public ChilliSource::TextEntry
 		{
 		public:
 			CS_DECLARE_NAMEDTYPE(TextEntry);
@@ -58,7 +68,7 @@ namespace CSBackend
 			///
 			/// @return Whether this system implements the given inteface
 			//-------------------------------------------------------
-			bool IsA(CSCore::InterfaceIDType in_interfaceId) const override;
+			bool IsA(ChilliSource::InterfaceIDType in_interfaceId) const override;
 			//-------------------------------------------------------
 			/// The system will now receive text input.
 			///
@@ -70,7 +80,7 @@ namespace CSBackend
 			/// @param Text changed delegate
 			/// @param Deactivate delegate
 			//-------------------------------------------------------
-			void Activate(const std::string& in_text, Type in_type, Capitalisation in_capitalisation, const TextBufferChangedDelegate& in_changeDelegate, const TextInputDeactivatedDelegate& in_deactivateDelegate) override;
+			void Activate(const std::string& in_text, ChilliSource::TextEntryType in_type, ChilliSource::TextEntryCapitalisation in_capitalisation, const TextBufferChangedDelegate& in_changeDelegate, const TextInputDeactivatedDelegate& in_deactivateDelegate) override;
 			//-------------------------------------------------------
 			/// The system will no longer receive text input.
 			///
@@ -98,7 +108,7 @@ namespace CSBackend
             void SetTextBuffer(const std::string& in_text) override;
 
 		private:
-            friend CSInput::TextEntryUPtr CSInput::TextEntry::Create();
+            friend ChilliSource::TextEntryUPtr ChilliSource::TextEntry::Create();
         
             //-------------------------------------------------------
             /// Constructor. Declared private to force the use of the
@@ -114,15 +124,16 @@ namespace CSBackend
 			///
 			/// @param UTF-8 character
 			//-------------------------------------------------------
-			void OnTextEntered(CSCore::UTF8Char in_unicodeChar);
+			void OnTextEntered(ChilliSource::UTF8Char in_unicodeChar);
 
 		private:
             
             TextBufferChangedDelegate m_textBufferChangedDelegate;
             TextInputDeactivatedDelegate m_textInputDeactivatedDelegate;
 
-			CSCore::EventConnectionUPtr m_textEnteredConnection;
+			std::mutex m_mutex;
 
+			bool m_active = false;
 			std::string m_text;
 		};
 	}

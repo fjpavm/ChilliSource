@@ -32,6 +32,7 @@
 
 #include <ChilliSource/Core/Base/Application.h>
 #include <ChilliSource/Core/Base/PlatformSystem.h>
+#include <ChilliSource/Core/Threading/TaskScheduler.h>
 #include <CSBackend/Platform/Linux/SFML/Base/SFMLWindow.h>
 
 namespace CSBackend
@@ -46,15 +47,16 @@ namespace CSBackend
         }
         //----------------------------------------------------
         //----------------------------------------------------
-        bool DialogueBoxSystem::IsA(CSCore::InterfaceIDType in_interfaceId) const
+        bool DialogueBoxSystem::IsA(ChilliSource::InterfaceIDType in_interfaceId) const
         {
-            return (DialogueBoxSystem::InterfaceID == in_interfaceId || CSCore::DialogueBoxSystem::InterfaceID == in_interfaceId);
+            return (DialogueBoxSystem::InterfaceID == in_interfaceId || ChilliSource::DialogueBoxSystem::InterfaceID == in_interfaceId);
         }
         //-----------------------------------------------------
         //-----------------------------------------------------
-		void DialogueBoxSystem::ShowSystemDialogue(u32 in_id, const CSCore::DialogueBoxSystem::DialogueDelegate& in_delegate, const std::string& in_title, const std::string& in_message, const std::string& in_confirm)
+		void DialogueBoxSystem::ShowSystemDialogue(u32 in_id, const ChilliSource::DialogueBoxSystem::DialogueDelegate& in_delegate, const std::string& in_title, const std::string& in_message, const std::string& in_confirm)
         {
-						
+			CS_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread(), "System Dialogue requested outside of main thread.");
+			
 			printf("%s\n%s\nNo implemented linux dialog boxes. Auto accepting\n", in_title.c_str(), in_message.c_str());
 			if (in_delegate)
 			{
@@ -63,8 +65,10 @@ namespace CSBackend
         }
         //-----------------------------------------------------
         //-----------------------------------------------------
-		void DialogueBoxSystem::ShowSystemConfirmDialogue(u32 in_id, const CSCore::DialogueBoxSystem::DialogueDelegate& in_delegate, const std::string& in_title, const std::string& in_message, const std::string& in_confirm, const std::string& in_cancel)
+		void DialogueBoxSystem::ShowSystemConfirmDialogue(u32 in_id, const ChilliSource::DialogueBoxSystem::DialogueDelegate& in_delegate, const std::string& in_title, const std::string& in_message, const std::string& in_confirm, const std::string& in_cancel)
         {
+            CS_ASSERT(ChilliSource::Application::Get()->GetTaskScheduler()->IsMainThread(), "System Confirm Dialogue requested outside of main thread.");
+
 			printf("%s\n%s\nNo implemented linux dialog boxes. Auto accepting\n", in_title.c_str(), in_message.c_str());
 			if (true)
 			{
