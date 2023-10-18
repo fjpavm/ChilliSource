@@ -65,7 +65,7 @@ namespace ChilliSource
 #elif defined CS_TARGETPLATFORM_RPI
         return PlatformSystemUPtr(new CSBackend::RPi::PlatformSystem());
 #elif defined CS_TARGETPLATFORM_LINUX
-			return PlatformSystemUPtr(new CSBackend::Linux::PlatformSystem());
+	return PlatformSystemUPtr(new CSBackend::Linux::PlatformSystem());
 #else
         return nullptr;
 #endif

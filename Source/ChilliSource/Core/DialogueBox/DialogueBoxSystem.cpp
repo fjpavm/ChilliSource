@@ -58,7 +58,7 @@ namespace ChilliSource
 #elif defined CS_TARGETPLATFORM_WINDOWS
         return DialogueBoxSystemUPtr(new CSBackend::Windows::DialogueBoxSystem());
 #elif defined CS_TARGETPLATFORM_LINUX
-			return DialogueBoxSystemUPtr(new CSBackend::Linux::DialogueBoxSystem());
+        return DialogueBoxSystemUPtr(new CSBackend::Linux::DialogueBoxSystem());
 #else
         return nullptr;
 #endif

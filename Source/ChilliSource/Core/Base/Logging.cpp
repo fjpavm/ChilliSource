@@ -176,7 +176,7 @@ namespace ChilliSource
 #elif defined (CS_TARGETPLATFORM_RPI)
         std::cout << "[ChilliSource] " << in_message << std::endl;
 #else
-			fprintf(stderr,"[Chilli Source] %s\n", in_message.c_str()); // Default to printing to stderr
+		fprintf(stderr,"[Chilli Source] %s\n", in_message.c_str()); // Default to printing to stderr
 #endif
         
 #ifdef CS_ENABLE_LOGTOFILE

@@ -64,7 +64,7 @@ namespace ChilliSource
 #elif defined CS_TARGETPLATFORM_RPI
         return ScreenUPtr(new CSBackend::RPi::Screen(screenInfo));
 #elif defined CS_TARGETPLATFORM_LINUX
-			return ScreenUPtr(new CSBackend::Linux::Screen());
+		return ScreenUPtr(new CSBackend::Linux::Screen());
 #else
         return nullptr;
 #endif

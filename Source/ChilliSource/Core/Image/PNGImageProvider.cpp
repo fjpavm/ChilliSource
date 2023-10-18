@@ -67,7 +67,7 @@ namespace ChilliSource
         return PNGImageProviderUPtr(new CSBackend::RPi::PNGImageProvider());
 #endif
 #ifdef CS_TARGETPLATFORM_LINUX
-			return PNGImageProviderUPtr(new CSBackend::Linux::PNGImageProvider());
+	return PNGImageProviderUPtr(new CSBackend::Linux::PNGImageProvider());
 #endif
     }
 }
