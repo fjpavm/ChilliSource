@@ -69,7 +69,7 @@ namespace ChilliSource
         return HttpRequestSystemUPtr(new CSBackend::RPi::HttpRequestSystem());
 #endif
 #ifdef CS_TARGETPLATFORM_LINUX
-        return HttpRequestSystemUPtr(new CSBackend::RPi::HttpRequestSystem());
+        return HttpRequestSystemUPtr(new CSBackend::Linux::HttpRequestSystem());
 #endif
         return nullptr;
     }
