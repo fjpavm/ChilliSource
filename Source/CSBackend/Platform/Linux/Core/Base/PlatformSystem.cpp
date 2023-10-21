@@ -82,15 +82,10 @@ namespace CSBackend
 		{
 			ChilliSource::Application::Get()->GetTaskScheduler()->ScheduleTask(ChilliSource::TaskType::k_system, [=](const ChilliSource::TaskContext& in_taskContext)
 			{
-				SFMLWindow::Get()->Quit();
+				SFMLWindow::Get()->ScheduleQuit();
 			});
 		}
-		//--------------------------------------------------
-		//--------------------------------------------------
-		u64 PlatformSystem::GetSystemTimeMS() const
-		{
-			return (u64) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();  
-		}
+
 	}
 }
 

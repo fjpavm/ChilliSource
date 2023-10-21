@@ -202,7 +202,7 @@ namespace CSBackend
 			/// @author S Downie
 			///
 			/// @param Window mode
-/// @param Window size
+			/// @param Window size
 			/// @param TRUE to force set even if the same as previous
 			//-------------------------------------------------
 			void SetDisplayMode(ChilliSource::Screen::DisplayMode in_mode, const ChilliSource::Integer2& size, bool force = false);
@@ -383,7 +383,7 @@ namespace CSBackend
 			/// Recreate the window in fullscreen state
 			///
 			/// @author S Downie
-///
+			///
 			/// @param size of window
 			//-------------------------------------------------
 			void SetFullscreen(const ChilliSource::Integer2& size);
@@ -391,7 +391,7 @@ namespace CSBackend
 			/// Recreate the window in windowed state
 			///
 			/// @author S Downie
-///
+			///
 			/// @param size of window
 			//-------------------------------------------------
 			void SetWindowed(const ChilliSource::Integer2& size);

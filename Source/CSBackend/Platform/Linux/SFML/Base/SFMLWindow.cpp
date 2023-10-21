@@ -76,7 +76,7 @@ namespace CSBackend
 			Json::Value ReadAppConfig() noexcept
 			{
 				//get the path to here
-				std::string workingDir = CSCore::StringUtils::StandardiseDirectoryPath("./");
+				std::string workingDir = ChilliSource::StringUtils::StandardiseDirectoryPath("./");
 
 				//open the file
 				std::ifstream file(workingDir + "assets/AppResources/App.config");

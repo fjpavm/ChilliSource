@@ -31,7 +31,7 @@ namespace CSBackend
 {
     namespace Linux
     {
-        /// A factory for creating new instances of SystemInfo. This will query the Windows
+        /// A factory for creating new instances of SystemInfo. This will query the Linux
         /// API to gather information about the device.
         ///
         namespace SystemInfoFactory

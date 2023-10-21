@@ -107,7 +107,7 @@ namespace CSBackend
 			bool CreateDirectoryPath(std::string in_directoryPath)
 			{
 				// remove last forward slash if it exists so forward slash indicates parent dir
-				if(ChilliSource::Core::StringUtils::EndsWith(in_directoryPath, "/"))
+				if(ChilliSource::StringUtils::EndsWith(in_directoryPath, "/"))
 				{
 					in_directoryPath.pop_back();
 				}			
@@ -279,16 +279,16 @@ namespace CSBackend
 			m_documentsPath = strWorkingDir + "Documents/";
 
 			CSBackend::Linux::CreateDirectoryPath(m_documentsPath);
-			CS_ASSERT(CSBackend::Linux::DoesDirectoryExist(m_documentsPath)), "Could not create Documents directory.");
+			CS_ASSERT(CSBackend::Linux::DoesDirectoryExist(m_documentsPath), "Could not create Documents directory.");
 
 			CSBackend::Linux::CreateDirectoryPath(GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation::k_saveData));
-			CS_ASSERT(CSBackend::Windows::DoesDirectoryExist(GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation::k_saveData)), "Could not create SaveData storage location.");
+			CS_ASSERT(CSBackend::Linux::DoesDirectoryExist(GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation::k_saveData)), "Could not create SaveData storage location.");
 
 			CSBackend::Linux::CreateDirectoryPath(GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation::k_cache));
-			CS_ASSERT(CSBackend::Windows::DoesDirectoryExist(GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation::k_cache)), "Could not create Cache storage location.");
+			CS_ASSERT(CSBackend::Linux::DoesDirectoryExist(GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation::k_cache)), "Could not create Cache storage location.");
 
 			CSBackend::Linux::CreateDirectoryPath(GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation::k_DLC));
-			CS_ASSERT(CSBackend::Windows::DoesDirectoryExist(GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation::k_DLC)), "Could not create DLC storage location.");
+			CS_ASSERT(CSBackend::Linux::DoesDirectoryExist(GetAbsolutePathToStorageLocation(ChilliSource::StorageLocation::k_DLC)), "Could not create DLC storage location.");
 		}
 		//----------------------------------------------------------
 		//----------------------------------------------------------
@@ -421,8 +421,8 @@ namespace CSBackend
 			//create the output directory
 			CreateDirectoryPath(in_destinationStorageLocation, destinationDirectoryPath);
             
-			std::string destFilePath = GetAbsolutePathToStorageLocation(in_destinationStorageLocation) + in_destinationFilePath
-            		//try and copy the files
+			std::string destFilePath = GetAbsolutePathToStorageLocation(in_destinationStorageLocation) + in_destinationFilePath;
+            //try and copy the files
 			if (CSBackend::Linux::CopyFile(sourceFilePath, destFilePath) == false)
 			{
 				CS_LOG_ERROR("File System: Failed to copy file '" + in_sourceFilePath + "'");

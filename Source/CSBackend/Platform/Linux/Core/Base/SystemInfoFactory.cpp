@@ -162,7 +162,7 @@ namespace CSBackend
             {
 				return std::thread::hardware_concurrency();
             }
-        }
+        
 
             /// @return The screen's current resolution.
             ///
@@ -184,14 +184,14 @@ namespace CSBackend
         //--------------------------------------------------------------------------------
         ChilliSource::SystemInfoCUPtr SystemInfoFactory::CreateSystemInfo() noexcept
         {
-            // Create DeviceInfo.
-            ChilliSource::DeviceInfo deviceInfo(GetDeviceModel(), k_deviceModelType, GetManufacturer(), GetUDID(), GetLocale(), ParseLanguageFromLocale(GetLocale()), GetOSVersion(), GetNumberOfCPUCores());
+             // Create DeviceInfo.
+            ChilliSource::DeviceInfo deviceInfo(GetDeviceModel(), k_deviceModelType, GetDeviceManufacturer(), GetUDID(), GetLocale(), ParseLanguageFromLocale(GetLocale()), GetOSVersion(), GetNumberOfCPUCores());
 
             // Create ScreenInfo.
             ChilliSource::ScreenInfo screenInfo(GetScreenResolution(), 1.0f, 1.0f, GetSupportedFullscreenResolutions());
 
 			//Create RenderInfo
-			ChilliSource::RenderInfo renderInfo = OpenGL::RenderInfoFactory::CreateRenderInfo();
+    		ChilliSource::RenderInfo renderInfo = OpenGL::RenderInfoFactory::CreateRenderInfo();
 
             // Create SystemInfo.
             ChilliSource::SystemInfoUPtr systemInfo(new ChilliSource::SystemInfo(deviceInfo, screenInfo, renderInfo, ""));
