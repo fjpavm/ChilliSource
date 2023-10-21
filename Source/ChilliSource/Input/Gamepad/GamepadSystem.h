@@ -33,6 +33,7 @@
 
 #include <mutex>
 #include <queue>
+#include <functional>
 
 namespace ChilliSource
 {

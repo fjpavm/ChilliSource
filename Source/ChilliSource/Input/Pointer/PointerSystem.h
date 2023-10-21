@@ -39,6 +39,8 @@
 #include <queue>
 #include <set>
 #include <unordered_map>
+#include <functional>
+
 
 namespace ChilliSource
 {
