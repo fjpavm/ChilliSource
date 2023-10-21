@@ -1,0 +1,10 @@
+CFLAGS="-I$HOME/tmp/openssl-static-dev/include" LDFLAGS="-L$HOME/tmp/openssl-static-dev/lib64" \
+./configure --prefix=$HOME/libcurl-static-dev --without-libgsasl --without-winidn --without-librtmp \
+--without-libssh2 --without-libpsl --with-openssl --without-zlib \
+--disable-gopher --disable-smb --disable-smtp --disable-imap --disable-pop3  \
+--disable-tftp --disable-telnet --disable-dict --disable-rtsp  \
+--disable-ldaps  --disable-ldap  --disable-file --disable-ftp \
+--disable-shared --disable-libcurl-option --enable-cookies \
+--disable-threaded-resolver 
+make
+make install

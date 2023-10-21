@@ -1,9 +1,9 @@
-# GNU Makefile to create CSBase library for linux
+# GNU Makefile to create the ChilliSource static library for linux
 
 SOLUTION_DIR = .
 
 SUB_DIRS = ChilliSource/Core ChilliSource/Input ChilliSource/Networking ChilliSource/Rendering ChilliSource/Social ChilliSource/UI ChilliSource/Video ChilliSource/Web CSBackend/Rendering/OpenGL
-PLATFORM_SUB_DIRS = SFML Input Core
+PLATFORM_SUB_DIRS = SFML Input Core Networking
 
 MKDIR = mkdir -p
 
@@ -17,7 +17,7 @@ OUT_DIR = $(SOLUTION_DIR)/csbin/$(PLATFORM)/
 TARGET_ARCHITECTURE = linux_x86_64
 TARGET_VERSION = release
 
-LIBS_LINUX = CSBase z sfml-system-s sfml-window-s
+LIBS_LINUX = CSBase z sfml-system-s sfml-window-s crypto ssl curl
 
 #CPPFLAGS += -fpermissive
 # add compiler use c++11 flags
@@ -35,7 +35,7 @@ CPPFLAGS += -DCS_TARGETPLATFORM_$(call to_upper,$(PLATFORM))
 # add dependency defines and library flags
 CPPFLAGS += -DGLEW_STATIC -DSFML_STATIC
 CPPFLAGS += -static
-CPPFLAGS += -L$(CORE_LIB_DIR)/Libs/$(if $(call contains,x86_64,$(TARGET_ARCHITECTURE)),x86_64,x86_32) 
+CPPFLAGS += -L$(CORE_LIB_DIR)/Libs/$(if $(call contains,x86_64,$(TARGET_ARCHITECTURE)),x86_64,x86_32)/$(if $(or $(call eq,$(TARGET_VERSION),debug),$(call eq,$(TARGET_VERSION),DEBUG)),debug,release) 
 CPPFLAGS += $(foreach lib,$(LIBS_$(call to_upper,$(PLATFORM))), -l$(lib))
 #CPPFLAGS += -L$(CRICKET_LIB_DIR)/Libs
 #CPPFLAGS += -lck
@@ -64,8 +64,10 @@ endef
 #Target rules
 all : $(OUT_PREFIX_DIR)/libChilliSource.a headers
 
+# cleanning need *.o for when errors interupt build midway
 clean :
 	rm -r csobj
+	rm *.o
 
 $(OUT_PREFIX_DIR)/libChilliSource.a : $(addprefix $(OBJ_PREFIX_DIR)/,$(addsuffix .phony,$(SUB_DIRS))) $(addprefix $(OBJ_PREFIX_DIR)/,$(addsuffix .phony,$(PLATFORM_SUB_DIRS))) $(OBJ_PREFIX_DIR)/Main.o
 	$(MKDIR) $(OUT_PREFIX_DIR)
