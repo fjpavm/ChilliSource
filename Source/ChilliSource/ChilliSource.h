@@ -32,6 +32,12 @@
 #include <memory>
 #include <cstdint>
 
+#ifdef CS_ENABLE_DEBUG
+// Needed for some CS_ASSERTs throughout the code when building debug version
+#include <limits>
+#endif
+
+
 //------------------------------------------------------------
 // Primitive types. These should be prefered over the standard
 // primitive types as they guarantee their size.

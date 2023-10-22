@@ -14,7 +14,7 @@ CORE_LIB_DIR = ../../Libraries/Core/$(PLATFORM)
 CRICKET_LIB_DIR = ../../Libraries/CricketAudio/$(PLATFORM)
 OBJ_DIR = $(SOLUTION_DIR)/csobj/$(PLATFORM)/
 OUT_DIR = $(SOLUTION_DIR)/csbin/$(PLATFORM)/
-TARGET_ARCHITECTURE = linux_x86_64
+TARGET_ARCHITECTURE = x86_64
 TARGET_VERSION = release
 
 LIBS_LINUX = CSBase z sfml-system-s sfml-window-s crypto ssl curl
@@ -25,17 +25,18 @@ CPPFLAGS += -std=c++11 -std=gnu++11
 # add compiler debug flag for debug versions and debug defines
 CPPFLAGS += $(if $(or $(call eq,$(TARGET_VERSION),debug),$(call eq,$(TARGET_VERSION),DEBUG)), -g -D_DEBUG -DDEBUG -DCS_ENABLE_DEBUG)
 # add compiler flag for each architecture
-CPPFLAGS += $(if $(call eq,$(TARGET_ARCHITECTURE),linux_x86_64), -m64 )
-CPPFLAGS += $(if $(call eq,$(TARGET_ARCHITECTURE),linux_x86_32), -m32 )
+CPPFLAGS += $(if $(call eq,$(TARGET_ARCHITECTURE),x86_64), -m64 )
+CPPFLAGS += $(if $(call eq,$(TARGET_ARCHITECTURE),x86_32), -m32 )
 # add needed include path
 CPPFLAGS += -I $(SRC_DIR) -I $(CORE_LIB_DIR)/Headers
 CPPFLAGS += -include string -include cstring
 # add platform define
 CPPFLAGS += -DCS_TARGETPLATFORM_$(call to_upper,$(PLATFORM))
-# add dependency defines and library flags
+# add dependency defines and library flags 
+# NOTE:Always using release version of libraries even in debug build
 CPPFLAGS += -DGLEW_STATIC -DSFML_STATIC
 CPPFLAGS += -static
-CPPFLAGS += -L$(CORE_LIB_DIR)/Libs/$(if $(call contains,x86_64,$(TARGET_ARCHITECTURE)),x86_64,x86_32)/$(if $(or $(call eq,$(TARGET_VERSION),debug),$(call eq,$(TARGET_VERSION),DEBUG)),debug,release) 
+CPPFLAGS += -L$(CORE_LIB_DIR)/Libs/$(TARGET_ARCHITECTURE)/release 
 CPPFLAGS += $(foreach lib,$(LIBS_$(call to_upper,$(PLATFORM))), -l$(lib))
 #CPPFLAGS += -L$(CRICKET_LIB_DIR)/Libs
 #CPPFLAGS += -lck
