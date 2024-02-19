@@ -38,8 +38,8 @@ CPPFLAGS += -DGLEW_STATIC -DSFML_STATIC
 CPPFLAGS += -static
 CPPFLAGS += -L$(CORE_LIB_DIR)/Libs/$(TARGET_ARCHITECTURE)/release 
 CPPFLAGS += $(foreach lib,$(LIBS_$(call to_upper,$(PLATFORM))), -l$(lib))
-#CPPFLAGS += -L$(CRICKET_LIB_DIR)/Libs
-#CPPFLAGS += -lck
+CPPFLAGS += -L$(CRICKET_LIB_DIR)/Libs/$(TARGET_ARCHITECTURE)/release 
+CPPFLAGS += -lck
 
 
 
