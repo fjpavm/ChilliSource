@@ -2,7 +2,7 @@
 
 SOLUTION_DIR = .
 
-SUB_DIRS = ChilliSource/Core ChilliSource/Input ChilliSource/Networking ChilliSource/Rendering ChilliSource/Social ChilliSource/UI ChilliSource/Video ChilliSource/Web CSBackend/Rendering/OpenGL
+SUB_DIRS = ChilliSource/Audio ChilliSource/Core ChilliSource/Input ChilliSource/Networking ChilliSource/Rendering ChilliSource/Social ChilliSource/UI ChilliSource/Video ChilliSource/Web CSBackend/Rendering/OpenGL
 PLATFORM_SUB_DIRS = SFML Input Core Networking
 
 MKDIR = mkdir -p
