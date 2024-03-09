@@ -28,7 +28,7 @@ CPPFLAGS += $(if $(or $(call eq,$(TARGET_VERSION),debug),$(call eq,$(TARGET_VERS
 CPPFLAGS += $(if $(call eq,$(TARGET_ARCHITECTURE),x86_64), -m64 )
 CPPFLAGS += $(if $(call eq,$(TARGET_ARCHITECTURE),x86_32), -m32 )
 # add needed include path
-CPPFLAGS += -I $(SRC_DIR) -I $(CORE_LIB_DIR)/Headers
+CPPFLAGS += -I $(SRC_DIR) -I $(CORE_LIB_DIR)/Headers -I $(CRICKET_LIB_DIR)/Headers 
 CPPFLAGS += -include string -include cstring
 # add platform define
 CPPFLAGS += -DCS_TARGETPLATFORM_$(call to_upper,$(PLATFORM))
@@ -67,8 +67,8 @@ all : $(OUT_PREFIX_DIR)/libChilliSource.a headers
 
 # cleanning need *.o for when errors interupt build midway
 clean :
-	rm -r csobj
-	rm *.o
+	rm -r csobj || true
+	rm *.o || true
 
 $(OUT_PREFIX_DIR)/libChilliSource.a : $(addprefix $(OBJ_PREFIX_DIR)/,$(addsuffix .phony,$(SUB_DIRS))) $(addprefix $(OBJ_PREFIX_DIR)/,$(addsuffix .phony,$(PLATFORM_SUB_DIRS))) $(OBJ_PREFIX_DIR)/Main.o
 	$(MKDIR) $(OUT_PREFIX_DIR)
