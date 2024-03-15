@@ -224,6 +224,8 @@ public final class CSProjectGenerator
 			"Projects/Windows/" + k_templateProjectName + ".sln",
 			"Projects/Windows/" + k_templateProjectName + ".vcxproj",
 			"Projects/Windows/" + k_templateProjectName + ".vcxproj.filters",
+			"Projects/Linux/Makefile",
+			"Project/RPi/build.py",
 			"Tools/Scripts/content_builder.py",
 			"Tools/Scripts/file_system_utils.py",
 			"Tools/Scripts/model_builder.py",
