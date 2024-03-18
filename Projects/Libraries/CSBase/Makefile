@@ -1,6 +1,6 @@
 # GNU Makefile to create CSBase library for linux
 
-SUB_DIRS = aes base64 json md5 png rapidxml SHA1 SHA256 
+SUB_DIRS = base64 json md5 png rapidxml SHA1 SHA256 
 PLATFORM_SUB_DIRS = minizip
 
 MKDIR = mkdir -p

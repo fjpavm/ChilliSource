@@ -122,7 +122,7 @@ namespace CSBackend
 							CreateDirectoryPath(parentDir);
 						}
 					}
-					if (CreateDirectory(in_directoryPath))
+					if (CreateDirectory(in_directoryPath) == false)
 					{
 						CS_LOG_ERROR("File System: Failed to create directory '" + in_directoryPath + "'");
 						return false;
