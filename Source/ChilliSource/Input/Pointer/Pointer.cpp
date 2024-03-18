@@ -42,6 +42,8 @@ namespace ChilliSource
         return Pointer::InputType::k_leftMouseButton;
 #elif defined CS_TARGETPLATFORM_RPI
         return Pointer::InputType::k_leftMouseButton;
+#elif defined CS_TARGETPLATFORM_LINUX
+        return Pointer::InputType::k_leftMouseButton;
 #else
         return nullptr;
 #endif

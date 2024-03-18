@@ -109,6 +109,8 @@ namespace ChilliSource
             std::string platform = "Windows";
 #elif defined CS_TARGETPLATFORM_RPI
             std::string platform = "RPi";
+#elif defined CS_TARGETPLATFORM_LINUX
+            std::string platform = "Linux";
 #endif
             
             //Configurations can be overloaded per platform

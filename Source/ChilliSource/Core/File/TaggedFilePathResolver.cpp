@@ -243,18 +243,20 @@ namespace ChilliSource
         CS_ASSERT(device != nullptr, "TaggedFilePathResolver must have access to Device system");
         for(const auto& language : in_supportedLanguages)
         {
+
             m_groupTags[(u32)TagGroup::k_language].push_back("." + language);
         }
         m_activeTags[(u32)TagGroup::k_language] = "." + device->GetLanguage();
-        
         //---Platforms
-        m_groupTags[(u32)TagGroup::k_platform] = {".ios", ".android", ".windows"};
+        m_groupTags[(u32)TagGroup::k_platform] = { ".ios", ".android", ".windows", ".linux", ".rpi" };
 #if defined CS_TARGETPLATFORM_IOS
         m_activeTags[(u32)TagGroup::k_platform] = ".ios";
 #elif defined CS_TARGETPLATFORM_ANDROID
         m_activeTags[(u32)TagGroup::k_platform] = ".android";
 #elif defined CS_TARGETPLATFORM_WINDOWS
         m_activeTags[(u32)TagGroup::k_platform] = ".windows";
+#elif defined CS_TARGETPLATFORM_LINUX
+		m_activeTags[(u32)TagGroup::k_platform] = ".linux";
 #elif defined CS_TARGETPLATFORM_RPI
         m_activeTags[(u32)TagGroup::k_platform] = ".rpi";
 #endif

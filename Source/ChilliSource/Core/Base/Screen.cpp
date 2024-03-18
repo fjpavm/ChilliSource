@@ -44,6 +44,10 @@
 #include <CSBackend/Platform/RPi/Core/Base/Screen.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Core/Base/Screen.h>
+#endif
+
 namespace ChilliSource
 {
     CS_DEFINE_NAMEDTYPE(Screen);
@@ -59,6 +63,8 @@ namespace ChilliSource
         return ScreenUPtr(new CSBackend::Windows::Screen(screenInfo));
 #elif defined CS_TARGETPLATFORM_RPI
         return ScreenUPtr(new CSBackend::RPi::Screen(screenInfo));
+#elif defined CS_TARGETPLATFORM_LINUX
+		return ScreenUPtr(new CSBackend::Linux::Screen(screenInfo));
 #else
         return nullptr;
 #endif

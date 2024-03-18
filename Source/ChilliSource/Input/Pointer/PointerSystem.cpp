@@ -50,6 +50,10 @@
 #include <CSBackend/Platform/RPi/Input/Pointer/PointerSystem.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Input/Pointer/PointerSystem.h>
+#endif
+
 namespace ChilliSource
 {
     CS_DEFINE_NAMEDTYPE(PointerSystem);
@@ -65,6 +69,8 @@ namespace ChilliSource
         return PointerSystemUPtr(new CSBackend::Windows::PointerSystem());
 #elif defined CS_TARGETPLATFORM_RPI
         return PointerSystemUPtr(new CSBackend::RPi::PointerSystem());
+#elif defined CS_TARGETPLATFORM_LINUX
+        return PointerSystemUPtr(new CSBackend::Linux::PointerSystem());
 #else
         return nullptr;
 #endif

@@ -35,6 +35,10 @@
 #include <CSBackend/Platform/RPi/Input/Keyboard/Keyboard.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Input/Keyboard/Keyboard.h>
+#endif
+
 namespace ChilliSource
 {
     CS_DEFINE_NAMEDTYPE(Keyboard);
@@ -46,6 +50,8 @@ namespace ChilliSource
         return KeyboardUPtr(new CSBackend::Windows::Keyboard());
 #elif defined CS_TARGETPLATFORM_RPI
         return KeyboardUPtr(new CSBackend::RPi::Keyboard());
+#elif defined CS_TARGETPLATFORM_LINUX
+        return KeyboardUPtr(new CSBackend::Linux::Keyboard());
 #else
         return nullptr;
 #endif

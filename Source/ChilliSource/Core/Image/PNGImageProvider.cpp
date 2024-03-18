@@ -44,6 +44,10 @@
 #include <CSBackend/Platform/RPi/Core/Image/PNGImageProvider.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Core/Image/PNGImageProvider.h>
+#endif
+
 namespace ChilliSource
 {
     //-------------------------------------------------------
@@ -61,6 +65,9 @@ namespace ChilliSource
 #endif
 #ifdef CS_TARGETPLATFORM_RPI
         return PNGImageProviderUPtr(new CSBackend::RPi::PNGImageProvider());
+#endif
+#ifdef CS_TARGETPLATFORM_LINUX
+	return PNGImageProviderUPtr(new CSBackend::Linux::PNGImageProvider());
 #endif
     }
 }

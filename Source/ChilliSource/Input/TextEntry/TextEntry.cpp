@@ -44,6 +44,10 @@
 #include <CSBackend/Platform/RPi/Input/TextEntry/TextEntry.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Input/TextEntry/TextEntry.h>
+#endif
+
 namespace ChilliSource
 {
     CS_DEFINE_NAMEDTYPE(TextEntry);
@@ -60,6 +64,8 @@ namespace ChilliSource
         return TextEntryUPtr(new CSBackend::Windows::TextEntry());
 #elif defined CS_TARGETPLATFORM_RPI
         return TextEntryUPtr(new CSBackend::RPi::TextEntry());
+#elif defined CS_TARGETPLATFORM_LINUX
+        return TextEntryUPtr(new CSBackend::Linux::TextEntry());
 #else
         return nullptr;
 #endif

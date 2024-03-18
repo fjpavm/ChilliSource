@@ -34,6 +34,10 @@
 #include <CSBackend/Platform/Windows/Input/Gamepad/GamepadSystem.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Input/Gamepad/GamepadSystem.h>
+#endif
+
 #ifdef CS_TARGETPLATFORM_RPI
 #include <CSBackend/Platform/RPi/Input/Gamepad/GamepadSystem.h>
 #endif
@@ -160,6 +164,8 @@ namespace ChilliSource
         return GamepadSystemUPtr(new CSBackend::Windows::GamepadSystem());
 #elif defined CS_TARGETPLATFORM_RPI
         return GamepadSystemUPtr(new CSBackend::RPi::GamepadSystem());
+#elif defined CS_TARGETPLATFORM_LINUX
+        return GamepadSystemUPtr(new CSBackend::Linux::GamepadSystem());
 #else
         return nullptr;
 #endif

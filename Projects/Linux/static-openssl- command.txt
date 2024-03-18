@@ -1,0 +1,4 @@
+./Configure --prefix=$HOME/tmp/openssl-static-dev --release --no-shared 
+make
+make test
+make install

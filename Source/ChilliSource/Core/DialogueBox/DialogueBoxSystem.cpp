@@ -40,6 +40,10 @@
 #include <CSBackend/Platform/Windows/Core/DialogueBox/DialogueBoxSystem.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Core/DialogueBox/DialogueBoxSystem.h>
+#endif
+
 namespace ChilliSource
 {
     CS_DEFINE_NAMEDTYPE(DialogueBoxSystem);
@@ -53,6 +57,8 @@ namespace ChilliSource
         return DialogueBoxSystemUPtr(new CSBackend::Android::DialogueBoxSystem());
 #elif defined CS_TARGETPLATFORM_WINDOWS
         return DialogueBoxSystemUPtr(new CSBackend::Windows::DialogueBoxSystem());
+#elif defined CS_TARGETPLATFORM_LINUX
+        return DialogueBoxSystemUPtr(new CSBackend::Linux::DialogueBoxSystem());
 #else
         return nullptr;
 #endif

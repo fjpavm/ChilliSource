@@ -50,6 +50,10 @@
 #include <CSBackend/Platform/RPi/Core/File/FileSystem.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Core/File/FileSystem.h>
+#endif
+
 #include <md5/md5.h>
 
 #include <algorithm>
@@ -77,6 +81,9 @@ namespace ChilliSource
 #endif
 #ifdef CS_TARGETPLATFORM_WINDOWS
         return FileSystemUPtr(new CSBackend::Windows::FileSystem());
+#endif
+#ifdef CS_TARGETPLATFORM_LINUX
+		return FileSystemUPtr(new CSBackend::Linux::FileSystem());
 #endif
 #ifdef CS_TARGETPLATFORM_RPI
         return FileSystemUPtr(new CSBackend::RPi::FileSystem());

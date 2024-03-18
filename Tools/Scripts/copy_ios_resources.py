@@ -49,7 +49,7 @@ import shutil
 # @param Destination path
 #----------------------------------------------------------------------
 def copy_file_tree(src_path, dst_path):
-    excludes = [".android", ".windows", ".rpi", ".DS_Store", "Thumbs.db"]
+    excludes = [".android", ".windows", ".rpi", ".linux", ".DS_Store", "Thumbs.db"]
     includes = [".ios"]
 
     filter_func = lambda name: any(include in name for include in includes) or not any(exclude in name for exclude in excludes)

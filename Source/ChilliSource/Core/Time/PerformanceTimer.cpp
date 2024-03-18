@@ -32,6 +32,10 @@
 #include <windows.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <sys/time.h>
+#endif
+
 namespace ChilliSource
 {
     PerformanceTimer::PerformanceTimer()
@@ -47,7 +51,7 @@ namespace ChilliSource
 
     void PerformanceTimer::Start()
     {
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGET_PLATFORM_RPI  
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGET_PLATFORM_RPI || defined CS_TARGETPLATFORM_LINUX    
         gettimeofday(&m_startTime, 0);
 #elif defined CS_TARGETPLATFORM_WINDOWS
         LARGE_INTEGER startTime;
@@ -55,10 +59,10 @@ namespace ChilliSource
         m_startTime = startTime.QuadPart;
 #endif
     }
-    
+        
     void PerformanceTimer::Stop()
     {
-#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGET_PLATFORM_RPI
+#if defined CS_TARGETPLATFORM_IOS || defined CS_TARGETPLATFORM_ANDROID || defined CS_TARGET_PLATFORM_RPI || defined CS_TARGETPLATFORM_LINUX
         timeval stopTime;
         gettimeofday(&stopTime, 0);
         f64 startTimeMicro = (m_startTime.tv_sec * 1000000.0) + m_startTime.tv_usec;

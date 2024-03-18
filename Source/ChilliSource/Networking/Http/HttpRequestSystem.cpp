@@ -44,6 +44,10 @@
 #include <CSBackend/Platform/RPi/Networking/Http/HttpRequestSystem.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Networking/Http/HttpRequestSystem.h>
+#endif
+
 namespace ChilliSource
 {
     CS_DEFINE_NAMEDTYPE(HttpRequestSystem);
@@ -63,6 +67,9 @@ namespace ChilliSource
 #endif
 #ifdef CS_TARGETPLATFORM_RPI
         return HttpRequestSystemUPtr(new CSBackend::RPi::HttpRequestSystem());
+#endif
+#ifdef CS_TARGETPLATFORM_LINUX
+        return HttpRequestSystemUPtr(new CSBackend::Linux::HttpRequestSystem());
 #endif
         return nullptr;
     }

@@ -44,6 +44,11 @@
 #include <CSBackend/Platform/RPi/Core/Base/PlatformSystem.h>
 #endif
 
+#ifdef CS_TARGETPLATFORM_LINUX
+#include <CSBackend/Platform/Linux/Core/Base/PlatformSystem.h>
+#endif
+
+
 namespace ChilliSource
 {
     CS_DEFINE_NAMEDTYPE(PlatformSystem);
@@ -59,6 +64,8 @@ namespace ChilliSource
         return PlatformSystemUPtr(new CSBackend::Windows::PlatformSystem());
 #elif defined CS_TARGETPLATFORM_RPI
         return PlatformSystemUPtr(new CSBackend::RPi::PlatformSystem());
+#elif defined CS_TARGETPLATFORM_LINUX
+	return PlatformSystemUPtr(new CSBackend::Linux::PlatformSystem());
 #else
         return nullptr;
 #endif
