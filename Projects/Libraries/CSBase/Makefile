@@ -9,15 +9,15 @@ PLATFORM_SRC_DIR = PlatformSource/Linux/
 SRC_DIR = Source/
 OBJ_DIR = obj/
 OUT_DIR = bin/
-TARGET_ARCHITECTURE = linux_x86_64
+TARGET_ARCHITECTURE = x86_64
 TARGET_VERSION = release
 
 #CPPFLAGS += -fpermissive
 # add compiler debug flag for debug versions
 CPPFLAGS += $(if $(or $(call eq,$(TARGET_VERSION),debug),$(call eq,$(TARGET_VERSION),DEBUG)), -g )
 # add compiler flag for each architecture
-CPPFLAGS += $(if $(call eq,$(TARGET_ARCHITECTURE),linux_x86_64), -m64 )
-CPPFLAGS += $(if $(call eq,$(TARGET_ARCHITECTURE),linux_x86_32), -m32 )
+CPPFLAGS += $(if $(call eq,$(TARGET_ARCHITECTURE),x86_64), -m64 )
+CPPFLAGS += $(if $(call eq,$(TARGET_ARCHITECTURE),x86_32), -m32 )
 # add needed include path
 CPPFLAGS += -I $(PLATFORM_SRC_DIR) -I $(SRC_DIR)
 CPPFLAGS += -include string 

@@ -1,0 +1,16 @@
+sudo apt update
+sudo apt install \
+    libxrandr-dev \
+    libxcursor-dev \
+    libudev-dev \
+    libopenal-dev \
+    libflac-dev \
+    libvorbis-dev \
+    libgl1-mesa-dev \
+    libegl1-mesa-dev \
+    libdrm-dev \
+    libfreetype-dev \
+    libgbm-dev
+sudo apt install cmake
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=FALSE -DSFML_PKGCONFIG_INSTALL_PREFIX=$HOME/sfml-static-lib/pkgconfig --install-prefix $HOME/sfml-static-lib
+cmake --build build --target install --config Release
