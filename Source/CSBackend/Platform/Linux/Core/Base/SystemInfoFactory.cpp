@@ -53,84 +53,83 @@ namespace CSBackend
             const std::string k_deviceModelType = "PC";
             const std::string k_defaultDeviceManufacturer = "OpenSource";
             const std::string k_defaultDeviceUdid = "FAKE ID";
-            
 
             //----------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @return The UDID.
-			//----------------------------------------------
+            /// @author Ian Copland
+            ///
+            /// @return The UDID.
+            //----------------------------------------------
             std::string GetUDID()
             {
-				const int k_bufferSize = 256;
-				char buf[k_bufferSize];
-				long uid = gethostid();
-				if(snprintf(buf, k_bufferSize, "%ld", uid) != 0)
-				{
-					return std::string(buf);
-				}
-				return k_defaultDeviceUdid;
+                const int k_bufferSize = 256;
+                char buf[k_bufferSize];
+                long uid = gethostid();
+                if (snprintf(buf, k_bufferSize, "%ld", uid) != 0)
+                {
+                    return std::string(buf);
+                }
+                return k_defaultDeviceUdid;
             }
 
             //----------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @return The device model name.
+            /// @author Ian Copland
+            ///
+            /// @return The device model name.
             //----------------------------------------------
             std::string GetDeviceModel()
             {
-				struct utsname deviceInfo;
-				if(uname(&deviceInfo) == 0)
-				{
-					return std::string(deviceInfo.sysname);
-				}
-				return k_defaultDeviceModel;
+                struct utsname deviceInfo;
+                if (uname(&deviceInfo) == 0)
+                {
+                    return std::string(deviceInfo.sysname);
+                }
+                return k_defaultDeviceModel;
             }
 
             //----------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @return The device manufacturer name.
-			//----------------------------------------------
-            std::string GetDeviceManufacturer()
+            /// @author Ian Copland
+            ///
+            /// @return The device manufacturer name.
+            //----------------------------------------------
+            std::string GetDeviceModelType()
             {
-				struct utsname deviceInfo;
-				if(uname(&deviceInfo) == 0)
-				{
-					return std::string(deviceInfo.machine);
-				}
-				return k_defaultDeviceManufacturer;
+                struct utsname deviceInfo;
+                if (uname(&deviceInfo) == 0)
+                {
+                    return std::string(deviceInfo.machine);
+                }
+                return k_deviceModelType;
             }
 
             //----------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @return The OS version number string.
-			//----------------------------------------------
+            /// @author Ian Copland
+            ///
+            /// @return The OS version number string.
+            //----------------------------------------------
             std::string GetOSVersion()
             {
-				struct utsname deviceInfo;
-				if(uname(&deviceInfo) == 0)
-				{
-					return std::string(deviceInfo.release);
-				}
-				return k_defaultOSVersion;
+                struct utsname deviceInfo;
+                if (uname(&deviceInfo) == 0)
+                {
+                    return std::string(deviceInfo.release);
+                }
+                return k_defaultOSVersion;
             }
 
             //----------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @return The current locale.
-			//----------------------------------------------
+            /// @author Ian Copland
+            ///
+            /// @return The current locale.
+            //----------------------------------------------
             std::string GetLocale()
             {
-				std::locale l;
-				if (l.name().empty() == false)
-				{
-					return l.name();
-				}
+                std::locale l(""); //Creating with the empty string will set it to the global locale
+                if (l.name().empty() == false)
+                {
+                    return l.name();
+                }
 
-				return k_defaultLocale;
+                return k_defaultLocale;
             }
 
             /// Returns the language portion of a locale code.
@@ -139,7 +138,7 @@ namespace CSBackend
             ///
             /// @return The language code.
             ///
-            std::string ParseLanguageFromLocale(const std::string& in_locale) noexcept
+            std::string ParseLanguageFromLocale(const std::string &in_locale) noexcept
             {
                 std::vector<std::string> strLocaleBrokenUp = ChilliSource::StringUtils::Split(in_locale, "_", 0);
 
@@ -154,15 +153,14 @@ namespace CSBackend
             }
 
             //----------------------------------------------
-			/// @author Ian Copland
-			///
-			/// @return The number of cores.
-			//----------------------------------------------
+            /// @author Ian Copland
+            ///
+            /// @return The number of cores.
+            //----------------------------------------------
             u32 GetNumberOfCPUCores()
             {
-				return std::thread::hardware_concurrency();
+                return std::thread::hardware_concurrency();
             }
-        
 
             /// @return The screen's current resolution.
             ///
@@ -184,21 +182,21 @@ namespace CSBackend
         //--------------------------------------------------------------------------------
         ChilliSource::SystemInfoCUPtr SystemInfoFactory::CreateSystemInfo() noexcept
         {
-             // Create DeviceInfo.
-            ChilliSource::DeviceInfo deviceInfo(GetDeviceModel(), k_deviceModelType, GetDeviceManufacturer(), GetUDID(), GetLocale(), ParseLanguageFromLocale(GetLocale()), GetOSVersion(), GetNumberOfCPUCores());
+            // Create DeviceInfo.
+            ChilliSource::DeviceInfo deviceInfo(GetDeviceModel(), GetDeviceModelType(), k_defaultDeviceManufacturer, GetUDID(), GetLocale(), ParseLanguageFromLocale(GetLocale()), GetOSVersion(), GetNumberOfCPUCores());
 
             // Create ScreenInfo.
             ChilliSource::ScreenInfo screenInfo(GetScreenResolution(), 1.0f, 1.0f, GetSupportedFullscreenResolutions());
 
-			//Create RenderInfo
-    		ChilliSource::RenderInfo renderInfo = OpenGL::RenderInfoFactory::CreateRenderInfo();
+            // Create RenderInfo
+            ChilliSource::RenderInfo renderInfo = OpenGL::RenderInfoFactory::CreateRenderInfo();
 
             // Create SystemInfo.
             ChilliSource::SystemInfoUPtr systemInfo(new ChilliSource::SystemInfo(deviceInfo, screenInfo, renderInfo, ""));
 
             return std::move(systemInfo);
         }
-        
+
     }
 }
 
